@@ -56,7 +56,7 @@ const TimeSlotModal = ({
   const testBackendConnection = async () => {
     try {
       console.log('🔌 Testing backend connection...');
-      const response = await axios.get(`${API_BASE_URL}$1`, { timeout: 5001 });
+      const response = await axios.get('http://${API_BASE_URL}/', { timeout: 5001 });
       setConnectionTest({
         success: true,
         message: 'Backend connected successfully'

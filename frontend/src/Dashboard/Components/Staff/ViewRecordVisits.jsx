@@ -82,7 +82,7 @@ const ViewRecordVisits = () => {
   });
   const [banHistorySearch, setBanHistorySearch] = useState('');
 
-  const API_BASE = `${API_BASE_URL}$1`;
+  const API_BASE = 'http://${API_BASE_URL}';
 
   const searchOptions = [
     { value: 'personName', label: 'Person Name' },
