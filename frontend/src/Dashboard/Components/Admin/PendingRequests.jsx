@@ -76,8 +76,8 @@ const PendingRequests = () => {
     try {
       console.log('📥 Fetching pending requests...');
       const [visitorsResponse, guestsResponse] = await Promise.all([
-        axios.get("http://${API_BASE_URL}/pending-visitors"),
-        axios.get("http://${API_BASE_URL}/pending-guests")
+        axios.get(`${API_BASE_URL}/pending-visitors`),
+        axios.get(`${API_BASE_URL}/pending-guests`)
       ]);
       
       console.log('✅ Pending visitors:', visitorsResponse.data.length);
@@ -99,8 +99,8 @@ const PendingRequests = () => {
     try {
       console.log('📥 Fetching rejected requests...');
       const [visitorsResponse, guestsResponse] = await Promise.all([
-        axios.get("http://${API_BASE_URL}/pending-visitors?status=rejected"),
-        axios.get("http://${API_BASE_URL}/pending-guests?status=rejected")
+        axios.get(`${API_BASE_URL}/pending-visitors?status=rejected`),
+        axios.get(`${API_BASE_URL}/pending-guests?status=rejected`)
       ]);
       
       console.log('✅ Rejected visitors:', visitorsResponse.data.length);
@@ -184,10 +184,10 @@ const PendingRequests = () => {
       setIsLoading(true);
       
       if (type === 'visitors') {
-        await axios.post(`http://${API_BASE_URL}/pending-visitors/${requestId}/approve`);
+        await axios.post(`${{API_BASE_URL}/pending-visitors/${requestId}/approve`);
         toast.success('Visitor approved successfully!');
       } else {
-        await axios.post(`http://${API_BASE_URL}/pending-guests/${requestId}/approve`);
+        await axios.post(`${{API_BASE_URL}/pending-guests/${requestId}/approve`);
         toast.success('Guest approved successfully!');
       }
       
@@ -206,12 +206,12 @@ const PendingRequests = () => {
       setIsLoading(true);
       
       if (type === 'visitors') {
-        await axios.post(`http://${API_BASE_URL}/pending-visitors/${requestId}/reject`, {
+        await axios.post(`${{API_BASE_URL}/pending-visitors/${requestId}/reject`, {
           rejectionReason
         });
         toast.success('Visitor rejected successfully!');
       } else {
-        await axios.post(`http://${API_BASE_URL}/pending-guests/${requestId}/reject`, {
+        await axios.post(`${{API_BASE_URL}/pending-guests/${requestId}/reject`, {
           rejectionReason
         });
         toast.success('Guest rejected successfully!');
@@ -532,7 +532,7 @@ const PendingRequests = () => {
               {selectedRequest.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src={`http://${API_BASE_URL}/uploads/${selectedRequest.photo}`}
+                    src={`${{API_BASE_URL}/uploads/${selectedRequest.photo}`}
                     alt={selectedRequest.type}
                     style={{ 
                       maxWidth: '150px', 

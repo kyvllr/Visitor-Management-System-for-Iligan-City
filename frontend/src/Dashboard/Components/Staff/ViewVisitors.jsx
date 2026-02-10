@@ -62,7 +62,7 @@ const ViewVisitors = () => {
   const fetchVisitors = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("http://${API_BASE_URL}/visitors");
+      const response = await axios.get(`${API_BASE_URL}/visitors`);
       // Sort visitors alphabetically by last name, then first name
       const sortedVisitors = response.data.sort((a, b) => {
         // Compare last names first
@@ -84,7 +84,7 @@ const ViewVisitors = () => {
 
   const fetchInmates = async () => {
     try {
-      const response = await axios.get("http://${API_BASE_URL}/inmates");
+      const response = await axios.get(`${API_BASE_URL}/inmates`);
       setInmates(response.data);
     } catch (error) {
       console.error('Error fetching PDL:', error);
@@ -287,7 +287,7 @@ const ViewVisitors = () => {
       }
 
       // Send to pending-visitors endpoint instead of visitors
-      const response = await axios.post("http://${API_BASE_URL}/pending-visitors", submitData, {
+      const response = await axios.post(`${API_BASE_URL}/pending-visitors`, submitData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -675,7 +675,7 @@ const ViewVisitors = () => {
                   <div class="photo-item">
                     <h4>Visitor Photo</h4>
                     <div class="visitor-photo">
-                      <img src="http://${API_BASE_URL}/uploads/${selectedVisitor.photo}" alt="Visitor Photo" />
+                      <img src=`${API_BASE_URL}/uploads/${selectedVisitor.photo}` alt="Visitor Photo" />
                     </div>
                   </div>
                 ` : ''}
@@ -1200,7 +1200,7 @@ const ViewVisitors = () => {
               {selectedVisitor.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src={`http://${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
+                    src={`${{API_BASE_URL}/uploads/${selectedVisitor.photo}`}
                     alt="Visitor"
                     style={{ 
                       maxWidth: '150px', 
