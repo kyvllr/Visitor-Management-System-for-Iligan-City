@@ -1,23 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/dist",
+  "public": false,
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "./frontend/dist",
   "env": {
     "NODE_ENV": "production"
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/backend/index.js"
-    },
-    {
-      "src": "/.*",
-      "dest": "/index.html"
-    }
-  ],
-  "functions": {
-    "backend/index.js": {
-      "runtime": "@vercel/node"
-    }
   }
 }
