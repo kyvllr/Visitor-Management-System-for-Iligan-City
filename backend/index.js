@@ -55,7 +55,12 @@ const upload = multer({
 
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:3001"],
+  origin: [
+    "http://localhost:3000", 
+    "http://localhost:3001",
+    "https://visitor-management-iligan-city.vercel.app",
+    "https://*.vercel.app"
+  ],
   credentials: true
 }));
 app.use('/uploads', express.static(uploadDir));
