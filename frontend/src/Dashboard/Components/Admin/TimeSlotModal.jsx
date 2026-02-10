@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../../../config/api';
 import { Modal, Button, Card, Row, Col, Badge, Alert, Spinner, Form, ProgressBar } from 'react-bootstrap';
 import { Clock, Check, XCircle, AlertCircle, Search, WifiOff, RefreshCw } from 'react-feather';
 import axios from 'axios';
@@ -55,7 +56,7 @@ const TimeSlotModal = ({
   const testBackendConnection = async () => {
     try {
       console.log('🔌 Testing backend connection...');
-      const response = await axios.get('http://localhost:5001/', { timeout: 5001 });
+      const response = await axios.get('http://${API_BASE_URL}/', { timeout: 5001 });
       setConnectionTest({
         success: true,
         message: 'Backend connected successfully'
@@ -83,7 +84,7 @@ const TimeSlotModal = ({
       
       // METHOD 1: Use direct visitor endpoint
       try {
-        const directEndpoint = `http://localhost:5001/${personType}s/${scannedPerson.id}`;
+        const directEndpoint = `http://${API_BASE_URL}/${personType}s/${scannedPerson.id}`;
         console.log('📞 Calling direct endpoint:', directEndpoint);
         
         const response = await axios.get(directEndpoint, { timeout: 8000 });
@@ -225,8 +226,8 @@ const TimeSlotModal = ({
       
       // Use the SIMPLE timer verification endpoint
       const verifyEndpoint = scannedPerson.personType === 'guest' 
-        ? `http://localhost:5001/verify-custom-timer-guest/${scannedPerson.id}`
-        : `http://localhost:5001/verify-custom-timer/${scannedPerson.id}`;
+        ? `http://${API_BASE_URL}/verify-custom-timer-guest/${scannedPerson.id}`
+        : `http://${API_BASE_URL}/verify-custom-timer/${scannedPerson.id}`;
       
       console.log('📞 Calling verification endpoint:', verifyEndpoint);
       
@@ -307,7 +308,7 @@ const TimeSlotModal = ({
       });
 
       // SIMPLE API CALL - Just set the timer directly using your new endpoint
-      const timerEndpoint = `http://localhost:5001/${scannedPerson.personType}s/${scannedPerson.id}/set-custom-timer`;
+      const timerEndpoint = `http://${API_BASE_URL}/${scannedPerson.personType}s/${scannedPerson.id}/set-custom-timer`;
       console.log('📞 Calling simple timer endpoint:', timerEndpoint);
       
       const response = await axios.put(
@@ -406,8 +407,8 @@ const TimeSlotModal = ({
     
     try {
       const statusEndpoint = scannedPerson.personType === 'guest'
-        ? `http://localhost:5001/verify-custom-timer-guest/${scannedPerson.id}`
-        : `http://localhost:5001/verify-custom-timer/${scannedPerson.id}`;
+        ? `http://${API_BASE_URL}/verify-custom-timer-guest/${scannedPerson.id}`
+        : `http://${API_BASE_URL}/verify-custom-timer/${scannedPerson.id}`;
       
       const response = await axios.get(statusEndpoint);
       

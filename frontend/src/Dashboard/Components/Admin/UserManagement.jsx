@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import API_BASE_URL from '../../../config/api';
 import { 
   Container, Row, Col, Table, Button, Modal, Form, 
   Spinner, Badge, Card, InputGroup, Alert, Dropdown 
@@ -52,7 +53,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("http://localhost:5001/users");
+      const response = await axios.get("http://${API_BASE_URL}/users");
       setUsers(response.data);
       setFilteredUsers(response.data);
     } catch (error) {
@@ -109,7 +110,7 @@ const UserManagement = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5001/users", {
+      const response = await axios.post("http://${API_BASE_URL}/users", {
         name: formData.name,
         email: formData.email.toLowerCase(),
         password: formData.password,
@@ -159,7 +160,7 @@ const UserManagement = () => {
         return;
       }
 
-      const response = await axios.put(`http://localhost:5001/users/${userToUpdate._id}`, {
+      const response = await axios.put(`http://${API_BASE_URL}/users/${userToUpdate._id}`, {
         name: editFormData.name,
         role: editFormData.role,
         isActive: editFormData.isActive
@@ -194,7 +195,7 @@ const UserManagement = () => {
 
     setIsLoading(true);
     try {
-      await axios.put(`http://localhost:5001/users/${user._id}`, {
+      await axios.put(`http://${API_BASE_URL}/users/${user._id}`, {
         name: user.name,
         role: user.role,
         isActive: newStatus
@@ -227,7 +228,7 @@ const UserManagement = () => {
         return;
       }
 
-      await axios.delete(`http://localhost:5001/users/${userToDelete._id}`);
+      await axios.delete(`http://${API_BASE_URL}/users/${userToDelete._id}`);
       toast.success("User deleted successfully!");
       fetchUsers();
     } catch (error) {

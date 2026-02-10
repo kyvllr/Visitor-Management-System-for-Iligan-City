@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../../../config/api';
 import {
   Container, Row, Col, Card, Button, Form, 
   Alert, Spinner, Table, Badge, InputGroup,
@@ -91,14 +92,14 @@ const Logs = () => {
 
       // Since you don't have a dedicated logs endpoint, we'll create one from existing data
       const endpoints = [
-        { url: 'http://localhost:5001/users', module: 'user' },
-        { url: 'http://localhost:5001/inmates', module: 'inmate' },
-        { url: 'http://localhost:5001/visitors', module: 'visitor' },
-        { url: 'http://localhost:5001/guests', module: 'guest' },
-        { url: 'http://localhost:5001/crimes', module: 'crime' },
-        { url: 'http://localhost:5001/visit-logs', module: 'visit' },
-        { url: 'http://localhost:5001/pending-visitors', module: 'visitor' },
-        { url: 'http://localhost:5001/pending-guests', module: 'guest' }
+        { url: 'http://${API_BASE_URL}/users', module: 'user' },
+        { url: 'http://${API_BASE_URL}/inmates', module: 'inmate' },
+        { url: 'http://${API_BASE_URL}/visitors', module: 'visitor' },
+        { url: 'http://${API_BASE_URL}/guests', module: 'guest' },
+        { url: 'http://${API_BASE_URL}/crimes', module: 'crime' },
+        { url: 'http://${API_BASE_URL}/visit-logs', module: 'visit' },
+        { url: 'http://${API_BASE_URL}/pending-visitors', module: 'visitor' },
+        { url: 'http://${API_BASE_URL}/pending-guests', module: 'guest' }
       ];
 
       const responses = await Promise.all(

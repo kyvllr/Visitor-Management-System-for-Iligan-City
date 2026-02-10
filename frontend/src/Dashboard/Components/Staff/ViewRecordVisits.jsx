@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../../../config/api';
 import { 
   Container, Row, Col, Table, Button, Card, 
   Form, Badge, Spinner, Alert, InputGroup,
@@ -81,7 +82,7 @@ const ViewRecordVisits = () => {
   });
   const [banHistorySearch, setBanHistorySearch] = useState('');
 
-  const API_BASE = 'http://localhost:5001';
+  const API_BASE = 'http://${API_BASE_URL}';
 
   const searchOptions = [
     { value: 'personName', label: 'Person Name' },

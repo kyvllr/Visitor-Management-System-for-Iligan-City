@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../../../config/api';
 import { 
   Container, Row, Col, Table, Button, Modal, Form, 
   Alert, Badge, Spinner, InputGroup, Card, ButtonGroup 
@@ -51,7 +52,7 @@ const Guest = () => {
   const fetchGuests = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("http://localhost:5001/guests");
+      const response = await axios.get("http://${API_BASE_URL}/guests");
       // Sort guests alphabetically by last name, then first name
       const sortedGuests = response.data.sort((a, b) => {
         // Compare last names first
@@ -197,7 +198,7 @@ const Guest = () => {
       }
 
       // REMOVED edit functionality - only create new guests
-      const response = await axios.post("http://localhost:5001/pending-guests", submitData, {
+      const response = await axios.post("http://${API_BASE_URL}/pending-guests", submitData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -233,7 +234,7 @@ const Guest = () => {
     formData.append('csvFile', csvFile);
 
     try {
-      const response = await axios.post('http://localhost:5001/guests/upload-csv', formData, {
+      const response = await axios.post('http://${API_BASE_URL}/guests/upload-csv', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -565,7 +566,7 @@ const Guest = () => {
                 <div class="photo-item">
                   <h4>Guest Photo</h4>
                   <div class="guest-photo">
-                    <img src="http://localhost:5001/uploads/${selectedGuest.photo}" alt="Guest Photo" />
+                    <img src="http://${API_BASE_URL}/uploads/${selectedGuest.photo}" alt="Guest Photo" />
                   </div>
                 </div>
               ` : ''}
@@ -1015,7 +1016,7 @@ const Guest = () => {
                     src={
                       selectedGuest.photo.startsWith('http') 
                         ? selectedGuest.photo 
-                        : `http://localhost:5001/uploads/${selectedGuest.photo}`
+                        : `http://${API_BASE_URL}/uploads/${selectedGuest.photo}`
                     }
                     alt="Guest"
                     style={{ 

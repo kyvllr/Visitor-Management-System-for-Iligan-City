@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../../../config/api';
 import { 
   Container, Row, Col, Table, Button, Modal, Form, 
   Alert, Badge, Spinner, InputGroup, Card, ButtonGroup,
@@ -106,7 +107,7 @@ const MaleInmates = () => {
   const fetchInmates = async () => {
   setIsLoading(true);
   try {
-    const response = await axios.get("http://localhost:5001/inmates");
+    const response = await axios.get("http://${API_BASE_URL}/inmates");
     // Filter only male inmates and sort alphabetically
     const maleInmates = response.data
       .filter(inmate => inmate.sex?.toLowerCase() === 'male')
@@ -128,7 +129,7 @@ const MaleInmates = () => {
 
   const fetchCrimes = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/crimes");
+      const response = await axios.get("http://${API_BASE_URL}/crimes");
       setCrimes(response.data);
     } catch (error) {
       console.error('Error fetching crimes:', error);
@@ -219,7 +220,7 @@ const MaleInmates = () => {
     // Fetch visitors for this PDL using the new endpoint
     setLoadingVisitors(true);
     try {
-      const response = await axios.get(`http://localhost:5001/inmates/${inmate.inmateCode}/visitors`);
+      const response = await axios.get(`http://${API_BASE_URL}/inmates/${inmate.inmateCode}/visitors`);
       setInmateVisitors(response.data);
     } catch (error) {
       console.error('Error fetching visitors:', error);
@@ -237,7 +238,7 @@ const MaleInmates = () => {
 
     setIsLoading(true);
     try {
-      await axios.delete(`http://localhost:5001/inmates/${inmateCode}`);
+      await axios.delete(`http://${API_BASE_URL}/inmates/${inmateCode}`);
       toast.success('PDL deleted successfully!');
       fetchInmates();
     } catch (error) {
@@ -393,14 +394,14 @@ const MaleInmates = () => {
 
       let response;
       if (editingInmate) {
-        response = await axios.put(`http://localhost:5001/inmates/${editingInmate.inmateCode}`, submitData, {
+        response = await axios.put(`http://${API_BASE_URL}/inmates/${editingInmate.inmateCode}`, submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
         toast.success('Male PDL updated successfully!');
       } else {
-        response = await axios.post("http://localhost:5001/inmates", submitData, {
+        response = await axios.post("http://${API_BASE_URL}/inmates", submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -441,7 +442,7 @@ const MaleInmates = () => {
     formData.append('csvFile', csvFile);
 
     try {
-      const response = await axios.post('http://localhost:5001/inmates/upload-csv', formData, {
+      const response = await axios.post('http://${API_BASE_URL}/inmates/upload-csv', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -618,7 +619,7 @@ const MaleInmates = () => {
           <div style="text-align: center; flex: 1; min-width: 200px;">
             <div style="font-weight: bold; margin-bottom: 5px;">${img.type}</div>
             <img 
-              src="http://localhost:5001/uploads/${img.src}" 
+              src="http://${API_BASE_URL}/uploads/${img.src}" 
               alt="${img.type}" 
               style="max-width: 100%; height: 150px; object-fit: cover; border: 1px solid #ddd;"
               onload="window.print()"
@@ -1360,7 +1361,7 @@ const MaleInmates = () => {
             <Card.Body className="py-2">
               <div className="text-center position-relative">
                 <img 
-                  src={`http://localhost:5001/uploads/${getAvailableImages(selectedInmate)[currentImageIndex].src}`}
+                  src={`http://${API_BASE_URL}/uploads/${getAvailableImages(selectedInmate)[currentImageIndex].src}`}
                   alt={getAvailableImages(selectedInmate)[currentImageIndex].type}
                   style={{ 
                     maxWidth: '100%', 

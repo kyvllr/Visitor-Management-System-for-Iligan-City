@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../../../config/api';
 import { 
   Container, Row, Col, Table, Button, Modal, Form, 
   Alert, Badge, Spinner, InputGroup, Card, ButtonGroup 
@@ -65,7 +66,7 @@ const VisitorMaleDivision = () => {
   const fetchVisitors = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("http://localhost:5001/visitors");
+      const response = await axios.get("http://${API_BASE_URL}/visitors");
       setVisitors(response.data);
     } catch (error) {
       console.error("Error fetching visitors:", error);
@@ -77,7 +78,7 @@ const VisitorMaleDivision = () => {
 
   const fetchInmates = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/inmates");
+      const response = await axios.get("http://${API_BASE_URL}/inmates");
       setInmates(response.data);
       // Filter only male inmates for suggestions
       const maleInmates = response.data.filter(inmate => 
@@ -247,7 +248,7 @@ const VisitorMaleDivision = () => {
 
     setIsLoading(true);
     try {
-      await axios.delete(`http://localhost:5001/visitors/${visitorId}`);
+      await axios.delete(`http://${API_BASE_URL}/visitors/${visitorId}`);
       toast.success('Visitor deleted successfully!');
       fetchVisitors();
     } catch (error) {
@@ -344,14 +345,14 @@ const VisitorMaleDivision = () => {
 
       let response;
       if (editingVisitor) {
-        response = await axios.put(`http://localhost:5001/visitors/${editingVisitor.id}`, submitData, {
+        response = await axios.put(`http://${API_BASE_URL}/visitors/${editingVisitor.id}`, submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
         toast.success('Visitor updated successfully!');
       } else {
-        response = await axios.post("http://localhost:5001/visitors", submitData, {
+        response = await axios.post("http://${API_BASE_URL}/visitors", submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -391,7 +392,7 @@ const VisitorMaleDivision = () => {
   formData.append('csvFile', csvFile);
 
   try {
-    const response = await axios.post('http://localhost:5001/visitors/upload-csv', formData, {
+    const response = await axios.post('http://${API_BASE_URL}/visitors/upload-csv', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -700,7 +701,7 @@ const VisitorMaleDivision = () => {
                 <div class="photo-item">
                   <h4>Visitor Photo</h4>
                   <div class="visitor-photo">
-                    <img src="http://localhost:5001/uploads/${selectedVisitor.photo}" alt="Visitor Photo" />
+                    <img src="http://${API_BASE_URL}/uploads/${selectedVisitor.photo}" alt="Visitor Photo" />
                   </div>
                 </div>
               ` : ''}
@@ -1255,7 +1256,7 @@ const VisitorMaleDivision = () => {
               {selectedVisitor.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src={`http://localhost:5001/uploads/${selectedVisitor.photo}`}
+                    src={`http://${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
                     alt="Visitor"
                     style={{ 
                       maxWidth: '150px', 

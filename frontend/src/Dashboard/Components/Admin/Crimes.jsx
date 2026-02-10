@@ -134,7 +134,7 @@ const Crimes = () => {
         // No response received
         console.log('🔧 No Response Error:');
         console.log('   Request:', error.request);
-        toast.error('Cannot connect to server. Make sure backend is running on localhost:5001');
+        toast.error('Cannot connect to server. Make sure backend is running on ${API_BASE_URL}');
       } else {
         // Other error
         console.log('🔧 Other Axios Error:');

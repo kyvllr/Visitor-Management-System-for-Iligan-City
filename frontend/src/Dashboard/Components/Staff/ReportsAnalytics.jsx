@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import API_BASE_URL from '../../../config/api';
 import {
   Container, Row, Col, Card, Button, Form, 
   Alert, Spinner, Table, Badge
@@ -18,7 +19,7 @@ import {
 import axios from 'axios';
 import jsPDF from 'jspdf';
 
-const API_BASE_URL = 'http://localhost:5001';
+const API_BASE_URL = 'http://${API_BASE_URL}';
 
 const ReportsAnalytics = () => {
   const [loading, setLoading] = useState(false);

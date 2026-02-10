@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../../../config/api';
 import { Modal, Button, Form, Tabs, Tab, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -88,7 +89,7 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
     
     try {
       const response = await axios.put(
-        `http://localhost:5001/users/${user._id}/profile`,
+        `http://${API_BASE_URL}/users/${user._id}/profile`,
         {
           name: editForm.name.trim(),
           email: editForm.email.trim().toLowerCase()
@@ -149,7 +150,7 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
     try {
       console.log('Attempting password change for user:', user._id);
       const response = await axios.put(
-        `http://localhost:5001/users/${user._id}/password`,
+        `http://${API_BASE_URL}/users/${user._id}/password`,
         {
           currentPassword: passwordForm.currentPassword,
           newPassword: passwordForm.newPassword

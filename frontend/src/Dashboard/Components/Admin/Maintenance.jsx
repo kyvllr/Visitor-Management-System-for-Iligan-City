@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../../../config/api';
 import { 
   Button, 
   Card, 
@@ -38,7 +39,7 @@ const Maintenance = () => {
   const [health, setHealth] = useState({});
   const [cleanupLoading, setCleanupLoading] = useState(false);
 
-  const API_BASE_URL = 'http://localhost:5001';
+  const API_BASE_URL = 'http://${API_BASE_URL}';
 
   // Fetch all backups and stats
   const fetchBackups = async () => {
