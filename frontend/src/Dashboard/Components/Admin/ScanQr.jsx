@@ -377,7 +377,7 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
       console.log('🔄 CALLING SCAN-PROCESS ENDPOINT...');
       
       // Step 1: Use scan-process endpoint to determine scan type
-      const scanResponse = await axios.post("http://${API_BASE_URL}/scan-process", {
+      const scanResponse = await axios.post(`${API_BASE_URL}/scan-process`, {
         qrData: qrData,
         personId: personId,
         isGuest: isGuest

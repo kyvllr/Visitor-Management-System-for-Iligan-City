@@ -52,7 +52,7 @@ const Guest = () => {
   const fetchGuests = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("http://${API_BASE_URL}/guests");
+      const response = await axios.get(`${API_BASE_URL}/guests`);
       // Sort guests alphabetically by last name, then first name
       const sortedGuests = response.data.sort((a, b) => {
         // Compare last names first
@@ -198,7 +198,7 @@ const Guest = () => {
       }
 
       // REMOVED edit functionality - only create new guests
-      const response = await axios.post("http://${API_BASE_URL}/pending-guests", submitData, {
+      const response = await axios.post(`${API_BASE_URL}/pending-guests`, submitData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -566,7 +566,7 @@ const Guest = () => {
                 <div class="photo-item">
                   <h4>Guest Photo</h4>
                   <div class="guest-photo">
-                    <img src="http://${API_BASE_URL}/uploads/${selectedGuest.photo}" alt="Guest Photo" />
+                    <img src=`${API_BASE_URL}/uploads/${selectedGuest.photo}` alt="Guest Photo" />
                   </div>
                 </div>
               ` : ''}

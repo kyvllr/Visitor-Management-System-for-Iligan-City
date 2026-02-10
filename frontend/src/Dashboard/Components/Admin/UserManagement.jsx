@@ -53,7 +53,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get("http://${API_BASE_URL}/users");
+      const response = await axios.get(`${API_BASE_URL}/users`);
       setUsers(response.data);
       setFilteredUsers(response.data);
     } catch (error) {
@@ -110,7 +110,7 @@ const UserManagement = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://${API_BASE_URL}/users", {
+      const response = await axios.post(`${API_BASE_URL}/users`, {
         name: formData.name,
         email: formData.email.toLowerCase(),
         password: formData.password,

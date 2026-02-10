@@ -30,13 +30,13 @@ import {
 } from 'recharts';
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const INMATES_API_URL = "http://${API_BASE_URL}/inmates";
-const VISITORS_API_URL = "http://${API_BASE_URL}/visitors";
-const GUESTS_API_URL = "http://${API_BASE_URL}/guests";
-const USERS_API_URL = "http://${API_BASE_URL}/users";
-const ACTIVE_TIMERS_URL = "http://${API_BASE_URL}/visit-logs/active-visitor-timers";
-const VISIT_LOGS_URL = "http://${API_BASE_URL}/visit-logs";
-const ALL_ACTIVE_TIMERS_URL = "http://${API_BASE_URL}/visit-logs"; // For all active timers
+const INMATES_API_URL = `${API_BASE_URL}/inmates`;
+const VISITORS_API_URL = `${API_BASE_URL}/visitors`;
+const GUESTS_API_URL = `${API_BASE_URL}/guests`;
+const USERS_API_URL = `${API_BASE_URL}/users`;
+const ACTIVE_TIMERS_URL = `${API_BASE_URL}/visit-logs/active-visitor-timers`;
+const VISIT_LOGS_URL = `${API_BASE_URL}/visit-logs`;
+const ALL_ACTIVE_TIMERS_URL = `${API_BASE_URL}/visit-logs`; // For all active timers
 
 // Color palette - muted and professional
 const COLORS = {

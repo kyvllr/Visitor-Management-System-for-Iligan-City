@@ -107,7 +107,7 @@ const MaleInmates = () => {
   const fetchInmates = async () => {
   setIsLoading(true);
   try {
-    const response = await axios.get("http://${API_BASE_URL}/inmates");
+    const response = await axios.get(`${API_BASE_URL}/inmates`);
     // Filter only male inmates and sort alphabetically
     const maleInmates = response.data
       .filter(inmate => inmate.sex?.toLowerCase() === 'male')
@@ -129,7 +129,7 @@ const MaleInmates = () => {
 
   const fetchCrimes = async () => {
     try {
-      const response = await axios.get("http://${API_BASE_URL}/crimes");
+      const response = await axios.get(`${API_BASE_URL}/crimes`);
       setCrimes(response.data);
     } catch (error) {
       console.error('Error fetching crimes:', error);
@@ -401,7 +401,7 @@ const MaleInmates = () => {
         });
         toast.success('Male PDL updated successfully!');
       } else {
-        response = await axios.post("http://${API_BASE_URL}/inmates", submitData, {
+        response = await axios.post(`${API_BASE_URL}/inmates`, submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -619,7 +619,7 @@ const MaleInmates = () => {
           <div style="text-align: center; flex: 1; min-width: 200px;">
             <div style="font-weight: bold; margin-bottom: 5px;">${img.type}</div>
             <img 
-              src="http://${API_BASE_URL}/uploads/${img.src}" 
+              src=`${API_BASE_URL}/uploads/${img.src}` 
               alt="${img.type}" 
               style="max-width: 100%; height: 150px; object-fit: cover; border: 1px solid #ddd;"
               onload="window.print()"
