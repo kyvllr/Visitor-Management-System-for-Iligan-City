@@ -701,7 +701,7 @@ const VisitorMaleDivision = () => {
                 <div class="photo-item">
                   <h4>Visitor Photo</h4>
                   <div class="visitor-photo">
-                    <img src={`${API_BASE_URL}/uploads/${selectedVisitor.photo}`} alt="Visitor Photo" />
+                    <img src="${API_BASE_URL}/uploads/${selectedVisitor.photo}" alt="Visitor Photo" />
                   </div>
                 </div>
               ` : ''}
@@ -1256,7 +1256,7 @@ const VisitorMaleDivision = () => {
               {selectedVisitor.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src={`${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
+                    src="${API_BASE_URL}/uploads/${selectedVisitor.photo}"
                     alt="Visitor"
                     style={{ 
                       maxWidth: '150px', 

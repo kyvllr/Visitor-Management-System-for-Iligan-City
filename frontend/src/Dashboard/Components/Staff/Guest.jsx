@@ -566,7 +566,7 @@ const Guest = () => {
                 <div class="photo-item">
                   <h4>Guest Photo</h4>
                   <div class="guest-photo">
-                    <img src={`${API_BASE_URL}/uploads/${selectedGuest.photo}`} alt="Guest Photo" />
+                    <img src="${API_BASE_URL}/uploads/${selectedGuest.photo}" alt="Guest Photo" />
                   </div>
                 </div>
               ` : ''}
