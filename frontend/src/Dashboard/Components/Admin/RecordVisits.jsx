@@ -91,7 +91,7 @@ const [banForm, setBanForm] = useState({
   });
   const [filteredBanned, setFilteredBanned] = useState([]);
 
-  const API_BASE = 'http://${API_BASE_URL}';
+  const API_BASE = `${API_BASE_URL}$1`;
 
   const searchOptions = [
     { value: 'personName', label: 'Person Name' },

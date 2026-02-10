@@ -76,8 +76,8 @@ const PendingRequests = () => {
     try {
       console.log('📥 Fetching pending requests...');
       const [visitorsResponse, guestsResponse] = await Promise.all([
-        axios.get("http://${API_BASE_URL}/pending-visitors"),
-        axios.get("http://${API_BASE_URL}/pending-guests")
+        axios.get(`${API_BASE_URL}$1`),
+        axios.get(`${API_BASE_URL}$1`)
       ]);
       
       console.log('✅ Pending visitors:', visitorsResponse.data.length);
@@ -99,8 +99,8 @@ const PendingRequests = () => {
     try {
       console.log('📥 Fetching rejected requests...');
       const [visitorsResponse, guestsResponse] = await Promise.all([
-        axios.get("http://${API_BASE_URL}/pending-visitors?status=rejected"),
-        axios.get("http://${API_BASE_URL}/pending-guests?status=rejected")
+        axios.get(`${API_BASE_URL}$1`),
+        axios.get(`${API_BASE_URL}$1`)
       ]);
       
       console.log('✅ Rejected visitors:', visitorsResponse.data.length);

@@ -92,14 +92,14 @@ const Logs = () => {
 
       // Since you don't have a dedicated logs endpoint, we'll create one from existing data
       const endpoints = [
-        { url: 'http://${API_BASE_URL}/users', module: 'user' },
-        { url: 'http://${API_BASE_URL}/inmates', module: 'inmate' },
-        { url: 'http://${API_BASE_URL}/visitors', module: 'visitor' },
-        { url: 'http://${API_BASE_URL}/guests', module: 'guest' },
-        { url: 'http://${API_BASE_URL}/crimes', module: 'crime' },
-        { url: 'http://${API_BASE_URL}/visit-logs', module: 'visit' },
-        { url: 'http://${API_BASE_URL}/pending-visitors', module: 'visitor' },
-        { url: 'http://${API_BASE_URL}/pending-guests', module: 'guest' }
+        { url: `${API_BASE_URL}$1`, module: 'user' },
+        { url: `${API_BASE_URL}$1`, module: 'inmate' },
+        { url: `${API_BASE_URL}$1`, module: 'visitor' },
+        { url: `${API_BASE_URL}$1`, module: 'guest' },
+        { url: `${API_BASE_URL}$1`, module: 'crime' },
+        { url: `${API_BASE_URL}$1`, module: 'visit' },
+        { url: `${API_BASE_URL}$1`, module: 'visitor' },
+        { url: `${API_BASE_URL}$1`, module: 'guest' }
       ];
 
       const responses = await Promise.all(
