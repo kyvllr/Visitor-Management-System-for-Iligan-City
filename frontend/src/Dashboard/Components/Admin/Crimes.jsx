@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
 import { Edit2, Trash2, Play, Square } from 'react-feather'; // Import icons
-import API_BASE_URL from '../../config/api';
+import API_BASE_URL from '../../../config/api';
 
 const Crimes = () => {
   const [crimes, setCrimes] = useState([]);
