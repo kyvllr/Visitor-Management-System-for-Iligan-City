@@ -66,7 +66,7 @@ const VisitorFemaleDivision = () => {
   const fetchVisitors = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/visitors`);
+      const response = await axios.get("http://${API_BASE_URL}/visitors");
       setVisitors(response.data);
     } catch (error) {
       console.error("Error fetching visitors:", error);
@@ -78,7 +78,7 @@ const VisitorFemaleDivision = () => {
 
   const fetchInmates = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/inmates`);
+      const response = await axios.get("http://${API_BASE_URL}/inmates");
       setInmates(response.data);
       // Filter only female inmates for suggestions
       const femaleInmates = response.data.filter(inmate => 
@@ -248,7 +248,7 @@ const VisitorFemaleDivision = () => {
 
     setIsLoading(true);
     try {
-      await axios.delete(`${{API_BASE_URL}/visitors/${visitorId}`);
+      await axios.delete(`http://${API_BASE_URL}/visitors/${visitorId}`);
       toast.success('Visitor deleted successfully!');
       fetchVisitors();
     } catch (error) {
@@ -345,14 +345,14 @@ const VisitorFemaleDivision = () => {
 
       let response;
       if (editingVisitor) {
-        response = await axios.put(`${{API_BASE_URL}/visitors/${editingVisitor.id}`, submitData, {
+        response = await axios.put(`http://${API_BASE_URL}/visitors/${editingVisitor.id}`, submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
         toast.success('Visitor updated successfully!');
       } else {
-        response = await axios.post(`${API_BASE_URL}/visitors`, submitData, {
+        response = await axios.post("http://${API_BASE_URL}/visitors", submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -701,7 +701,7 @@ const VisitorFemaleDivision = () => {
                 <div class="photo-item">
                   <h4>Visitor Photo</h4>
                   <div class="visitor-photo">
-                    <img src=`${API_BASE_URL}/uploads/${selectedVisitor.photo}` alt="Visitor Photo" />
+                    <img src="http://${API_BASE_URL}/uploads/${selectedVisitor.photo}" alt="Visitor Photo" />
                   </div>
                 </div>
               ` : ''}
@@ -1253,7 +1253,7 @@ const VisitorFemaleDivision = () => {
               {selectedVisitor.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src={`${{API_BASE_URL}/uploads/${selectedVisitor.photo}`}
+                    src={`http://${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
                     alt="Visitor"
                     style={{ 
                       maxWidth: '150px', 

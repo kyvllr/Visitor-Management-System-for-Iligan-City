@@ -113,7 +113,7 @@ const Inmates = ({ gender = 'all' }) => {
   const fetchInmates = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL}/inmates`);
+      const response = await axios.get("http://${API_BASE_URL}/inmates");
       // Sort inmates alphabetically by last name, then first name
       const sortedInmates = response.data.sort((a, b) => {
         // Compare last names first
@@ -135,7 +135,7 @@ const Inmates = ({ gender = 'all' }) => {
 
   const fetchCrimes = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/crimes`);
+      const response = await axios.get("http://${API_BASE_URL}/crimes");
       setCrimes(response.data);
     } catch (error) {
       console.error('Error fetching crimes:', error);
@@ -231,7 +231,7 @@ const Inmates = ({ gender = 'all' }) => {
     // Fetch visitors for this inmate using the new endpoint
     setLoadingVisitors(true);
     try {
-      const response = await axios.get(`${{API_BASE_URL}/inmates/${inmate.inmateCode}/visitors`);
+      const response = await axios.get(`http://${API_BASE_URL}/inmates/${inmate.inmateCode}/visitors`);
       setInmateVisitors(response.data);
     } catch (error) {
       console.error('Error fetching visitors:', error);
@@ -249,7 +249,7 @@ const Inmates = ({ gender = 'all' }) => {
 
     setIsLoading(true);
     try {
-      await axios.delete(`${{API_BASE_URL}/inmates/${inmateCode}`);
+      await axios.delete(`http://${API_BASE_URL}/inmates/${inmateCode}`);
       toast.success('Inmate deleted successfully!');
       fetchInmates();
     } catch (error) {
@@ -402,14 +402,14 @@ const Inmates = ({ gender = 'all' }) => {
       console.log("📤 Submitting inmate data...");
 
       if (editingInmate) {
-        await axios.put(`${{API_BASE_URL}/inmates/${editingInmate.inmateCode}`, submitData, {
+        await axios.put(`http://${API_BASE_URL}/inmates/${editingInmate.inmateCode}`, submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
         toast.success('PDL updated successfully!');
       } else {
-        await axios.post(`${API_BASE_URL}/inmates`, submitData, {
+        await axios.post("http://${API_BASE_URL}/inmates", submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -629,7 +629,7 @@ const Inmates = ({ gender = 'all' }) => {
             <div style="text-align: center; flex: 1; min-width: 200px;">
               <div style="font-weight: bold; margin-bottom: 5px;">${img.type}</div>
               <img 
-                src=`${API_BASE_URL}/uploads/${img.src}` 
+                src="http://${API_BASE_URL}/uploads/${img.src}" 
                 alt="${img.type}" 
                 style="max-width: 100%; height: 150px; object-fit: cover; border: 1px solid #ddd;"
                 onload="window.print()"
@@ -1419,7 +1419,7 @@ const Inmates = ({ gender = 'all' }) => {
             <Card.Body className="py-2">
               <div className="text-center position-relative">
                 <img 
-                  src={`${{API_BASE_URL}/uploads/${getAvailableImages(selectedInmate)[currentImageIndex].src}`}
+                  src={`http://${API_BASE_URL}/uploads/${getAvailableImages(selectedInmate)[currentImageIndex].src}`}
                   alt={getAvailableImages(selectedInmate)[currentImageIndex].type}
                   style={{ 
                     maxWidth: '100%', 
