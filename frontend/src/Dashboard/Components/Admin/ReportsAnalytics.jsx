@@ -18,9 +18,6 @@ import {
 } from 'react-feather';
 import axios from 'axios';
 import jsPDF from 'jspdf';
-
-const API_BASE_URL = 'http://${API_BASE_URL}';
-
 const ReportsAnalytics = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

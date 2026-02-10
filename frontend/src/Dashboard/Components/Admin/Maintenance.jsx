@@ -38,9 +38,6 @@ const Maintenance = () => {
   const [stats, setStats] = useState({});
   const [health, setHealth] = useState({});
   const [cleanupLoading, setCleanupLoading] = useState(false);
-
-  const API_BASE_URL = 'http://${API_BASE_URL}';
-
   // Fetch all backups and stats
   const fetchBackups = async () => {
     setLoading(true);
