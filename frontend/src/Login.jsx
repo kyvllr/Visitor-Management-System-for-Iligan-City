@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import API_BASE_URL from 'config/api';
+import API_BASE_URL from './config/api';
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Spinner, InputGroup } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -121,7 +121,7 @@ const Login = () => {
 
     // If not default accounts, try backend login
     try {
-      const response = await axios.post("http://${API_BASE_URL}/login", {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
         email: email.toLowerCase(),
         password,
       });
@@ -202,7 +202,7 @@ const Login = () => {
         // We need to check which one it is by making a separate API call
         try {
           // Check if the user exists and is active
-          const usersResponse = await axios.get("http://${API_BASE_URL}/users");
+          const usersResponse = await axios.get(`${API_BASE_URL}/users`);
           const user = usersResponse.data.find(u => u.email === email.toLowerCase());
           
           if (user && !user.isActive) {
