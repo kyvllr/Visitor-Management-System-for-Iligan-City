@@ -184,10 +184,10 @@ const PendingRequests = () => {
       setIsLoading(true);
       
       if (type === 'visitors') {
-        await axios.post(`http://${API_BASE_URL}/pending-visitors/${requestId}/approve`);
+        await axios.post(`${API_BASE_URL}/pending-visitors/${requestId}/approve`);
         toast.success('Visitor approved successfully!');
       } else {
-        await axios.post(`http://${API_BASE_URL}/pending-guests/${requestId}/approve`);
+        await axios.post(`${API_BASE_URL}/pending-guests/${requestId}/approve`);
         toast.success('Guest approved successfully!');
       }
       
@@ -206,12 +206,12 @@ const PendingRequests = () => {
       setIsLoading(true);
       
       if (type === 'visitors') {
-        await axios.post(`http://${API_BASE_URL}/pending-visitors/${requestId}/reject`, {
+        await axios.post(`${API_BASE_URL}/pending-visitors/${requestId}/reject`, {
           rejectionReason
         });
         toast.success('Visitor rejected successfully!');
       } else {
-        await axios.post(`http://${API_BASE_URL}/pending-guests/${requestId}/reject`, {
+        await axios.post(`${API_BASE_URL}/pending-guests/${requestId}/reject`, {
           rejectionReason
         });
         toast.success('Guest rejected successfully!');
@@ -532,7 +532,7 @@ const PendingRequests = () => {
               {selectedRequest.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src={`http://${API_BASE_URL}/uploads/${selectedRequest.photo}`}
+                    src={`${API_BASE_URL}/uploads/${selectedRequest.photo}`}
                     alt={selectedRequest.type}
                     style={{ 
                       maxWidth: '150px', 

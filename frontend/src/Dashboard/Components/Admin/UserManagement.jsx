@@ -160,7 +160,7 @@ const UserManagement = () => {
         return;
       }
 
-      const response = await axios.put(`http://${API_BASE_URL}/users/${userToUpdate._id}`, {
+      const response = await axios.put(`${API_BASE_URL}/users/${userToUpdate._id}`, {
         name: editFormData.name,
         role: editFormData.role,
         isActive: editFormData.isActive
@@ -195,7 +195,7 @@ const UserManagement = () => {
 
     setIsLoading(true);
     try {
-      await axios.put(`http://${API_BASE_URL}/users/${user._id}`, {
+      await axios.put(`${API_BASE_URL}/users/${user._id}`, {
         name: user.name,
         role: user.role,
         isActive: newStatus
@@ -228,7 +228,7 @@ const UserManagement = () => {
         return;
       }
 
-      await axios.delete(`http://${API_BASE_URL}/users/${userToDelete._id}`);
+      await axios.delete(`${API_BASE_URL}/users/${userToDelete._id}`);
       toast.success("User deleted successfully!");
       fetchUsers();
     } catch (error) {

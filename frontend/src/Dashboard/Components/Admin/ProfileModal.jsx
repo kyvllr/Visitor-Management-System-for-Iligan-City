@@ -89,7 +89,7 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
     
     try {
       const response = await axios.put(
-        `http://${API_BASE_URL}/users/${user._id}/profile`,
+        `${API_BASE_URL}/users/${user._id}/profile`,
         {
           name: editForm.name.trim(),
           email: editForm.email.trim().toLowerCase()
@@ -150,7 +150,7 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
     try {
       console.log('Attempting password change for user:', user._id);
       const response = await axios.put(
-        `http://${API_BASE_URL}/users/${user._id}/password`,
+        `${API_BASE_URL}/users/${user._id}/password`,
         {
           currentPassword: passwordForm.currentPassword,
           newPassword: passwordForm.newPassword

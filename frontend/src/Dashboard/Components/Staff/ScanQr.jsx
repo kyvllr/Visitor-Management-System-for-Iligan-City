@@ -315,7 +315,7 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
 
   // BULLETPROOF: Enhanced person data fetcher with custom timer support
   const fetchCompletePersonData = async (personId, isGuest, maxRetries = 3) => {
-    const endpoint = `http://${API_BASE_URL}/${isGuest ? 'guests' : 'visitors'}/${personId}`;
+    const endpoint = `${API_BASE_URL}/${isGuest ? 'guests' : 'visitors'}/${personId}`;
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -510,7 +510,7 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
       const personType = scannedPerson.personType;
       
       // USE THE SIMPLE TIMER ENDPOINT
-      const endpoint = `http://${API_BASE_URL}/${personType}s/${scannedPerson.id}/set-custom-timer`;
+      const endpoint = `${API_BASE_URL}/${personType}s/${scannedPerson.id}/set-custom-timer`;
 
       const response = await axios.put(endpoint, {
         startTime: timeSlotData.startTime,
@@ -522,8 +522,8 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
 
       // Verify the timer was actually set
       const verifyEndpoint = personType === 'guest' 
-        ? `http://${API_BASE_URL}/verify-custom-timer-guest/${scannedPerson.id}`
-        : `http://${API_BASE_URL}/verify-custom-timer/${scannedPerson.id}`;
+        ? `${API_BASE_URL}/verify-custom-timer-guest/${scannedPerson.id}`
+        : `${API_BASE_URL}/verify-custom-timer/${scannedPerson.id}`;
       
       const verifyResponse = await axios.get(verifyEndpoint);
       
@@ -575,8 +575,8 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
       
       const personType = scannedPerson.personType;
       const endpoint = scannedPerson.scanType === 'time_in_pending' 
-        ? `http://${API_BASE_URL}/${personType}s/${scannedPerson.id}/approve-time-in`
-        : `http://${API_BASE_URL}/${personType}s/${scannedPerson.id}/approve-time-out`;
+        ? `${API_BASE_URL}/${personType}s/${scannedPerson.id}/approve-time-in`
+        : `${API_BASE_URL}/${personType}s/${scannedPerson.id}/approve-time-out`;
 
       console.log('📞 CALLING:', endpoint);
 
@@ -981,7 +981,7 @@ const renderPersonDetails = () => {
             {/* Only show actual image, no fallback icon */}
             {scannedPerson.photo ? (
               <Image 
-                src={`http://${API_BASE_URL}/uploads/${scannedPerson.photo}`} 
+                src={`${API_BASE_URL}/uploads/${scannedPerson.photo}`} 
                 alt={displayName}
                 width={120}
                 height={120}

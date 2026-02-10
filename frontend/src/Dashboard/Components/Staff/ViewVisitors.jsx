@@ -675,7 +675,7 @@ const ViewVisitors = () => {
                   <div class="photo-item">
                     <h4>Visitor Photo</h4>
                     <div class="visitor-photo">
-                      <img src=`${API_BASE_URL}/uploads/${selectedVisitor.photo}` alt="Visitor Photo" />
+                      <img src={`${API_BASE_URL}/uploads/${selectedVisitor.photo}`} alt="Visitor Photo" />
                     </div>
                   </div>
                 ` : ''}
@@ -1200,7 +1200,7 @@ const ViewVisitors = () => {
               {selectedVisitor.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src={`http://${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
+                    src={`${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
                     alt="Visitor"
                     style={{ 
                       maxWidth: '150px', 

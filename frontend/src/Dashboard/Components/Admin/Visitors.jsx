@@ -193,7 +193,7 @@ const Visitors = () => {
     }
 
     try {
-      const response = await axios.get(`http://${API_BASE_URL}/inmates/${inmateCode}/visitor-limit`);
+      const response = await axios.get(`${API_BASE_URL}/inmates/${inmateCode}/visitor-limit`);
       setVisitorLimit(response.data);
     } catch (error) {
       console.error('Error checking visitor limit:', error);
@@ -264,7 +264,7 @@ const Visitors = () => {
 
     setIsLoading(true);
     try {
-      await axios.delete(`http://${API_BASE_URL}/visitors/${visitorId}`);
+      await axios.delete(`${API_BASE_URL}/visitors/${visitorId}`);
       toast.success('Visitor deleted successfully!');
       fetchVisitors();
     } catch (error) {
@@ -360,7 +360,7 @@ const Visitors = () => {
 
       let response;
       if (editingVisitor) {
-        response = await axios.put(`http://${API_BASE_URL}/visitors/${editingVisitor.id}`, submitData, {
+        response = await axios.put(`${API_BASE_URL}/visitors/${editingVisitor.id}`, submitData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -764,7 +764,7 @@ const Visitors = () => {
                 <div class="photo-item">
                   <h4>Visitor Photo</h4>
                   <div class="visitor-photo">
-                    <img src=`${API_BASE_URL}/uploads/${selectedVisitor.photo}` alt="Visitor Photo" />
+                    <img src={`${API_BASE_URL}/uploads/${selectedVisitor.photo}`} alt="Visitor Photo" />
                   </div>
                 </div>
               ` : ''}
@@ -1337,7 +1337,7 @@ const Visitors = () => {
               {selectedVisitor.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src={`http://${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
+                    src={`${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
                     alt="Visitor"
                     style={{ 
                       maxWidth: '150px', 

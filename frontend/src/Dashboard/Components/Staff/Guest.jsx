@@ -566,7 +566,7 @@ const Guest = () => {
                 <div class="photo-item">
                   <h4>Guest Photo</h4>
                   <div class="guest-photo">
-                    <img src=`${API_BASE_URL}/uploads/${selectedGuest.photo}` alt="Guest Photo" />
+                    <img src={`${API_BASE_URL}/uploads/${selectedGuest.photo}`} alt="Guest Photo" />
                   </div>
                 </div>
               ` : ''}
@@ -1016,7 +1016,7 @@ const Guest = () => {
                     src={
                       selectedGuest.photo.startsWith('http') 
                         ? selectedGuest.photo 
-                        : `http://${API_BASE_URL}/uploads/${selectedGuest.photo}`
+                        : `${API_BASE_URL}/uploads/${selectedGuest.photo}`
                     }
                     alt="Guest"
                     style={{ 
