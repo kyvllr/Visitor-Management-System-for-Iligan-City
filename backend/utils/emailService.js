@@ -16,19 +16,31 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Verify transporter on startup
-transporter.verify(function(error, success) {
-  if (error) {
-    console.error('❌ Email configuration error:', error.message);
-    console.error('   Please check your EMAIL_USER and EMAIL_PASSWORD in .env file');
-    if (error.message.includes('Application-specific password')) {
-      console.error('   ⚠️  You need to use a Gmail App Password, not your regular password!');
-      console.error('   📖 Follow the guide: https://support.google.com/accounts/answer/185833');
+// Verify transporter on startup (non-blocking with timeout)
+const verifyEmailService = () => {
+  const verifyTimeout = setTimeout(() => {
+    console.warn('⚠️  Email verification timeout - proceeding without verification');
+  }, 5000);
+
+  transporter.verify(function(error, success) {
+    clearTimeout(verifyTimeout);
+    if (error) {
+      console.error('❌ Email configuration error:', error.message);
+      console.error('   Please check your EMAIL_USER and EMAIL_PASSWORD in .env file');
+      if (error.message.includes('Application-specific password')) {
+        console.error('   ⚠️  You need to use a Gmail App Password, not your regular password!');
+        console.error('   📖 Follow the guide: https://support.google.com/accounts/answer/185833');
+      }
+    } else {
+      console.log('✅ Email service is ready to send OTP emails');
     }
-  } else {
-    console.log('✅ Email service is ready to send OTP emails');
-  }
-});
+  });
+};
+
+// Run verification asynchronously
+if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+  verifyEmailService();
+}
 
 // Generate 6-digit OTP
 const generateOTP = () => {
