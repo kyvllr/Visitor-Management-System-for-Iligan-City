@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
 import { Edit2, Trash2, Play, Square } from 'react-feather'; // Import icons
+import API_BASE_URL from '../../config/api';
 
 const Crimes = () => {
   const [crimes, setCrimes] = useState([]);
@@ -15,7 +16,7 @@ const Crimes = () => {
   const [fetchLoading, setFetchLoading] = useState(true);
 
   // API base URL
-  const API_BASE = 'http://localhost:5001';
+  const API_BASE = API_BASE_URL;
 
   useEffect(() => {
     fetchCrimes();
