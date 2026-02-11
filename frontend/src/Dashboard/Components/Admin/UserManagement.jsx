@@ -15,12 +15,14 @@ const UserManagement = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    contactNumber: "",
     password: "",
     role: "",
   });
   const [editFormData, setEditFormData] = useState({
     name: "",
     email: "",
+    contactNumber: "",
     role: "",
     isActive: true
   });
@@ -35,6 +37,7 @@ const UserManagement = () => {
   const searchOptions = [
     { value: 'name', label: 'Name' },
     { value: 'email', label: 'Email' },
+    { value: 'contactNumber', label: 'Contact' },
     { value: 'role', label: 'Role' },
     { value: 'status', label: 'Status' }
   ];
@@ -113,13 +116,14 @@ const UserManagement = () => {
       const response = await axios.post(`${API_BASE_URL}/users`, {
         name: formData.name,
         email: formData.email.toLowerCase(),
+        contactNumber: formData.contactNumber,
         password: formData.password,
         role: formData.role,
         isActive: true // New users are active by default
       });
 
       toast.success("User created successfully!");
-      setFormData({ name: "", email: "", password: "", role: "" });
+      setFormData({ name: "", email: "", contactNumber: "", password: "", role: "" });
       setShowPassword(false);
       fetchUsers();
       setShowModal(false);
@@ -137,6 +141,7 @@ const UserManagement = () => {
     setEditFormData({
       name: user.name,
       email: user.email,
+      contactNumber: user.contactNumber || "",
       role: user.role,
       isActive: user.isActive
     });
@@ -163,7 +168,8 @@ const UserManagement = () => {
       const response = await axios.put(`${API_BASE_URL}/users/${userToUpdate._id}`, {
         name: editFormData.name,
         role: editFormData.role,
-        isActive: editFormData.isActive
+        isActive: editFormData.isActive,
+        contactNumber: editFormData.contactNumber
       });
 
       console.log("Update response:", response.data);
@@ -274,10 +280,11 @@ const UserManagement = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Name', 'Email', 'Role', 'Status'];
+    const headers = ['Name', 'Email', 'Contact Number', 'Role', 'Status'];
     const csvData = users.map(user => [
       user.name,
       user.email,
+      user.contactNumber || '',
       formatRole(user.role),
       user.isActive ? 'Active' : 'Inactive'
     ]);
@@ -435,6 +442,7 @@ const UserManagement = () => {
                 <tr>
                   <th className="text-center align-middle">Name</th>
                   <th className="text-center align-middle">Email</th>
+                  <th className="text-center align-middle">Contact</th>
                   <th className="text-center align-middle">Role</th>
                   <th className="text-center align-middle">Status</th>
                   <th className="text-center align-middle">Actions</th>
@@ -455,6 +463,9 @@ const UserManagement = () => {
                         </div>
                       </td>
                       <td className="align-middle text-center">{user.email}</td>
+                      <td className="align-middle text-center">
+                        {user.contactNumber || 'N/A'}
+                      </td>
                       <td className="align-middle text-center">
                         <Badge bg={getRoleBadgeVariant(user.role)}>
                           {formatRole(user.role)}
@@ -515,7 +526,7 @@ const UserManagement = () => {
         onHide={() => {
           setShowModal(false);
           setRoleError("");
-          setFormData({ name: "", email: "", password: "", role: "" });
+          setFormData({ name: "", email: "", contactNumber: "", password: "", role: "" });
           setShowPassword(false);
         }}
         style={{ maxHeight: "85vh", top: "10vh" }}
@@ -547,6 +558,22 @@ const UserManagement = () => {
                 placeholder="Enter email address"
                 required
               />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="small">Contact Number</Form.Label>
+              <Form.Control
+                type="tel"
+                name="contactNumber"
+                value={formData.contactNumber}
+                onChange={handleInputChange}
+                placeholder="09XXXXXXXXX"
+                pattern="^09\d{9}$"
+                required
+              />
+              <Form.Text className="text-muted small">
+                Use local format: 09XXXXXXXXX
+              </Form.Text>
             </Form.Group>
             
             <Form.Group className="mb-3">
@@ -660,6 +687,22 @@ const UserManagement = () => {
               />
               <Form.Text className="text-muted small">
                 Email cannot be changed.
+              </Form.Text>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="small">Contact Number</Form.Label>
+              <Form.Control
+                type="tel"
+                name="contactNumber"
+                value={editFormData.contactNumber}
+                onChange={handleEditInputChange}
+                placeholder="09XXXXXXXXX"
+                pattern="^09\d{9}$"
+                required
+              />
+              <Form.Text className="text-muted small">
+                Use local format: 09XXXXXXXXX
               </Form.Text>
             </Form.Group>
             

@@ -14,7 +14,8 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
   // Profile edit state
   const [editForm, setEditForm] = useState({
     name: '',
-    email: ''
+    email: '',
+    contactNumber: ''
   });
   
   // Password change state
@@ -35,7 +36,8 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
     if (user) {
       setEditForm({
         name: user.name || '',
-        email: user.email || ''
+        email: user.email || '',
+        contactNumber: user.contactNumber || ''
       });
     }
   }, [user]);
@@ -78,10 +80,21 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
       setError('Email is required');
       return;
     }
+
+    if (!editForm.contactNumber.trim()) {
+      setError('Contact number is required');
+      return;
+    }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(editForm.email)) {
       setError('Please enter a valid email address');
+      return;
+    }
+
+    const phoneRegex = /^09\d{9}$/;
+    if (!phoneRegex.test(editForm.contactNumber.trim())) {
+      setError('Contact number must be in 09XXXXXXXXX format');
       return;
     }
     
@@ -92,7 +105,8 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
         `${API_BASE_URL}/users/${user._id}/profile`,
         {
           name: editForm.name.trim(),
-          email: editForm.email.trim().toLowerCase()
+          email: editForm.email.trim().toLowerCase(),
+          contactNumber: editForm.contactNumber.trim()
         }
       );
       
@@ -189,7 +203,8 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
     if (user) {
       setEditForm({
         name: user.name || '',
-        email: user.email || ''
+        email: user.email || '',
+        contactNumber: user.contactNumber || ''
       });
     }
     onHide();
@@ -259,6 +274,10 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
                   <span>{user.email}</span>
                 </div>
                 <div className="detail-row">
+                  <strong>Contact Number:</strong>
+                  <span>{user.contactNumber || 'N/A'}</span>
+                </div>
+                <div className="detail-row">
                   <strong>Role:</strong>
                   <span>{user.role}</span>
                 </div>
@@ -313,6 +332,22 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
               </Form.Group>
 
               <Form.Group className="mb-3">
+                <Form.Label>Contact Number *</Form.Label>
+                <Form.Control
+                  type="tel"
+                  name="contactNumber"
+                  value={editForm.contactNumber}
+                  onChange={handleEditFormChange}
+                  placeholder="09XXXXXXXXX"
+                  pattern="^09\d{9}$"
+                  required
+                />
+                <Form.Text className="text-muted">
+                  Use local format: 09XXXXXXXXX
+                </Form.Text>
+              </Form.Group>
+
+              <Form.Group className="mb-3">
                 <Form.Label>Role</Form.Label>
                 <Form.Control
                   type="text"
@@ -333,7 +368,8 @@ const ProfileModal = ({ show, onHide, user, onUserUpdate }) => {
                     setError('');
                     setEditForm({
                       name: user.name || '',
-                      email: user.email || ''
+                      email: user.email || '',
+                      contactNumber: user.contactNumber || ''
                     });
                   }}
                   disabled={loading}

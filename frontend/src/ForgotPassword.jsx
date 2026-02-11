@@ -67,7 +67,7 @@ const ForgotPassword = () => {
       setStep(2);
       setCountdown(600); // Reset countdown
       
-      // Check if email was actually sent or just generated
+      // Check if OTP was delivered or just generated
       if (response.data.emailSent === false) {
         toast.warning(response.data.message || "OTP generated. Check server console.", {
           autoClose: 5000
@@ -155,7 +155,7 @@ const ForgotPassword = () => {
       });
 
       setCountdown(600); // Reset countdown
-      toast.success("New OTP sent to your email");
+      toast.success(response.data.message || "New OTP sent to your email");
     } catch (error) {
       console.error("Resend OTP error:", error);
       toast.error("Failed to resend OTP. Please try again.");

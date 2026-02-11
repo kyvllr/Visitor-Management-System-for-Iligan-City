@@ -239,6 +239,18 @@ const parseTimeToDate = (timeStr, baseDate) => {
   return date;
 };
 
+const normalizePhoneForStorage = (input) => {
+  if (!input) return null;
+  const cleaned = input.toString().trim().replace(/[\s-]/g, '');
+  if (cleaned.startsWith('+')) {
+    if (!/^\+63\d{10}$/.test(cleaned)) return null;
+    return `0${cleaned.slice(3)}`;
+  }
+  if (!/^09\d{9}$/.test(cleaned)) return null;
+  return cleaned;
+};
+
+
 // ======================
 // SCHEMAS AND MODELS
 // ======================
@@ -246,6 +258,7 @@ const parseTimeToDate = (timeStr, baseDate) => {
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
+  contactNumber: { type: String, unique: true, sparse: true },
   password: { type: String, required: true },
   role: { 
     type: String, 
@@ -3541,11 +3554,11 @@ app.delete("/visit-logs/:id", async (req, res) => {
 
 // CREATE USER
 app.post("/users", async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, contactNumber } = req.body;
   
-  if (!name || !email || !password || !role) {
+  if (!name || !email || !password || !role || !contactNumber) {
     return res.status(400).json({ 
-      message: "All fields are required: name, email, password, role" 
+      message: "All fields are required: name, email, password, role, contactNumber" 
     });
   }
 
@@ -3564,6 +3577,20 @@ app.post("/users", async (req, res) => {
       });
     }
 
+    const normalizedContactNumber = normalizePhoneForStorage(contactNumber);
+    if (!normalizedContactNumber) {
+      return res.status(400).json({
+        message: "Invalid contact number format. Use 09XXXXXXXXX"
+      });
+    }
+
+    const existingContact = await User.findOne({ contactNumber: normalizedContactNumber });
+    if (existingContact) {
+      return res.status(409).json({
+        message: "User with this contact number already exists"
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate OTP for first-time login
@@ -3573,6 +3600,7 @@ app.post("/users", async (req, res) => {
     const user = new User({
       name: name.trim(),
       email: email.toLowerCase().trim(),
+      contactNumber: normalizedContactNumber,
       password: hashedPassword,
       role: role,
       otp: otp,
@@ -3594,6 +3622,7 @@ app.post("/users", async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      contactNumber: user.contactNumber,
       role: user.role,
       isActive: user.isActive,
       isFirstLogin: user.isFirstLogin,
@@ -3664,9 +3693,28 @@ app.get("/users/:id", async (req, res) => {
 // UPDATE USER
 app.put("/users/:id", async (req, res) => {
   try {
-    const { name, email, role, password, isActive } = req.body;
+    const { name, email, role, password, isActive, contactNumber } = req.body;
     
     const updateData = { name, email, role, isActive };
+    if (contactNumber) {
+      const normalizedContactNumber = normalizePhoneForStorage(contactNumber);
+      if (!normalizedContactNumber) {
+        return res.status(400).json({
+          message: "Invalid contact number format. Use 09XXXXXXXXX"
+        });
+      }
+      const existingContact = await User.findOne({
+        contactNumber: normalizedContactNumber,
+        _id: { $ne: req.params.id }
+      });
+
+      if (existingContact) {
+        return res.status(409).json({
+          message: "Contact number already in use by another user"
+        });
+      }
+      updateData.contactNumber = normalizedContactNumber;
+    }
     
     if (password && password.trim() !== '') {
       updateData.password = await bcrypt.hash(password, 10);
@@ -3698,10 +3746,10 @@ app.put("/users/:id", async (req, res) => {
 // UPDATE USER PROFILE (name and email only)
 app.put("/users/:id/profile", async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, contactNumber } = req.body;
     
-    if (!name || !email) {
-      return res.status(400).json({ error: "Name and email are required" });
+    if (!name || !email || !contactNumber) {
+      return res.status(400).json({ error: "Name, email, and contact number are required" });
     }
     
     // Check if email is already taken by another user
@@ -3714,11 +3762,26 @@ app.put("/users/:id/profile", async (req, res) => {
       return res.status(400).json({ error: "Email already in use by another user" });
     }
     
+    const normalizedContactNumber = normalizePhoneForStorage(contactNumber);
+    if (!normalizedContactNumber) {
+      return res.status(400).json({ error: "Invalid contact number format. Use 09XXXXXXXXX" });
+    }
+
+    const existingContact = await User.findOne({
+      contactNumber: normalizedContactNumber,
+      _id: { $ne: req.params.id }
+    });
+
+    if (existingContact) {
+      return res.status(400).json({ error: "Contact number already in use by another user" });
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       { 
         name: name.trim(),
-        email: email.toLowerCase().trim()
+        email: email.toLowerCase().trim(),
+        contactNumber: normalizedContactNumber
       },
       { new: true, runValidators: true }
     ).select('-password');
@@ -3851,17 +3914,33 @@ app.post("/login", async (req, res) => {
     
     // Check if this is first-time login requiring OTP
     if (user.isFirstLogin) {
+      const now = new Date();
+      let otp = user.otp;
+
+      if (!otp || !user.otpExpiry || now > user.otpExpiry) {
+        otp = generateOTP();
+        user.otp = otp;
+        user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+        await user.save();
+      }
+
+      const emailResult = await sendOTPEmail(user.email, otp, user.name);
+
       return res.json({ 
         requireOTP: true,
         userId: user._id,
         email: user.email,
-        message: "Please enter the OTP sent to your email"
+        contactNumber: user.contactNumber,
+        message: emailResult.success
+          ? "Please enter the OTP sent to your email"
+          : "OTP delivery failed. Please contact your administrator"
       });
     }
     
     const userResponse = {
       _id: user._id,
       email: user.email, 
+      contactNumber: user.contactNumber,
       role: user.role,
       name: user.name,
       isActive: user.isActive
@@ -3924,6 +4003,7 @@ app.post("/verify-otp", async (req, res) => {
     const userResponse = {
       _id: user._id,
       email: user.email,
+      contactNumber: user.contactNumber,
       role: user.role,
       name: user.name,
       isActive: user.isActive
@@ -3971,7 +4051,6 @@ app.post("/resend-otp", async (req, res) => {
     user.otpExpiry = otpExpiry;
     await user.save();
     
-    // Send OTP via email
     const emailResult = await sendOTPEmail(user.email, otp, user.name);
     
     if (!emailResult.success) {
@@ -4023,6 +4102,7 @@ app.post("/forgot-password", async (req, res) => {
     
     // Log OTP in console for development/testing
     console.log('🔐 Password Reset OTP for', user.email, ':', otp);
+    
     console.log('📧 Attempting to send OTP email...');
     
     // Send password reset OTP via email
