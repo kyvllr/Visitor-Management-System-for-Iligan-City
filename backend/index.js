@@ -4413,6 +4413,9 @@ app.post("/visitors",
   upload.single('photo'),
   async (req, res) => {
     try {
+      console.log("🔍 Visitor POST Request Body:", JSON.stringify(req.body, null, 2));
+      console.log("📁 File received:", req.file ? req.file.filename : "No file");
+      
       // Validate prisonerId exists and get prisoner name
       let prisonerName = 'Unknown';
       if (req.body.prisonerId) {
@@ -4492,7 +4495,13 @@ app.post("/visitors",
         visitor: visitorWithFullName 
       });
     } catch (error) {
-      console.error("Visitor creation error:", error);
+      console.error("❌ Visitor creation error:", error);
+      console.error("🔍 Error details:", {
+        message: error.message,
+        stack: error.stack,
+        code: error.code,
+        name: error.name
+      });
       
       if (error.code === 11000) {
         return res.status(409).json({ message: "Visitor ID already exists" });
@@ -4502,7 +4511,11 @@ app.post("/visitors",
         return res.status(400).json({ message: "Validation error", error: error.message });
       }
       
-      res.status(500).json({ message: "Failed to create visitor", error: error.message });
+      res.status(500).json({ 
+        message: "Failed to create visitor", 
+        error: error.message,
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
     }
   }
 );
