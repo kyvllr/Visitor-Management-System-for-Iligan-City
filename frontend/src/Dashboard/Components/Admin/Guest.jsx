@@ -207,6 +207,7 @@ const Guest = () => {
       dateOfBirth: guest.dateOfBirth ? guest.dateOfBirth.split('T')[0] : ''
     };
     setFormData(formattedGuest);
+    setImageFile(null); // Reset image file when editing
     setShowModal(true);
   };
 
@@ -306,34 +307,34 @@ const Guest = () => {
         ...formData,
         middleName: formData.middleName || '',
         extension: formData.extension || '',
-        age: formData.age || '',
+        age: formData.age ? parseInt(formData.age) : '',
         status: 'approved'
       };
 
       Object.keys(formattedData).forEach(key => {
-        if (formattedData[key] !== null && formattedData[key] !== undefined) {
-          submitData.append(key, formattedData[key]);
+        const value = formattedData[key];
+        // Only append if not null, undefined, or empty string
+        if (value !== null && value !== undefined && value !== '') {
+          submitData.append(key, value);
+          console.log(`  ➕ ${key}: ${typeof value === 'string' ? value.substring(0, 50) : value}`);
         }
       });
 
       if (imageFile) {
+        console.log('📸 Appending image file:', imageFile.name, 'Type:', imageFile.type, 'Size:', imageFile.size);
         submitData.append('photo', imageFile);
+      } else {
+        console.log('⚠️ No image file selected');
       }
 
       let response;
       if (editingGuest) {
-        response = await axios.put(`${API_BASE_URL}/guests/${editingGuest.id}`, submitData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        console.log('🔄 Updating guest:', editingGuest.id);
+        response = await axios.put(`${API_BASE_URL}/guests/${editingGuest.id}`, submitData);
         toast.success('Guest updated successfully!');
       } else {
-        response = await axios.post(`${API_BASE_URL}/guests`, submitData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        console.log('➕ Creating new guest');
+        response = await axios.post(`${API_BASE_URL}/guests`, submitData);
         toast.success('Guest created successfully! QR code has been generated.');
       }
       
@@ -341,7 +342,10 @@ const Guest = () => {
       resetForm();
       fetchGuests();
     } catch (error) {
-      console.error('Error submitting guest:', error);
+      console.error('❌ Error submitting guest:', error);
+      console.error('📋 Status:', error.response?.status);
+      console.error('🔍 Response data:', error.response?.data);
+      console.error('📨 Request data keys:', Object.keys(error.config?.data || {}));
       const errorMessage = error.response?.data?.message || 
                         error.response?.data?.error || 
                         `Failed to ${editingGuest ? 'update' : 'create'} guest`;
@@ -363,9 +367,6 @@ const Guest = () => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/guests/import`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
         onUploadProgress: (progressEvent) => {
           const progress = (progressEvent.loaded / progressEvent.total) * 100;
           setImportProgress(Math.round(progress));

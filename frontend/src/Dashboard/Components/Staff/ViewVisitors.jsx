@@ -287,11 +287,7 @@ const ViewVisitors = () => {
       }
 
       // Send to pending-visitors endpoint instead of visitors
-      const response = await axios.post(`${API_BASE_URL}/pending-visitors`, submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axios.post(`${API_BASE_URL}/pending-visitors`, submitData);
       
       toast.success('Visitor request submitted for approval!');
       setShowModal(false);
@@ -326,11 +322,7 @@ const ViewVisitors = () => {
     formData.append('csvFile', csvFile);
 
     try {
-      const response = await axios.post('http://${API_BASE_URL}/visitors/upload-csv', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axios.post(`${API_BASE_URL}/visitors/upload-csv`, formData);
       toast.success(response.data.message);
       setShowUploadModal(false);
       setCsvFile(null);

@@ -198,11 +198,7 @@ const Guest = () => {
       }
 
       // REMOVED edit functionality - only create new guests
-      const response = await axios.post(`${API_BASE_URL}/pending-guests`, submitData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axios.post(`${API_BASE_URL}/pending-guests`, submitData);
       toast.success('Guest request submitted for approval!');
       
       setShowModal(false);
@@ -234,11 +230,7 @@ const Guest = () => {
     formData.append('csvFile', csvFile);
 
     try {
-      const response = await axios.post('http://${API_BASE_URL}/guests/upload-csv', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axios.post(`${API_BASE_URL}/guests/upload-csv`, formData);
       toast.success(response.data.message);
       setShowUploadModal(false);
       setCsvFile(null);

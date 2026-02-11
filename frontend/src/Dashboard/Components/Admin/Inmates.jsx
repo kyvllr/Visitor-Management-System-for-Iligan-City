@@ -387,8 +387,9 @@ const Inmates = ({ gender = 'all' }) => {
 
       // Append all form data
       Object.keys(formattedData).forEach(key => {
-        if (formattedData[key] !== null && formattedData[key] !== undefined) {
-          submitData.append(key, formattedData[key]);
+        const value = formattedData[key];
+        if (value !== null && value !== undefined && value !== '') {
+          submitData.append(key, value);
         }
       });
 
@@ -450,11 +451,7 @@ const Inmates = ({ gender = 'all' }) => {
   formData.append('csvFile', csvFile);
 
   try {
-    const response = await axios.post('http://${API_BASE_URL}/inmates/upload-csv', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    const response = await axios.post(`${API_BASE_URL}/inmates/upload-csv`, formData);
     
     console.log('📊 Import response:', response.data);
     

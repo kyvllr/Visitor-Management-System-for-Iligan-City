@@ -378,8 +378,9 @@ const MaleInmates = () => {
 
       // Append all form data
       Object.keys(formattedData).forEach(key => {
-        if (formattedData[key] !== null && formattedData[key] !== undefined) {
-          submitData.append(key, formattedData[key]);
+        const value = formattedData[key];
+        if (value !== null && value !== undefined && value !== '') {
+          submitData.append(key, value);
         }
       });
 
@@ -401,11 +402,7 @@ const MaleInmates = () => {
         });
         toast.success('Male PDL updated successfully!');
       } else {
-        response = await axios.post(`${API_BASE_URL}/inmates`, submitData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        response = await axios.post(`${API_BASE_URL}/inmates`, submitData);
         toast.success('Male PDL created successfully!');
       }
       
@@ -442,11 +439,7 @@ const MaleInmates = () => {
     formData.append('csvFile', csvFile);
 
     try {
-      const response = await axios.post('http://${API_BASE_URL}/inmates/upload-csv', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axios.post(`${API_BASE_URL}/inmates/upload-csv`, formData);
       
       console.log('📊 Full import response:', response);
       console.log('📊 Response data:', response.data);

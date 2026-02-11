@@ -342,14 +342,16 @@ const Visitors = () => {
         ...formData,
         middleName: formData.middleName || '',
         extension: formData.extension || '',
-        age: formData.age || '',
+        age: formData.age ? parseInt(formData.age) : '',
         status: 'approved' // Always approved for admin
       };
 
       // Append all form data
       Object.keys(formattedData).forEach(key => {
-        if (formattedData[key] !== null && formattedData[key] !== undefined) {
-          submitData.append(key, formattedData[key]);
+        const value = formattedData[key];
+        // Only append if not null, undefined, or empty string
+        if (value !== null && value !== undefined && value !== '') {
+          submitData.append(key, value);
         }
       });
 
@@ -360,18 +362,10 @@ const Visitors = () => {
 
       let response;
       if (editingVisitor) {
-        response = await axios.put(`${API_BASE_URL}/visitors/${editingVisitor.id}`, submitData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        response = await axios.put(`${API_BASE_URL}/visitors/${editingVisitor.id}`, submitData);
         toast.success('Visitor updated successfully!');
       } else {
-        response = await axios.post(`${API_BASE_URL}/visitors`, submitData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        response = await axios.post(`${API_BASE_URL}/visitors`, submitData);
         toast.success('Visitor created successfully! QR code has been generated.');
       }
       
@@ -407,11 +401,7 @@ const Visitors = () => {
   formData.append('csvFile', csvFile);
 
   try {
-    const response = await axios.post('http://${API_BASE_URL}/visitors/upload-csv', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+    const response = await axios.post(`${API_BASE_URL}/visitors/upload-csv`, formData);
     
     if (response.data.errors && response.data.errors.length > 0) {
       // Show errors but still success message
