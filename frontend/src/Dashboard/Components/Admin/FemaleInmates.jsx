@@ -1356,7 +1356,7 @@ const FemaleInmates = () => {
             <Card.Body className="py-2">
               <div className="text-center position-relative">
                 <img 
-                  src="${API_BASE_URL}/uploads/${getAvailableImages(selectedInmate)[currentImageIndex].src}"
+                  src={`${API_BASE_URL}/uploads/${getAvailableImages(selectedInmate)[currentImageIndex].src}`}
                   alt={getAvailableImages(selectedInmate)[currentImageIndex].type}
                   style={{ 
                     maxWidth: '100%', 
