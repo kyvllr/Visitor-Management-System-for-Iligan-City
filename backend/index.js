@@ -38,15 +38,19 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Multer configuration for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// Use memory storage on production (Render) or disk on local development
+const storage = process.env.NODE_ENV === 'production' 
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination: (req, file, cb) => {
+        // Use absolute path to ensure files are saved correctly
+        cb(null, uploadDir);
+      },
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+      }
+    });
 
 const upload = multer({ 
   storage: storage,
@@ -55,7 +59,7 @@ const upload = multer({
 
 app.use(express.json());
 app.use(cors({
-  origin: true,
+  origin: ['http://localhost:3000', 'http://localhost:5001', 'https://visitor-management-system-for-iligan-city.onrender.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -6547,10 +6551,11 @@ app.post("/pending-requests/bulk-approve", async (req, res) => {
 
     for (const id of ids) {
       try {
+        const baseUrl = `http://localhost:${PORT}`;
         if (type === 'visitors') {
-          await axios.post(`http://localhost:5001/pending-visitors/${id}/approve`);
+          await axios.post(`${baseUrl}/pending-visitors/${id}/approve`);
         } else {
-          await axios.post(`http://localhost:5001/pending-guests/${id}/approve`);
+          await axios.post(`${baseUrl}/pending-guests/${id}/approve`);
         }
         results.approved++;
         results.details.push({ id, status: 'approved' });
@@ -6592,12 +6597,13 @@ app.post("/pending-requests/bulk-reject", async (req, res) => {
 
     for (const id of ids) {
       try {
+        const baseUrl = `http://localhost:${PORT}`;
         if (type === 'visitors') {
-          await axios.post(`http://localhost:5001/pending-visitors/${id}/reject`, {
+          await axios.post(`${baseUrl}/pending-visitors/${id}/reject`, {
             rejectionReason
           });
         } else {
-          await axios.post(`http://localhost:5001/pending-guests/${id}/reject`, {
+          await axios.post(`${baseUrl}/pending-guests/${id}/reject`, {
             rejectionReason
           });
         }
