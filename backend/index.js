@@ -55,21 +55,7 @@ const upload = multer({
 
 app.use(express.json());
 app.use(cors({
-  origin: function(origin, callback) {
-    const allowedOrigins = [
-      "http://localhost:3000", 
-      "http://localhost:3001",
-      "https://visitor-management-system-for-iligan-city.vercel.app",
-      "https://visitor-management-iligan-city.vercel.app"
-    ];
-    
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin || allowedOrigins.includes(origin) || (origin && origin.endsWith('.vercel.app'))) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
