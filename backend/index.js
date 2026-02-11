@@ -58,8 +58,29 @@ const upload = multer({
 });
 
 app.use(express.json());
+const allowedOrigins = new Set([
+  'http://localhost:3000',
+  'http://localhost:5001',
+  'https://visitor-management-system-for-iligan-city.onrender.com'
+]);
+
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5001', 'https://visitor-management-system-for-iligan-city.onrender.com'],
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.has(origin)) return callback(null, true);
+
+    try {
+      const url = new URL(origin);
+      if (url.hostname.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+    } catch (error) {
+      return callback(error);
+    }
+
+    return callback(new Error(`CORS blocked origin: ${origin}`));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
