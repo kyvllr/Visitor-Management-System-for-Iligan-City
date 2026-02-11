@@ -4771,8 +4771,25 @@ app.put("/guests/:id",
   upload.single('photo'),
   async (req, res) => {
     try {
+      console.log("📝 Updating guest with data:", req.body);
+      console.log("📸 Photo file:", req.file ? req.file.filename : 'No photo');
+      
       const updateData = { ...req.body };
-      if (req.file) updateData.photo = req.file.filename;
+      
+      // Convert dateOfBirth to Date object if provided
+      if (updateData.dateOfBirth) {
+        updateData.dateOfBirth = new Date(updateData.dateOfBirth);
+      }
+      
+      // Convert age to number if provided
+      if (updateData.age) {
+        updateData.age = parseInt(updateData.age);
+      }
+      
+      if (req.file) {
+        updateData.photo = req.file.filename;
+        console.log("✅ Photo filename set:", updateData.photo);
+      }
 
       const guest = await Guest.findOne({ id: req.params.id });
       if (!guest) return res.status(404).json({ message: "Guest not found" });
@@ -4787,9 +4804,18 @@ app.put("/guests/:id",
         ...updatedGuest.toObject(),
         fullName: updatedGuest.fullName
       };
+      
+      console.log("✅ Guest updated successfully:", req.params.id);
       res.json(guestWithFullName);
     } catch (error) {
-      console.error("Error updating guest:", error);
+      console.error("❌ Error updating guest:", error);
+      console.error("Error details:", error.message);
+      
+      if (error.name === 'ValidationError') {
+        console.error("Validation errors:", error.errors);
+        return res.status(400).json({ message: "Validation error", error: error.message });
+      }
+      
       res.status(500).json({ message: "Update failed", error: error.message });
     }
   }

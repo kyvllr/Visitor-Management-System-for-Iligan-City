@@ -328,13 +328,20 @@ const Guest = () => {
       }
 
       let response;
+      const axiosConfig = {
+        headers: {
+          // Let axios automatically set Content-Type with boundary for FormData
+          // Do NOT explicitly set Content-Type here
+        }
+      };
+      
       if (editingGuest) {
         console.log('🔄 Updating guest:', editingGuest.id);
-        response = await axios.put(`${API_BASE_URL}/guests/${editingGuest.id}`, submitData);
+        response = await axios.put(`${API_BASE_URL}/guests/${editingGuest.id}`, submitData, axiosConfig);
         toast.success('Guest updated successfully!');
       } else {
         console.log('➕ Creating new guest');
-        response = await axios.post(`${API_BASE_URL}/guests`, submitData);
+        response = await axios.post(`${API_BASE_URL}/guests`, submitData, axiosConfig);
         toast.success('Guest created successfully! QR code has been generated.');
       }
       
@@ -345,10 +352,18 @@ const Guest = () => {
       console.error('❌ Error submitting guest:', error);
       console.error('📋 Status:', error.response?.status);
       console.error('🔍 Response data:', error.response?.data);
-      console.error('📨 Request data keys:', Object.keys(error.config?.data || {}));
-      const errorMessage = error.response?.data?.message || 
-                        error.response?.data?.error || 
-                        `Failed to ${editingGuest ? 'update' : 'create'} guest`;
+      console.error('📨 Error message:', error.response?.data?.error || error.message);
+      
+      // Provide more detailed error feedback
+      let errorMessage = `Failed to ${editingGuest ? 'update' : 'create'} guest`;
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
