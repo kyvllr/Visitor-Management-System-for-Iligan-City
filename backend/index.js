@@ -38,19 +38,17 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Multer configuration for file uploads
-// Use memory storage on production (Render) or disk on local development
-const storage = process.env.NODE_ENV === 'production' 
-  ? multer.memoryStorage()
-  : multer.diskStorage({
-      destination: (req, file, cb) => {
-        // Use absolute path to ensure files are saved correctly
-        cb(null, uploadDir);
-      },
-      filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-      }
-    });
+// Use disk storage so uploaded images can be served from /uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Use absolute path to ensure files are saved correctly
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
 
 const upload = multer({ 
   storage: storage,
