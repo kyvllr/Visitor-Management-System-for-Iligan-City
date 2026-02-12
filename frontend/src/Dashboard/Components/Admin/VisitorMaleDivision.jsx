@@ -1245,7 +1245,7 @@ const VisitorMaleDivision = () => {
               {selectedVisitor.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src="${API_BASE_URL}/uploads/${selectedVisitor.photo}"
+                    src={`${API_BASE_URL}/uploads/${selectedVisitor.photo}`}
                     alt="Visitor"
                     style={{ 
                       maxWidth: '150px', 

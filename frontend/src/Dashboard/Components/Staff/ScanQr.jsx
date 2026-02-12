@@ -981,7 +981,7 @@ const renderPersonDetails = () => {
             {/* Only show actual image, no fallback icon */}
             {scannedPerson.photo ? (
               <Image 
-                src="${API_BASE_URL}/uploads/${scannedPerson.photo}" 
+                src={`${API_BASE_URL}/uploads/${scannedPerson.photo}`} 
                 alt={displayName}
                 width={120}
                 height={120}

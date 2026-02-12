@@ -532,7 +532,7 @@ const PendingRequests = () => {
               {selectedRequest.photo && (
                 <div className="text-center mb-2">
                   <img 
-                    src="${API_BASE_URL}/uploads/${selectedRequest.photo}"
+                    src={`${API_BASE_URL}/uploads/${selectedRequest.photo}`}
                     alt={selectedRequest.type}
                     style={{ 
                       maxWidth: '150px', 
