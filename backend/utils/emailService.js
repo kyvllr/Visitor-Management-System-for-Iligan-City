@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 // Validate email configuration
 if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {

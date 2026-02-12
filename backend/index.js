@@ -7,7 +7,7 @@ const fs = require("fs");
 const QRCode = require('qrcode');
 const Papa = require('papaparse');
 const bcrypt = require('bcrypt');
-require("dotenv").config();
+require("dotenv").config({ path: path.join(__dirname, '.env') });
 const archiver = require('archiver');
 const { Parser } = require('json2csv');
 const { generateOTP, sendOTPEmail, sendPasswordResetOTP } = require('./utils/emailService');
