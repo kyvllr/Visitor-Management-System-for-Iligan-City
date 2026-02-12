@@ -1,20 +1,27 @@
 const nodemailer = require('nodemailer');
 const path = require('path');
 const { Resend } = require('resend');
+const sgMail = require('@sendgrid/mail');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
+const sendgridApiKey = process.env.SENDGRID_API_KEY;
+const sendgridFrom = process.env.SENDGRID_FROM || process.env.EMAIL_USER || null;
+if (sendgridApiKey) {
+  sgMail.setApiKey(sendgridApiKey);
+}
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const resendFrom = process.env.RESEND_FROM || 'onboarding@resend.dev';
 const resendClient = resendApiKey ? new Resend(resendApiKey) : null;
 
 // Validate email configuration
-if (!resendApiKey && (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD)) {
+if (!sendgridApiKey && !resendApiKey && (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD)) {
   console.warn('⚠️  WARNING: Email credentials not configured in .env file');
-  console.warn('   Set RESEND_API_KEY (recommended) or EMAIL_USER/EMAIL_PASSWORD');
+  console.warn('   Set SENDGRID_API_KEY (recommended), RESEND_API_KEY, or EMAIL_USER/EMAIL_PASSWORD');
 }
 
 let transporter = null;
-if (!resendApiKey && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+if (!sendgridApiKey && !resendApiKey && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
   transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -26,6 +33,11 @@ if (!resendApiKey && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
 
 // Verify transporter on startup (non-blocking with timeout)
 const verifyEmailService = () => {
+  if (sendgridApiKey) {
+    console.log('✅ Email service configured for SendGrid');
+    return;
+  }
+
   if (resendApiKey) {
     console.log('✅ Email service configured for Resend');
     return;
@@ -58,13 +70,18 @@ const verifyEmailService = () => {
 verifyEmailService();
 
 const getEmailHealth = () => {
-  const provider = resendApiKey ? 'resend' : (transporter ? 'smtp' : 'none');
+  const provider = sendgridApiKey
+    ? 'sendgrid'
+    : (resendApiKey ? 'resend' : (transporter ? 'smtp' : 'none'));
   return {
     provider,
     configured: provider !== 'none',
+    sendgridConfigured: Boolean(sendgridApiKey),
     resendConfigured: Boolean(resendApiKey),
     smtpConfigured: Boolean(transporter),
-    fromAddress: resendApiKey ? resendFrom : (process.env.EMAIL_USER || null)
+    fromAddress: sendgridApiKey
+      ? sendgridFrom
+      : (resendApiKey ? resendFrom : (process.env.EMAIL_USER || null))
   };
 };
 
@@ -99,6 +116,22 @@ const sendOTPEmail = async (email, otp, userName) => {
           </div>
         </div>
       `;
+
+    if (sendgridApiKey) {
+      if (!sendgridFrom) {
+        throw new Error('SENDGRID_FROM is required when using SendGrid');
+      }
+
+      await sgMail.send({
+        to: email,
+        from: sendgridFrom,
+        subject,
+        html
+      });
+
+      console.log('OTP email sent successfully (SendGrid)');
+      return { success: true, messageId: 'sendgrid' };
+    }
 
     if (resendClient) {
       const { data, error } = await resendClient.emails.send({
@@ -160,6 +193,22 @@ const sendPasswordResetOTP = async (email, otp, userName) => {
           </div>
         </div>
       `;
+
+    if (sendgridApiKey) {
+      if (!sendgridFrom) {
+        throw new Error('SENDGRID_FROM is required when using SendGrid');
+      }
+
+      await sgMail.send({
+        to: email,
+        from: sendgridFrom,
+        subject,
+        html
+      });
+
+      console.log('Password reset OTP email sent successfully (SendGrid)');
+      return { success: true, messageId: 'sendgrid' };
+    }
 
     if (resendClient) {
       const { data, error } = await resendClient.emails.send({
