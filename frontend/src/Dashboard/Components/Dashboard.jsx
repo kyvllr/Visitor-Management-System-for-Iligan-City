@@ -1029,7 +1029,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                           {renderTimerTypeBadge(timer)}
                         </div>
                         <div className="text-white extra-small" style={{ opacity: 0.9 }}>
-                          In: {formatTimeIn(timer.timeIn)}
+                          In: {formatTimeIn(timer.timerStart || timer.timeIn)}
                         </div>
                         <div className="extra-small text-white" style={{ opacity: 0.9 }}>
                           ID: {timer.personId || 'N/A'} • {type}
