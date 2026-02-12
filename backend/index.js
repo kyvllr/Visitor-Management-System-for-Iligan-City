@@ -244,6 +244,51 @@ const parseTimeToDate = (timeStr, baseDate) => {
   return date;
 };
 
+const parseDurationToMinutes = (durationText) => {
+  if (typeof durationText === 'number' && Number.isFinite(durationText)) {
+    return durationText > 0 ? Math.floor(durationText) : null;
+  }
+
+  if (typeof durationText !== 'string') return null;
+
+  const hoursMatch = durationText.match(/(\d+)\s*h/i);
+  const minutesMatch = durationText.match(/(\d+)\s*m/i);
+
+  const hours = hoursMatch ? parseInt(hoursMatch[1], 10) : 0;
+  const minutes = minutesMatch ? parseInt(minutesMatch[1], 10) : 0;
+
+  const totalMinutes = (hours * 60) + minutes;
+  if (totalMinutes > 0) return totalMinutes;
+
+  const numericValue = parseInt(durationText, 10);
+  return Number.isFinite(numericValue) && numericValue > 0 ? numericValue : null;
+};
+
+const calculateDurationMinutesFromTimeRange = (startTime, endTime) => {
+  try {
+    const baseDate = new Date();
+    const start = parseTimeToDate(startTime, baseDate);
+    const end = parseTimeToDate(endTime, baseDate);
+
+    if (end <= start) {
+      end.setDate(end.getDate() + 1);
+    }
+
+    const diffMs = end - start;
+    if (diffMs <= 0) return null;
+
+    return Math.floor(diffMs / (1000 * 60));
+  } catch (error) {
+    return null;
+  }
+};
+
+const formatDurationFromMinutes = (totalMinutes) => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours}h ${minutes}m`;
+};
+
 const normalizePhoneForStorage = (input) => {
   if (!input) return null;
   const cleaned = input.toString().trim().replace(/[\s-]/g, '');
@@ -1829,7 +1874,18 @@ app.put("/visitors/:id/approve-time-in", async (req, res) => {
     let timerMessage = "";
     let timerDuration = "";
     
-    if (visitor.timerStart && visitor.timerEnd) {
+    const customDurationMinutes =
+      visitor?.customTimer?.durationMinutes ||
+      parseDurationToMinutes(visitor?.customTimer?.duration);
+
+    if (customDurationMinutes) {
+      timerStart = new Date();
+      timerEnd = new Date(timerStart.getTime() + (customDurationMinutes * 60 * 1000));
+      timerDuration = formatDurationFromMinutes(customDurationMinutes);
+      timerMessage = visitor.customTimer
+        ? `Custom timer: ${visitor.customTimer.startTime} - ${visitor.customTimer.endTime} (${timerDuration})`
+        : `Custom timer: ${timerDuration}`;
+    } else if (visitor.timerStart && visitor.timerEnd) {
       console.log('🕒 USING CUSTOM TIMER FOR VISITOR:', {
         timerStart: visitor.timerStart,
         timerEnd: visitor.timerEnd,
@@ -2115,7 +2171,18 @@ app.put("/guests/:id/approve-time-in", async (req, res) => {
     let timerMessage = "";
     let timerDuration = "";
     
-    if (guest.timerStart && guest.timerEnd) {
+    const customDurationMinutes =
+      guest?.customTimer?.durationMinutes ||
+      parseDurationToMinutes(guest?.customTimer?.duration);
+
+    if (customDurationMinutes) {
+      timerStart = new Date();
+      timerEnd = new Date(timerStart.getTime() + (customDurationMinutes * 60 * 1000));
+      timerDuration = formatDurationFromMinutes(customDurationMinutes);
+      timerMessage = guest.customTimer
+        ? `Custom timer: ${guest.customTimer.startTime} - ${guest.customTimer.endTime} (${timerDuration})`
+        : `Custom timer: ${timerDuration}`;
+    } else if (guest.timerStart && guest.timerEnd) {
       console.log('🕒 USING CUSTOM TIMER FOR GUEST:', {
         timerStart: guest.timerStart,
         timerEnd: guest.timerEnd,
@@ -8140,37 +8207,23 @@ app.put("/visitors/:id/set-custom-timer", async (req, res) => {
       return res.status(400).json({ message: "Start time and end time are required" });
     }
 
-    // Parse the times and calculate timer dates (like your 3-hour timer does)
-    const today = new Date();
-    
-    const parseTimeToDate = (timeStr, baseDate) => {
-      const [time, period] = timeStr.trim().toUpperCase().split(' ');
-      const [hours, minutes] = time.split(':');
-      
-      let hour = parseInt(hours);
-      const minute = parseInt(minutes);
-      
-      if (period === 'PM' && hour !== 12) hour += 12;
-      if (period === 'AM' && hour === 12) hour = 0;
-      
-      const date = new Date(baseDate);
-      date.setHours(hour, minute, 0, 0);
-      return date;
-    };
+    const durationMinutes =
+      parseDurationToMinutes(duration) ||
+      calculateDurationMinutesFromTimeRange(startTime, endTime);
 
-    // Calculate timer start and end (EXACTLY like your 3-hour timer logic)
-    const timerStart = parseTimeToDate(startTime, today);
-    const timerEnd = parseTimeToDate(endTime, today);
-    
-    // If end time is earlier than start time, assume it's next day
-    if (timerEnd <= timerStart) {
-      timerEnd.setDate(timerEnd.getDate() + 1);
+    if (!durationMinutes) {
+      return res.status(400).json({ message: "Invalid timer duration" });
     }
+
+    // Timezone-safe: start from actual current time and apply duration.
+    const timerStart = new Date();
+    const timerEnd = new Date(timerStart.getTime() + (durationMinutes * 60 * 1000));
+    const normalizedDuration = formatDurationFromMinutes(durationMinutes);
 
     console.log('⏰ CALCULATED TIMER:', {
       timerStart: timerStart.toLocaleString(),
       timerEnd: timerEnd.toLocaleString(),
-      duration: duration
+      duration: normalizedDuration
     });
 
     // Update visitor with timer (EXACTLY like your 3-hour timer update)
@@ -8185,7 +8238,8 @@ app.put("/visitors/:id/set-custom-timer", async (req, res) => {
           customTimer: {
             startTime: startTime,
             endTime: endTime,
-            duration: duration
+            duration: normalizedDuration,
+            durationMinutes: durationMinutes
           }
         }
       },
@@ -8206,10 +8260,11 @@ app.put("/visitors/:id/set-custom-timer", async (req, res) => {
     });
 
     res.json({
-      message: `Custom timer set: ${startTime} - ${endTime} (${duration})`,
+      message: `Custom timer set: ${startTime} - ${endTime} (${normalizedDuration})`,
       timerStart: timerStart,
       timerEnd: timerEnd,
-      duration: duration
+      duration: normalizedDuration,
+      durationMinutes: durationMinutes
     });
 
   } catch (error) {
@@ -8228,30 +8283,17 @@ app.put("/guests/:id/set-custom-timer", async (req, res) => {
       return res.status(400).json({ message: "Start time and end time are required" });
     }
 
-    // Same timer calculation logic as above
-    const today = new Date();
-    
-    const parseTimeToDate = (timeStr, baseDate) => {
-      const [time, period] = timeStr.trim().toUpperCase().split(' ');
-      const [hours, minutes] = time.split(':');
-      
-      let hour = parseInt(hours);
-      const minute = parseInt(minutes);
-      
-      if (period === 'PM' && hour !== 12) hour += 12;
-      if (period === 'AM' && hour === 12) hour = 0;
-      
-      const date = new Date(baseDate);
-      date.setHours(hour, minute, 0, 0);
-      return date;
-    };
+    const durationMinutes =
+      parseDurationToMinutes(duration) ||
+      calculateDurationMinutesFromTimeRange(startTime, endTime);
 
-    const timerStart = parseTimeToDate(startTime, today);
-    const timerEnd = parseTimeToDate(endTime, today);
-    
-    if (timerEnd <= timerStart) {
-      timerEnd.setDate(timerEnd.getDate() + 1);
+    if (!durationMinutes) {
+      return res.status(400).json({ message: "Invalid timer duration" });
     }
+
+    const timerStart = new Date();
+    const timerEnd = new Date(timerStart.getTime() + (durationMinutes * 60 * 1000));
+    const normalizedDuration = formatDurationFromMinutes(durationMinutes);
 
     const updatedGuest = await Guest.findOneAndUpdate(
       { id: req.params.id },
@@ -8263,7 +8305,8 @@ app.put("/guests/:id/set-custom-timer", async (req, res) => {
           customTimer: {
             startTime: startTime,
             endTime: endTime,
-            duration: duration
+            duration: normalizedDuration,
+            durationMinutes: durationMinutes
           }
         }
       },
@@ -8280,10 +8323,11 @@ app.put("/guests/:id/set-custom-timer", async (req, res) => {
     console.log('✅ GUEST CUSTOM TIMER SET SUCCESSFULLY');
 
     res.json({
-      message: `Custom timer set: ${startTime} - ${endTime} (${duration})`,
+      message: `Custom timer set: ${startTime} - ${endTime} (${normalizedDuration})`,
       timerStart: timerStart,
       timerEnd: timerEnd,
-      duration: duration
+      duration: normalizedDuration,
+      durationMinutes: durationMinutes
     });
 
   } catch (error) {
