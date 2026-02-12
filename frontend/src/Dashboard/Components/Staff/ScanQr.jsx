@@ -732,7 +732,7 @@ const formatDate = (dateString) => {
     setActiveTab('camera');
   };
 
-  // Handle closing person modal
+  // Handle closing person modal - return to scanner instead of closing entire modal
   const handleClosePersonModal = () => {
     setShowPersonModal(false);
     setScannedPerson(null);
@@ -744,8 +744,12 @@ const formatDate = (dateString) => {
     setUploadedImage(null);
     setIsProcessingUpload(false);
     setUploadProgress(0);
+    setActiveTab('camera');
     
-    handleCloseScanner();
+    // Restart scanner instead of closing the modal
+    setTimeout(() => {
+      startScanner();
+    }, 100);
   };
 
   // Show reject button only for banned persons
