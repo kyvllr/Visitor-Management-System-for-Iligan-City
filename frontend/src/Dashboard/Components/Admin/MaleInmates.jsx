@@ -695,7 +695,7 @@ const MaleInmates = () => {
       </head>
       <body>
         <div class="header">
-          <h1>LANAO DEL NORTE DISTRICT JAIL - MALE DIVISION</h1>
+          <h1>ILIGAN CITY JAIL - MALE DIVISION</h1>
           <h2>Region 10</h2>
           <h3>MALE PDL DETAILS RECORD - ID: ${selectedInmate?.inmateCode}</h3>
         </div>
@@ -775,7 +775,7 @@ const MaleInmates = () => {
           <div class="section">
             <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
               <p><strong>Generated on:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-              <p><em>Official Document - Lanao Del Norte District Jail Male Division, Region 10</em></p>
+              <p><em>Official Document - ILIGAN CITY JAIL Male Division, Region 10</em></p>
             </div>
           </div>
         ` : ''}

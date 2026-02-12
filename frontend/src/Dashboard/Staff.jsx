@@ -90,10 +90,10 @@ const Staff = () => {
           <NavLink to="/admin/dashboard" className="logo">
             <div className="logo-content">
               <div className="logo-img">
-                <img src="/img/logo.png" alt="LANAO DEL NORTE DISTRICT JAIL REGION 10 Logo" />
+                <img src="/img/logo.png" alt="ILIGAN CITY JAIL REGION 10 Logo" />
               </div>
               <div className="logo-text">
-                <div className="logo-main">LANAO DEL NORTE DISTRICT JAIL</div>
+                <div className="logo-main">ILIGAN CITY JAIL</div>
                 <div className="logo-subtitle">REGION 10</div>
               </div>
             </div>

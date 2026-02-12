@@ -145,11 +145,11 @@ const ReportsAnalytics = () => {
       const pageWidth = doc.internal.pageSize.getWidth();
       const margin = 20;
       
-      // Official Title - Lanao Del Norte District Jail Region 10
+      // Official Title - ILIGAN CITY JAIL Region 10
       doc.setFontSize(16);
       doc.setTextColor(40, 40, 40);
       doc.setFont(undefined, 'bold');
-      doc.text('Lanao Del Norte District Jail', pageWidth / 2, 20, { align: 'center' });
+      doc.text('ILIGAN CITY JAIL', pageWidth / 2, 20, { align: 'center' });
       doc.text('Region 10', pageWidth / 2, 28, { align: 'center' });
       
       // Report Title
@@ -213,7 +213,7 @@ const ReportsAnalytics = () => {
       // Footer with official designation
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
-      doc.text('Official Document - Lanao Del Norte District Jail Management System', pageWidth / 2, doc.internal.pageSize.getHeight() - 15, { align: 'center' });
+      doc.text('Official Document - ILIGAN CITY JAIL Management System', pageWidth / 2, doc.internal.pageSize.getHeight() - 15, { align: 'center' });
       doc.text(`Page 1 of 1 - Confidential`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
 
       // Save the PDF with official naming convention
@@ -237,7 +237,7 @@ const ReportsAnalytics = () => {
       doc.setFontSize(16);
       doc.setTextColor(40, 40, 40);
       doc.setFont(undefined, 'bold');
-      doc.text('LANAO DEL NORTE DISTRICT JAIL', pageWidth / 2, 20, { align: 'center' });
+      doc.text('ILIGAN CITY JAIL', pageWidth / 2, 20, { align: 'center' });
       doc.text('REGION 10', pageWidth / 2, 28, { align: 'center' });
       
       // Report Title
@@ -314,7 +314,7 @@ const ReportsAnalytics = () => {
       // Official Footer
       doc.setFontSize(7);
       doc.setTextColor(100, 100, 100);
-      doc.text('Official Document - Lanao Del Norte District Jail Management System', pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+      doc.text('Official Document - ILIGAN CITY JAIL Management System', pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
       
       const fileName = `LNDJ_${reportType}_Analytics_${Date.now()}.pdf`;
       doc.save(fileName);
@@ -519,7 +519,7 @@ const ReportsAnalytics = () => {
             📊 Reports & Analytics
           </h2>
           <Badge bg="info" className="mb-2">
-            Lanao Del Norte District Jail - Region 10
+            ILIGAN CITY JAIL - Region 10
           </Badge>
         </div>
         <Button

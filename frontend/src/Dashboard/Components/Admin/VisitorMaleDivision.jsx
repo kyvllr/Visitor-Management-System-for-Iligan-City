@@ -677,7 +677,7 @@ const VisitorMaleDivision = () => {
       </head>
       <body>
         <div class="header">
-          <h1>LANAO DEL NORTE DISTRICT JAIL</h1>
+          <h1>ILIGAN CITY JAIL</h1>
           <h2>Region 10</h2>
           <h3>VISITOR DETAILS RECORD - ID: ${selectedVisitor?.id}</h3>
         </div>

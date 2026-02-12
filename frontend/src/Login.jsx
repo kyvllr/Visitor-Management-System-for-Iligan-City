@@ -297,8 +297,8 @@ const Login = () => {
             src="/img/logo.png"
             alt="Iligan Jail Logo"
             style={{
-              width: "120px",
-              height: "120px",
+              width: "170px",
+              height: "170px",
               borderRadius: "50%",
               marginBottom: "25px",
               border: "3px solid rgba(255, 255, 255, 0.8)",
@@ -314,7 +314,7 @@ const Login = () => {
               lineHeight: "1.3",
             }}
           >
-            Lanao Del Norte District Jail
+            Iligan City Jail
             <br />
             <span style={{
               fontSize: "3rem",
@@ -361,8 +361,8 @@ const Login = () => {
                 src="/img/logo.png"
                 alt="Logo"
                 style={{
-                  width: "70px",
-                  height: "70px",
+                  width: "95px",
+                  height: "95px",
                   borderRadius: "50%",
                   marginBottom: "15px",
                   border: "2px solid #2C3E50",
