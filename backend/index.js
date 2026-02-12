@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 require("dotenv").config({ path: path.join(__dirname, '.env') });
 const archiver = require('archiver');
 const { Parser } = require('json2csv');
-const { generateOTP, sendOTPEmail, sendPasswordResetOTP } = require('./utils/emailService');
+const { generateOTP, sendOTPEmail, sendPasswordResetOTP, getEmailHealth } = require('./utils/emailService');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -85,6 +85,11 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 app.use('/uploads', express.static(uploadDir));
+
+app.get('/email-health', (req, res) => {
+  const health = getEmailHealth();
+  res.status(health.configured ? 200 : 503).json(health);
+});
 
 
 // Counter Schema for auto-increment IDs

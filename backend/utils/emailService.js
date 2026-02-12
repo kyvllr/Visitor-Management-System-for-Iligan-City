@@ -1,24 +1,41 @@
 const nodemailer = require('nodemailer');
 const path = require('path');
+const { Resend } = require('resend');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
+const resendApiKey = process.env.RESEND_API_KEY;
+const resendFrom = process.env.RESEND_FROM || 'onboarding@resend.dev';
+const resendClient = resendApiKey ? new Resend(resendApiKey) : null;
+
 // Validate email configuration
-if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+if (!resendApiKey && (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD)) {
   console.warn('⚠️  WARNING: Email credentials not configured in .env file');
-  console.warn('   EMAIL_USER and EMAIL_PASSWORD are required for OTP emails');
+  console.warn('   Set RESEND_API_KEY (recommended) or EMAIL_USER/EMAIL_PASSWORD');
 }
 
-// Create reusable transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
-});
+let transporter = null;
+if (!resendApiKey && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+  transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+}
 
 // Verify transporter on startup (non-blocking with timeout)
 const verifyEmailService = () => {
+  if (resendApiKey) {
+    console.log('✅ Email service configured for Resend');
+    return;
+  }
+
+  if (!transporter) {
+    console.warn('⚠️  Email service not configured');
+    return;
+  }
+
   const verifyTimeout = setTimeout(() => {
     console.warn('⚠️  Email verification timeout - proceeding without verification');
   }, 5000);
@@ -38,10 +55,18 @@ const verifyEmailService = () => {
   });
 };
 
-// Run verification asynchronously
-if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
-  verifyEmailService();
-}
+verifyEmailService();
+
+const getEmailHealth = () => {
+  const provider = resendApiKey ? 'resend' : (transporter ? 'smtp' : 'none');
+  return {
+    provider,
+    configured: provider !== 'none',
+    resendConfigured: Boolean(resendApiKey),
+    smtpConfigured: Boolean(transporter),
+    fromAddress: resendApiKey ? resendFrom : (process.env.EMAIL_USER || null)
+  };
+};
 
 // Generate 6-digit OTP
 const generateOTP = () => {
@@ -51,11 +76,8 @@ const generateOTP = () => {
 // Send OTP email
 const sendOTPEmail = async (email, otp, userName) => {
   try {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Prison Management System - OTP Verification',
-      html: `
+    const subject = 'Prison Management System - OTP Verification';
+    const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
           <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
             <h2 style="color: #333; text-align: center; margin-bottom: 20px;">Welcome to Prison Management System</h2>
@@ -76,11 +98,35 @@ const sendOTPEmail = async (email, otp, userName) => {
             </p>
           </div>
         </div>
-      `
-    };
+      `;
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('OTP email sent successfully:', info.messageId);
+    if (resendClient) {
+      const { data, error } = await resendClient.emails.send({
+        from: resendFrom,
+        to: email,
+        subject,
+        html
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Resend email failed');
+      }
+
+      console.log('OTP email sent successfully (Resend):', data?.id);
+      return { success: true, messageId: data?.id };
+    }
+
+    if (!transporter) {
+      throw new Error('Email service not configured');
+    }
+
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject,
+      html
+    });
+    console.log('OTP email sent successfully (SMTP):', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending OTP email:', error);
@@ -91,11 +137,8 @@ const sendOTPEmail = async (email, otp, userName) => {
 // Send Password Reset OTP email
 const sendPasswordResetOTP = async (email, otp, userName) => {
   try {
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Prison Management System - Password Reset OTP',
-      html: `
+    const subject = 'Prison Management System - Password Reset OTP';
+    const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
           <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
             <h2 style="color: #333; text-align: center; margin-bottom: 20px;">Password Reset Request</h2>
@@ -116,11 +159,35 @@ const sendPasswordResetOTP = async (email, otp, userName) => {
             </p>
           </div>
         </div>
-      `
-    };
+      `;
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Password reset OTP email sent successfully:', info.messageId);
+    if (resendClient) {
+      const { data, error } = await resendClient.emails.send({
+        from: resendFrom,
+        to: email,
+        subject,
+        html
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Resend email failed');
+      }
+
+      console.log('Password reset OTP email sent successfully (Resend):', data?.id);
+      return { success: true, messageId: data?.id };
+    }
+
+    if (!transporter) {
+      throw new Error('Email service not configured');
+    }
+
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject,
+      html
+    });
+    console.log('Password reset OTP email sent successfully (SMTP):', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending password reset OTP email:', error);
@@ -131,5 +198,6 @@ const sendPasswordResetOTP = async (email, otp, userName) => {
 module.exports = {
   generateOTP,
   sendOTPEmail,
-  sendPasswordResetOTP
+  sendPasswordResetOTP,
+  getEmailHealth
 };
