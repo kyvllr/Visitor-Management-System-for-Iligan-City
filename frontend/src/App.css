@@ -159,11 +159,11 @@ input[type="file"] {
 }
 
 body {
-  background-color: #000000; /* Black background */
+  background-color: #3d3a3a; /* Dark background */
 }
 
 .container {
-  background: #1a1a1a; /* Dark background for the content */
+  background: #3d3a3a; /* Dark background for the content */
   padding: 20px;
   border-radius: 8px;
   border: 2px solid #FFD700;
