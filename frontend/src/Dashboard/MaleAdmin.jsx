@@ -14,6 +14,7 @@ import Logs from "./Components/Admin/Logs";
 import Guest from "./Components/Admin/Guest";
 import ScanQR from "./Components/Admin/ScanQr";
 import PendingRequests from "./Components/Admin/PendingRequests";
+import BannedPDLs from "./Components/Admin/BannedPDLs";
 import ProfileModal from "./Components/Admin/ProfileModal";
 import { Badge, Dropdown, Button, Modal } from "react-bootstrap";
 import axios from "axios";
@@ -103,8 +104,8 @@ const MaleAdmin = () => {
             { name: "Recorded Visits", icon: "bx bxs-calendar-check", path: "/maleadmin/record-visits" },
             { name: "Visitors", icon: "bx bxs-user-voice", path: "/maleadmin/visitor-male-division" },
             { name: "Guests", icon: "bx bxs-user-badge", path: "/maleadmin/guest" },
-            { name: "Male PDLs", icon: "bx bxs-user-account", path: "/maleadmin/male-inmates" },
-            { name: "Crime List", icon: "bx bxs-error", path: "/maleadmin/crimes" },
+            { name: "Banned PDL", icon: "bx bxs-lock-alt", path: "/maleadmin/banned-pdls" },
+            { name: "Male PDL", icon: "bx bxs-error", path: "/maleadmin/crimes" },
             { name: "Reports", icon: "bx bxs-report", path: "/maleadmin/reports-analytics" },
             { name: "Pending Visitors", icon: "bx bxs-time-five", path: "/maleadmin/pending-requests" },
             { name: "User Management", icon: "bx bxs-user-detail", path: "/maleadmin/user-management" },
@@ -196,6 +197,7 @@ const MaleAdmin = () => {
             <Route path="/record-visits" element={<RecordVisits />} />
             <Route path="/visitor-male-division" element={<VisitorMaleDivision />} />
             <Route path="/guest" element={<Guest />} />
+            <Route path="/banned-pdls" element={<BannedPDLs gender="male" />} />
             <Route path="/male-inmates" element={<MaleInmates />} />
             <Route path="/crimes" element={<Crimes />} />
             <Route path="/reports-analytics" element={<ReportsAnalytics />} />

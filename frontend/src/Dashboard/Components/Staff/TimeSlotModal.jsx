@@ -13,6 +13,7 @@ const TimeSlotModal = ({
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [duration, setDuration] = useState('3h 0m');
+  const [isOpenEnded, setIsOpenEnded] = useState(false);
   const [isSettingTimer, setIsSettingTimer] = useState(false);
   const [error, setError] = useState('');
   const [debugInfo, setDebugInfo] = useState(null);
@@ -33,6 +34,7 @@ const TimeSlotModal = ({
       setStartTime(formatTimeForInput(now));
       setEndTime(formatTimeForInput(defaultEnd));
       setDuration('3h 0m');
+      setIsOpenEnded(false);
       
       console.log('🔄 TimeSlotModal opened for:', scannedPerson);
       
@@ -283,10 +285,14 @@ const TimeSlotModal = ({
       return;
     }
 
-    const validationError = validateTimePeriod();
-    if (validationError) {
-      setError(validationError);
-      return;
+    const isGuestOpenEnded = scannedPerson.personType === 'guest' && isOpenEnded;
+
+    if (!isGuestOpenEnded) {
+      const validationError = validateTimePeriod();
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
     }
 
     try {
@@ -298,13 +304,14 @@ const TimeSlotModal = ({
       console.log('🔄 Setting custom timer for:', scannedPerson.id);
 
       // Convert to 12-hour format for display
-      const startTime12h = convertTo12HourFormat(startTime);
-      const endTime12h = convertTo12HourFormat(endTime);
+      const startTime12h = isGuestOpenEnded ? null : convertTo12HourFormat(startTime);
+      const endTime12h = isGuestOpenEnded ? null : convertTo12HourFormat(endTime);
 
       console.log('⏰ Setting timer period:', { 
         startTime: startTime12h, 
         endTime: endTime12h, 
-        duration 
+        duration,
+        openEnded: isGuestOpenEnded
       });
 
       // SIMPLE API CALL - Just set the timer directly using your new endpoint
@@ -313,11 +320,14 @@ const TimeSlotModal = ({
       
       const response = await axios.put(
         timerEndpoint,
-        {
-          startTime: startTime12h,
-          endTime: endTime12h,
-          duration: duration
-        },
+        isGuestOpenEnded
+          ? { openEnded: true }
+          : {
+              startTime: startTime12h,
+              endTime: endTime12h,
+              duration: duration,
+              openEnded: false
+            },
         {
           timeout: 10000,
           headers: {
@@ -338,7 +348,9 @@ const TimeSlotModal = ({
         setVerificationResult({
           success: true,
           data: response.data,
-          message: `Custom timer set successfully: ${startTime12h} - ${endTime12h} (${duration})`
+          message: isGuestOpenEnded
+            ? 'Open-ended timer set successfully (manual time-out enabled)'
+            : `Custom timer set successfully: ${startTime12h} - ${endTime12h} (${duration})`
         });
 
         console.log('🎉 CUSTOM TIMER SET SUCCESSFULLY!');
@@ -348,7 +360,8 @@ const TimeSlotModal = ({
           onTimeSlotSet({
             startTime: startTime12h,
             endTime: endTime12h,
-            duration: duration,
+            duration: isGuestOpenEnded ? 'Open-ended' : duration,
+            openEnded: isGuestOpenEnded,
             verified: true
           });
         }
@@ -412,7 +425,13 @@ const TimeSlotModal = ({
       
       const response = await axios.get(statusEndpoint);
       
-      if (response.data.hasCustomTimer) {
+      if (response.data.hasOpenEndedTimer || response.data.customTimer?.openEnded) {
+        setDebugInfo(prev => ({
+          ...prev,
+          currentTimer: response.data.customTimer,
+          currentStatus: 'Has open-ended timer (manual time-out)'
+        }));
+      } else if (response.data.hasCustomTimer) {
         setDebugInfo(prev => ({
           ...prev,
           currentTimer: response.data.customTimer,
@@ -434,6 +453,7 @@ const TimeSlotModal = ({
     setStartTime('');
     setEndTime('');
     setDuration('3h 0m');
+    setIsOpenEnded(false);
     setIsSettingTimer(false);
     setError('');
     setDebugInfo(null);
@@ -648,114 +668,143 @@ const TimeSlotModal = ({
         {/* Only show timer settings if person exists and connection is good */}
         {debugInfo && debugInfo.exists && connectionTest && connectionTest.success && !verificationStep && (
           <>
-            {/* Quick Time Periods */}
-            <div className="mb-4">
-              <h6 className="mb-2">Quick Timer Settings:</h6>
-              <Row className="g-2">
-                {quickTimePeriods.map((period, index) => (
-                  <Col key={index} md={3}>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      className="w-100"
-                      onClick={() => setQuickTimePeriod(period.hours)}
-                    >
-                      {period.label}
-                    </Button>
-                  </Col>
-                ))}
-              </Row>
-            </div>
+            {scannedPerson?.personType === 'guest' && (
+              <Alert variant="secondary" className="py-2 mb-3">
+                <Form.Check
+                  type="switch"
+                  id="guest-open-ended-switch-staff"
+                  label="Open-ended timer (Guest can time out anytime)"
+                  checked={isOpenEnded}
+                  onChange={(e) => setIsOpenEnded(e.target.checked)}
+                  disabled={isSettingTimer}
+                />
+              </Alert>
+            )}
 
-            <hr />
-
-            {/* Custom Time Period */}
-            <div className="mb-4">
-              <h6 className="mb-3">Custom Timer:</h6>
-              <Row className="g-3">
-                <Col md={5}>
-                  <Form.Group>
-                    <Form.Label>Start Time (24-hour format)</Form.Label>
-                    <Form.Control 
-                      type="time" 
-                      value={startTime}
-                      onChange={(e) => handleStartTimeChange(e.target.value)}
-                      required
-                    />
-                    <Form.Text className="text-muted">
-                      Example: 09:00, 14:30
-                    </Form.Text>
-                  </Form.Group>
-                </Col>
-                
-                <Col md={5}>
-                  <Form.Group>
-                    <Form.Label>End Time (24-hour format)</Form.Label>
-                    <Form.Control 
-                      type="time" 
-                      value={endTime}
-                      onChange={(e) => handleEndTimeChange(e.target.value)}
-                      required
-                    />
-                    <Form.Text className="text-muted">
-                      Example: 11:00, 16:45
-                    </Form.Text>
-                  </Form.Group>
-                </Col>
-                
-                <Col md={2}>
-                  <Form.Group>
-                    <Form.Label>Duration</Form.Label>
-                    <Form.Control 
-                      type="text" 
-                      value={duration}
-                      readOnly
-                      className="text-center fw-bold bg-light"
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-            </div>
-
-            {/* Timer Preview */}
-            <Card className="border-warning">
-              <Card.Header className="bg-warning text-dark py-2">
-                <strong>Timer Preview</strong>
-              </Card.Header>
-              <Card.Body className="py-3">
-                <Row className="text-center">
-                  <Col md={4}>
-                    <div className="mb-2">
-                      <div className="text-white small">Start Time</div>
-                      <div className="h5 mb-0" style={{ color: '#FFD700' }}>
-                        {startTime ? convertTo12HourFormat(startTime) : '--:-- --'}
-                      </div>
-                    </div>
-                  </Col>
-                  <Col md={4}>
-                    <div className="mb-2">
-                      <div className="text-white small">End Time</div>
-                      <div className="h5 mb-0" style={{ color: '#FFD700' }}>
-                        {endTime ? convertTo12HourFormat(endTime) : '--:-- --'}
-                      </div>
-                    </div>
-                  </Col>
-                  <Col md={4}>
-                    <div className="mb-2">
-                      <div className="text-white small">Total Duration</div>
-                      <div className="h5 mb-0" style={{ color: '#FFD700' }}>
-                        {duration}
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-                <div className="text-center mt-2">
-                  <small className="text-white">
-                    Timer will use this custom time period instead of default 3 hours
+            {isOpenEnded && scannedPerson?.personType === 'guest' ? (
+              <Card className="border-info mb-3">
+                <Card.Header className="bg-info text-dark py-2">
+                  <strong>Open-ended Timer Preview</strong>
+                </Card.Header>
+                <Card.Body className="py-3 text-center">
+                  <div className="h5 mb-1 text-white">No end time</div>
+                  <small className="text-white" style={{ opacity: 0.9 }}>
+                    Timer starts at Time-in and remains active until manual Time-out.
                   </small>
+                </Card.Body>
+              </Card>
+            ) : (
+              <>
+                {/* Quick Time Periods */}
+                <div className="mb-4">
+                  <h6 className="mb-2">Quick Timer Settings:</h6>
+                  <Row className="g-2">
+                    {quickTimePeriods.map((period, index) => (
+                      <Col key={index} md={3}>
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          className="w-100"
+                          onClick={() => setQuickTimePeriod(period.hours)}
+                        >
+                          {period.label}
+                        </Button>
+                      </Col>
+                    ))}
+                  </Row>
                 </div>
-              </Card.Body>
-            </Card>
+
+                <hr />
+
+                {/* Custom Time Period */}
+                <div className="mb-4">
+                  <h6 className="mb-3">Custom Timer:</h6>
+                  <Row className="g-3">
+                    <Col md={5}>
+                      <Form.Group>
+                        <Form.Label>Start Time (24-hour format)</Form.Label>
+                        <Form.Control 
+                          type="time" 
+                          value={startTime}
+                          onChange={(e) => handleStartTimeChange(e.target.value)}
+                          required
+                        />
+                        <Form.Text className="text-muted">
+                          Example: 09:00, 14:30
+                        </Form.Text>
+                      </Form.Group>
+                    </Col>
+                    
+                    <Col md={5}>
+                      <Form.Group>
+                        <Form.Label>End Time (24-hour format)</Form.Label>
+                        <Form.Control 
+                          type="time" 
+                          value={endTime}
+                          onChange={(e) => handleEndTimeChange(e.target.value)}
+                          required
+                        />
+                        <Form.Text className="text-muted">
+                          Example: 11:00, 16:45
+                        </Form.Text>
+                      </Form.Group>
+                    </Col>
+                    
+                    <Col md={2}>
+                      <Form.Group>
+                        <Form.Label>Duration</Form.Label>
+                        <Form.Control 
+                          type="text" 
+                          value={duration}
+                          readOnly
+                          className="text-center fw-bold bg-light"
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </div>
+
+                {/* Timer Preview */}
+                <Card className="border-warning">
+                  <Card.Header className="bg-warning text-dark py-2">
+                    <strong>Timer Preview</strong>
+                  </Card.Header>
+                  <Card.Body className="py-3">
+                    <Row className="text-center">
+                      <Col md={4}>
+                        <div className="mb-2">
+                          <div className="text-white small">Start Time</div>
+                          <div className="h5 mb-0" style={{ color: '#FFD700' }}>
+                            {startTime ? convertTo12HourFormat(startTime) : '--:-- --'}
+                          </div>
+                        </div>
+                      </Col>
+                      <Col md={4}>
+                        <div className="mb-2">
+                          <div className="text-white small">End Time</div>
+                          <div className="h5 mb-0" style={{ color: '#FFD700' }}>
+                            {endTime ? convertTo12HourFormat(endTime) : '--:-- --'}
+                          </div>
+                        </div>
+                      </Col>
+                      <Col md={4}>
+                        <div className="mb-2">
+                          <div className="text-white small">Total Duration</div>
+                          <div className="h5 mb-0" style={{ color: '#FFD700' }}>
+                            {duration}
+                          </div>
+                        </div>
+                      </Col>
+                    </Row>
+                    <div className="text-center mt-2">
+                      <small className="text-white">
+                        Timer will use this custom time period instead of default 3 hours
+                      </small>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </>
+            )}
           </>
         )}
       </Modal.Body>
@@ -769,7 +818,7 @@ const TimeSlotModal = ({
           <Button 
             variant="primary" 
             onClick={handleSetTimer}
-            disabled={!startTime || !endTime || isSettingTimer}
+            disabled={((!startTime || !endTime) && !(scannedPerson?.personType === 'guest' && isOpenEnded)) || isSettingTimer}
           >
             {isSettingTimer ? (
               <>

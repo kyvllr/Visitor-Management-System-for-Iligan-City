@@ -222,20 +222,21 @@ const Dashboard = () => {
       
       console.log('📋 All visit logs for timer analysis:', allLogs.length);
       
-      // Filter for active timers (in-progress visits with timerEnd in future)
+      // Filter for active dashboard sessions: countdown timers + open-ended guests
       const now = new Date();
       const activeTimersList = allLogs.filter(log => {
-        // Must be in-progress and have a timer end time
-        if (log.status !== 'in-progress' || !log.timerEnd) return false;
-        
-        // Timer end must be in the future
-        const timerEnd = new Date(log.timerEnd);
-        if (timerEnd <= now) return false;
-        
-        // Must not have timed out
+        if (log.status !== 'in-progress') return false;
         if (log.timeOut) return false;
-        
-        return true;
+
+        // Open-ended guest sessions are valid dashboard entries even without active countdown timer
+        if (log.personType === 'guest' && !log.timerEnd) return true;
+
+        if (!log.isTimerActive) return false;
+
+        // Standard/custom timers require a future timerEnd
+        if (!log.timerEnd) return false;
+        const timerEnd = new Date(log.timerEnd);
+        return timerEnd > now;
       });
       
       console.log('🕒 ALL Active timers found:', activeTimersList.length);
@@ -244,10 +245,9 @@ const Dashboard = () => {
       const enhancedTimers = await Promise.all(
         activeTimersList.map(async (timer) => {
           try {
-            // Calculate time remaining
-            const timerEnd = new Date(timer.timerEnd);
-            const timeRemaining = Math.max(0, timerEnd - now);
-            const timeRemainingMinutes = Math.floor(timeRemaining / (1000 * 60));
+            const timerStart = timer.timerStart ? new Date(timer.timerStart) : null;
+            const timerEnd = timer.timerEnd ? new Date(timer.timerEnd) : null;
+            let isOpenEnded = timer.personType === 'guest' && (!timer.timerEnd || timer.customTimer?.openEnded === true);
             
             // Get person details
 let personName = timer.personName || 'Unknown Visitor';
@@ -260,27 +260,43 @@ if (timer.personType === 'visitor') {
 } else if (timer.personType === 'guest') {
   const guestResponse = await axios.get(`${GUESTS_API_URL}/${timer.personId}`);
   personDetails = guestResponse.data;
+  if (personDetails?.customTimer?.openEnded === true) {
+    isOpenEnded = true;
+  }
+
+  // Skip malformed guest logs without timerEnd unless guest is truly open-ended
+  if (!timer.timerEnd && personDetails?.customTimer?.openEnded !== true) {
+    return null;
+  }
+
   // Get the actual visit purpose from guest data
   visitPurpose = personDetails.visitPurpose || 
                  personDetails.purpose || 
                  timer.visitPurpose || 
                  'General Visit';
 }
-            // Check if this is a custom timer (not 3 hours)
-            const timerStart = new Date(timer.timerStart);
-            const totalDurationMs = timerEnd - timerStart;
-            const totalDurationMinutes = Math.floor(totalDurationMs / (1000 * 60));
-            const isCustomTimer = totalDurationMinutes !== 180; // Not exactly 3 hours
+
+            // Calculate time remaining (not applicable for open-ended)
+            const timeRemaining = isOpenEnded || !timerEnd ? null : Math.max(0, timerEnd - now);
+            const timeRemainingMinutes = timeRemaining === null ? null : Math.floor(timeRemaining / (1000 * 60));
+            const totalDurationMs = timerStart && timerEnd ? (timerEnd - timerStart) : null;
+            const totalDurationMinutes = totalDurationMs !== null ? Math.floor(totalDurationMs / (1000 * 60)) : null;
+            const isCustomTimer = isOpenEnded || totalDurationMinutes !== 180;
+
+            const elapsedMinutes = timerStart ? Math.max(0, Math.floor((now - timerStart) / (1000 * 60))) : null;
+
             return {
   ...timer,
   timeRemaining,
   timeRemainingMinutes,
   personName: personDetails.fullName || personName,
   visitPurpose: visitPurpose, // Add this line
+  isOpenEnded,
+  elapsedMinutes,
   isCustomTimer,
   totalDurationMinutes,
-  customTimeSlot: personDetails.timeSlot,
-  timerType: isCustomTimer ? 'custom' : 'standard'
+  customTimeSlot: personDetails.customTimer || personDetails.timeSlot,
+  timerType: isOpenEnded ? 'open-ended' : (isCustomTimer ? 'custom' : 'standard')
 };
           } catch (error) {
             console.error('Error enhancing timer data:', error);
@@ -288,6 +304,7 @@ if (timer.personType === 'visitor') {
               ...timer,
               timeRemaining: 0,
               timeRemainingMinutes: 0,
+              isOpenEnded: false,
               isCustomTimer: false,
               timerType: 'standard'
             };
@@ -295,7 +312,7 @@ if (timer.personType === 'visitor') {
         })
       );
       
-      setAllActiveTimers(enhancedTimers);
+      setAllActiveTimers(enhancedTimers.filter(Boolean));
       console.log('✅ Enhanced all active timers:', enhancedTimers);
       
     } catch (error) {
@@ -363,7 +380,8 @@ if (timer.personType === 'visitor') {
   };
 
   const getTopUrgentGuestTimers = () => {
-    return getGuestTimers()
+    const guestTimers = getGuestTimers();
+    const timedGuestTimers = guestTimers
       .filter(timer => 
         timer.timeRemainingMinutes !== null && 
         timer.timeRemainingMinutes !== undefined && 
@@ -371,6 +389,9 @@ if (timer.personType === 'visitor') {
       )
       .sort((a, b) => a.timeRemainingMinutes - b.timeRemainingMinutes)
       .slice(0, 5);
+
+    const openEndedGuestTimers = guestTimers.filter(timer => timer.isOpenEnded);
+    return [...timedGuestTimers, ...openEndedGuestTimers].slice(0, 5);
   };
 
   // Chart Data Preparation with REAL data from visitLogs
@@ -905,6 +926,15 @@ if (timer.personType === 'visitor') {
 
   // NEW: Render timer type badge
   const renderTimerTypeBadge = (timer) => {
+    if (timer.isOpenEnded) {
+      return (
+        <Badge bg="info" className="ms-1" style={{ fontSize: '0.6rem' }}>
+          <FaClock className="me-1" />
+          Open-ended
+        </Badge>
+      );
+    }
+
     if (timer.isCustomTimer) {
       return (
         <Badge bg="info" className="ms-1" style={{ fontSize: '0.6rem' }}>
@@ -923,6 +953,14 @@ if (timer.personType === 'visitor') {
 
   // NEW: Render custom time slot info
   const renderCustomTimeSlotInfo = (timer) => {
+    if (timer.isOpenEnded) {
+      return (
+        <div className="extra-small text-info mt-1">
+          <strong>Timer:</strong> Open-ended (manual time-out)
+        </div>
+      );
+    }
+
     if (!timer.isCustomTimer || !timer.customTimeSlot) return null;
     
     return (
@@ -988,13 +1026,21 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
       <Card.Body className="p-2">
         {timers.length > 0 ? (
           <>
-            {topUrgentTimers.map((timer, index) => (
+            {topUrgentTimers.map((timer, index) => {
+              const hasNumericRemaining =
+                timer.timeRemainingMinutes !== null &&
+                timer.timeRemainingMinutes !== undefined &&
+                !isNaN(timer.timeRemainingMinutes);
+              const isCritical = !timer.isOpenEnded && hasNumericRemaining && timer.timeRemainingMinutes < 10;
+              const isUrgent = !timer.isOpenEnded && hasNumericRemaining && timer.timeRemainingMinutes < 30;
+
+              return (
               <div 
                 key={timer._id || index}
                 className={`mb-2 p-2 border rounded ${
-                  timer.timeRemainingMinutes < 10 
+                  isCritical
                     ? 'border-danger bg-danger bg-opacity-10' 
-                    : timer.timeRemainingMinutes < 30 
+                    : isUrgent
                     ? 'border-warning bg-warning bg-opacity-10' 
                     : timer.isCustomTimer
                     ? 'border-info bg-info bg-opacity-10'
@@ -1007,17 +1053,17 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                       <div className="me-2">
                         {timer.isCustomTimer ? (
                           <FaClock size={18} className={
-                            timer.timeRemainingMinutes < 10 
+                            isCritical
                               ? 'text-danger' 
-                              : timer.timeRemainingMinutes < 30 
+                              : isUrgent
                               ? 'text-warning' 
                               : 'text-info'
                           } />
                         ) : (
                           <FaUserClock size={18} className={
-                            timer.timeRemainingMinutes < 10 
+                            isCritical
                               ? 'text-danger' 
-                              : timer.timeRemainingMinutes < 30 
+                              : isUrgent
                               ? 'text-warning' 
                               : 'text-success'
                           } />
@@ -1055,31 +1101,44 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                   </Col>
                   <Col md={3}>
                     <div className="text-center">
-                      <Badge 
-                        bg={getTimerVariant(timer.timeRemainingMinutes)} 
-                        className="p-1 small"
-                        style={{ fontSize: '0.75rem' }}
-                      >
-                        {formatTimeRemaining(timer.timeRemainingMinutes)}
-                      </Badge>
-                      <div className="mt-1" style={{ maxWidth: '80px', margin: '0 auto' }}>
-                        <ProgressBar 
-                          now={getTimerProgress(timer.timeRemainingMinutes, timer.totalDurationMinutes)} 
-                          variant={getTimerVariant(timer.timeRemainingMinutes)}
-                          animated={timer.timeRemainingMinutes < 30}
-                          style={{ 
-                            height: '6px',
-                            backgroundColor: '#e9ecef'
-                          }}
-                        />
-                      </div>
-                      {timer.timeRemainingMinutes < 10 && (
+                      {timer.isOpenEnded ? (
+                        <>
+                          <Badge bg="info" className="p-1 small" style={{ fontSize: '0.75rem' }}>
+                            Open-ended
+                          </Badge>
+                          <div className="mt-1 extra-small text-info">
+                            Active until manual time-out
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <Badge 
+                            bg={getTimerVariant(timer.timeRemainingMinutes)} 
+                            className="p-1 small"
+                            style={{ fontSize: '0.75rem' }}
+                          >
+                            {formatTimeRemaining(timer.timeRemainingMinutes)}
+                          </Badge>
+                          <div className="mt-1" style={{ maxWidth: '80px', margin: '0 auto' }}>
+                            <ProgressBar 
+                              now={getTimerProgress(timer.timeRemainingMinutes, timer.totalDurationMinutes)} 
+                              variant={getTimerVariant(timer.timeRemainingMinutes)}
+                              animated={timer.timeRemainingMinutes < 30}
+                              style={{ 
+                                height: '6px',
+                                backgroundColor: '#e9ecef'
+                              }}
+                            />
+                          </div>
+                        </>
+                      )}
+                      {!timer.isOpenEnded && timer.timeRemainingMinutes < 10 && (
                         <Badge bg="danger" className="p-1 small mt-1" style={{ fontSize: '0.7rem' }}>
                           <FaHourglassEnd className="me-1" />
                           Critical
                         </Badge>
                       )}
-                      {timer.timeRemainingMinutes >= 10 && timer.timeRemainingMinutes < 30 && (
+                      {!timer.isOpenEnded && timer.timeRemainingMinutes >= 10 && timer.timeRemainingMinutes < 30 && (
                         <Badge bg="warning" text="dark" className="p-1 small mt-1" style={{ fontSize: '0.7rem' }}>
                           <FaExclamationTriangle className="me-1" />
                           Urgent
@@ -1089,7 +1148,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                   </Col>
                 </Row>
               </div>
-            ))}
+            )})}
             
             {timers.length > 5 && (
               <div className="text-center mt-2">
@@ -1320,7 +1379,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaUsers size={30} className="mb-2" style={{ color: COLORS.primary }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Total PDLs</Card.Title>
+              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Total PDL</Card.Title>
               <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
                 {getTotalInmates()}
               </Card.Text>
@@ -1396,7 +1455,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaMars size={30} className="mb-2" style={{ color: COLORS.info }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Male PDLs</Card.Title>
+              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Male PDL</Card.Title>
               <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
                 {getMaleInmates()}
               </Card.Text>
@@ -1433,7 +1492,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaVenus size={30} className="mb-2" style={{ color: COLORS.danger }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Female PDLs</Card.Title>
+              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Female PDL</Card.Title>
               <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
                 {getFemaleInmates()}
               </Card.Text>

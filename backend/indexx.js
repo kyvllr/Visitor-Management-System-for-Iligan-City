@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 require("dotenv").config({ path: path.join(__dirname, '.env') });
 const archiver = require('archiver');
 const { Parser } = require('json2csv');
-const { generateOTP, sendOTPEmail, sendPasswordResetOTP, getEmailHealth } = require('./utils/emailService');
+const { generateOTP, sendOTPEmail, sendPasswordResetOTP, getEmailHealth } = require('./utils/emailService.js');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -2291,19 +2291,12 @@ app.put("/guests/:id/approve-time-in", async (req, res) => {
     let timerStart, timerEnd;
     let timerMessage = "";
     let timerDuration = "";
-    const isOpenEndedGuestTimer = guest?.customTimer?.openEnded === true;
-    const hasActiveCountdownTimer = !isOpenEndedGuestTimer;
     
     const customDurationMinutes =
       guest?.customTimer?.durationMinutes ||
       parseDurationToMinutes(guest?.customTimer?.duration);
 
-    if (isOpenEndedGuestTimer) {
-      timerStart = new Date();
-      timerEnd = null;
-      timerDuration = "Open-ended";
-      timerMessage = "Open-ended guest visit: manual time out required";
-    } else if (customDurationMinutes) {
+    if (customDurationMinutes) {
       timerStart = new Date();
       timerEnd = new Date(timerStart.getTime() + (customDurationMinutes * 60 * 1000));
       timerDuration = formatDurationFromMinutes(customDurationMinutes);
@@ -2358,7 +2351,7 @@ app.put("/guests/:id/approve-time-in", async (req, res) => {
       timeIn: currentTime,
       timerStart: timerStart,
       timerEnd: timerEnd,
-      isTimerActive: hasActiveCountdownTimer,
+      isTimerActive: true,
       status: 'in-progress'
     });
 
@@ -2374,7 +2367,7 @@ app.put("/guests/:id/approve-time-in", async (req, res) => {
       hasTimedOut: false,
       timerStart: timerStart,
       timerEnd: timerEnd,
-      isTimerActive: hasActiveCountdownTimer,
+      isTimerActive: true,
       visitLogId: visitLog._id
     };
 
@@ -2402,7 +2395,7 @@ app.put("/guests/:id/approve-time-in", async (req, res) => {
           hasTimedOut: false,
           timeIn: currentTime,
           timeOut: null,
-          isTimerActive: hasActiveCountdownTimer,
+          isTimerActive: true,
           timerStart: timerStart,
           timerEnd: timerEnd,
           dateVisited: today,
@@ -8595,22 +8588,6 @@ app.put("/guests/:id/set-custom-timer", async (req, res) => {
       if (!updatedGuest) {
         return res.status(404).json({ message: "Guest not found" });
       }
-
-      await VisitLog.updateMany(
-        {
-          personId: req.params.id,
-          personType: 'guest',
-          status: 'in-progress',
-          timeOut: null
-        },
-        {
-          $set: {
-            isTimerActive: false,
-            timerStart: timerStart,
-            timerEnd: null
-          }
-        }
-      );
 
       console.log('✅ GUEST OPEN-ENDED TIMER SET SUCCESSFULLY');
 

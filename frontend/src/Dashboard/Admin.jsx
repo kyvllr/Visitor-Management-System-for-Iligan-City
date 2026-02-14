@@ -14,6 +14,7 @@ import Logs from "./Components/Admin/Logs";
 import Guest from "./Components/Admin/Guest";
 import ScanQR from "./Components/Admin/ScanQr";
 import PendingRequests from "./Components/Admin/PendingRequests";
+import BannedPDLs from "./Components/Admin/BannedPDLs";
 import ProfileModal from "./Components/Admin/ProfileModal";
 import { Badge, Dropdown, Button, Modal } from "react-bootstrap";
 import axios from "axios";
@@ -102,7 +103,8 @@ const Admin = () => {
               { name: "Recorded Visits", icon: "bx bxs-calendar-check", path: "/admin/record-visits" },
               { name: "Visitors", icon: "bx bxs-user-voice", path: "/admin/visitors" },
               { name: "Guests", icon: "bx bxs-user-badge", path: "/admin/guest" },
-              { name: "PDLs", icon: "bx bxs-user-account", path: "/admin/inmates" },
+              { name: "PDL", icon: "bx bxs-user-account", path: "/admin/inmates" },
+              { name: "Banned PDL", icon: "bx bxs-lock-alt", path: "/admin/banned-pdls" },
               { name: "Crime List", icon: "bx bxs-error", path: "/admin/crimes" },
               { name: "Reports", icon: "bx bxs-report", path: "/admin/reports-analytics" },
               { name: "Pending Visitors", icon: "bx bxs-time-five", path: "/admin/pending-requests" },
@@ -195,6 +197,7 @@ const Admin = () => {
             <Route path="/visitors" element={<Visitors />} />
             <Route path="/guest" element={<Guest />} />
             <Route path="/inmates" element={<Inmates />} />
+            <Route path="/banned-pdls" element={<BannedPDLs />} />
             <Route path="/crimes" element={<Crimes />} />
             <Route path="/reports-analytics" element={<ReportsAnalytics />} />
             <Route path="/pending-requests" element={<PendingRequests />} />

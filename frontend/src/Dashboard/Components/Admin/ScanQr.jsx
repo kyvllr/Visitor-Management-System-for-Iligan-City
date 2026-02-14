@@ -505,62 +505,36 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
     if (!scannedPerson) return;
 
     try {
-      console.log('🔄 Setting custom timer for:', scannedPerson.id, timeSlotData);
-      
+      console.log('✅ Custom timer already saved by TimeSlotModal:', scannedPerson.id, timeSlotData);
+
       const personType = scannedPerson.personType;
-      
-      // USE THE SIMPLE TIMER ENDPOINT
-      const endpoint = `${API_BASE_URL}/${personType}s/${scannedPerson.id}/set-custom-timer`;
+      const updatedPersonData = await fetchCompletePersonData(scannedPerson.id, personType === 'guest', 2);
 
-      const response = await axios.put(endpoint, {
-        startTime: timeSlotData.startTime,
-        endTime: timeSlotData.endTime,
-        duration: timeSlotData.duration
+      const timerMessage = timeSlotData?.openEnded
+        ? '✅ Open-ended timer set successfully'
+        : `✅ Custom timer set: ${timeSlotData.startTime} - ${timeSlotData.endTime} (${timeSlotData.duration})`;
+
+      const updatedDisplayData = generateDisplayData(
+        updatedPersonData,
+        {
+          scanType: scannedPerson.scanType,
+          message: timerMessage
+        },
+        scannedPerson.scanConfidence,
+        personType === 'guest'
+      );
+
+      setScannedPerson({
+        ...updatedDisplayData,
+        scanMessage: timerMessage
       });
-
-      console.log('✅ Custom timer set successfully:', response.data);
-
-      // Verify the timer was actually set
-      const verifyEndpoint = personType === 'guest' 
-        ? `${API_BASE_URL}/verify-custom-timer-guest/${scannedPerson.id}`
-        : `${API_BASE_URL}/verify-custom-timer/${scannedPerson.id}`;
-      
-      const verifyResponse = await axios.get(verifyEndpoint);
-      
-      if (verifyResponse.data.hasCustomTimer) {
-        console.log('✅ Timer verification successful:', verifyResponse.data);
-        
-        // Refresh person data to show updated timer
-        const updatedPersonData = await fetchCompletePersonData(scannedPerson.id, personType === 'guest', 2);
-        const updatedDisplayData = generateDisplayData(
-          updatedPersonData, 
-          { 
-            scanType: scannedPerson.scanType,
-            message: 'Custom timer set successfully'
-          }, 
-          scannedPerson.scanConfidence, 
-          personType === 'guest'
-        );
-
-        setScannedPerson(updatedDisplayData);
-        
-        // Show success message
-        setScannedPerson(prev => ({
-          ...prev,
-          scanMessage: `✅ Custom timer set: ${timeSlotData.startTime} - ${timeSlotData.endTime} (${timeSlotData.duration})`
-        }));
-
-        // Close the time slot modal
-        setShowTimeSlotModal(false);
-      } else {
-        throw new Error('Timer was set but verification failed');
-      }
+      setShowTimeSlotModal(false);
 
     } catch (error) {
       console.error('❌ Error setting custom timer:', error);
       setScannedPerson(prev => ({
         ...prev,
-        scanMessage: `❌ Failed to set custom timer: ${error.response?.data?.message || error.message}`
+        scanMessage: `❌ Failed to refresh custom timer status: ${error.response?.data?.message || error.message}`
       }));
     }
   };

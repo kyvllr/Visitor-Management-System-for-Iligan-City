@@ -271,7 +271,7 @@ const ViewRecordVisits = () => {
       const response = await axios.get(`${API_BASE}/inmates`);
       setInmates(response.data);
     } catch (error) {
-      console.error('Error fetching PDLs:', error);
+      console.error('Error fetching PDL:', error);
     }
   };
 

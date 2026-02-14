@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import API_BASE_URL from '../../../config/api';
+import { printVisitorQRCards, STANDARD_VISITOR_QR_CARD_OVERRIDES } from '../../../utils/printVisitorQRCards';
 import { 
   Search, 
   Plus, 
@@ -550,200 +551,35 @@ const Guest = () => {
   };
 
   const printGuestDetails = () => {
-  const printWindow = window.open('', '_blank');
-  
-  printWindow.document.write(`
-    <html>
-      <head>
-        <title>Guest Details - ${selectedGuest?.id}</title>
-        <style>
-          body { 
-            font-family: Arial, sans-serif; 
-            margin: 20px; 
-            line-height: 1.4;
-            color: #333;
-          }
-          .header { 
-            text-align: center; 
-            margin-bottom: 30px; 
-            border-bottom: 3px solid #333; 
-            padding-bottom: 15px; 
-          }
-          .header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-          }
-          .header h2 {
-            margin: 5px 0 0 0;
-            font-size: 18px;
-            font-weight: normal;
-            color: #2c3e50;
-          }
-          .header h3 {
-            margin: 10px 0 0 0;
-            font-size: 16px;
-            font-weight: bold;
-            color: #2c3e50;
-          }
-          .section { 
-            margin-bottom: 25px; 
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-          }
-          .section h3 {
-            margin-top: 0;
-            color: #2c3e50;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-          }
-          .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-          }
-          .info-item {
-            margin-bottom: 10px;
-          }
-          .label { 
-            font-weight: bold; 
-            color: #2c3e50;
-            display: inline-block;
-            width: 140px;
-          }
-          .full-width {
-            grid-column: 1 / -1;
-          }
-          .qr-code {
-            text-align: center;
-            margin: 20px 0;
-          }
-          .qr-code img {
-            max-width: 300px;
-            height: auto;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-          }
-          .guest-photo {
-            text-align: center;
-            margin: 20px 0;
-          }
-          .guest-photo img {
-            max-width: 200px;
-            max-height: 200px;
-            object-fit: cover;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-          }
-          .photo-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin: 20px 0;
-          }
-          .photo-item {
-            text-align: center;
-          }
-          .photo-item h4 {
-            margin-bottom: 10px;
-            color: #2c3e50;
-          }
-          @media print {
-            body { margin: 10px; }
-            .section { border: none; }
-            .photo-container { 
-              display: flex; 
-              justify-content: space-around;
-            }
-            .header { border-bottom: 2px solid #333; }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>ILIGAN CITY JAIL</h1>
-          <h2>Region 10</h2>
-          <h3>GUEST DETAILS RECORD - ID: ${selectedGuest?.id}</h3>
-        </div>
-        
-        ${selectedGuest ? `
-          <div class="section">
-            <h3>Identification</h3>
-            <div class="photo-container">
-              ${selectedGuest.photo ? `
-                <div class="photo-item">
-                  <h4>Guest Photo</h4>
-                  <div class="guest-photo">
-                    <img src="${API_BASE_URL}/uploads/${selectedGuest.photo}" alt="Guest Photo" />
-                  </div>
-                </div>
-              ` : ''}
-              ${selectedGuest.qrCode ? `
-                <div class="photo-item">
-                  <h4>QR Code</h4>
-                  <div class="qr-code">
-                    <img src="${selectedGuest.qrCode}" alt="Guest QR Code" />
-                  </div>
-                </div>
-              ` : ''}
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>Guest Information</h3>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="label">Full Name:</span> ${selectedGuest.fullName}
-              </div>
-              <div class="info-item">
-                <span class="label">Gender:</span> ${selectedGuest.sex}
-              </div>
-              <div class="info-item">
-                <span class="label">Date of Birth:</span> ${new Date(selectedGuest.dateOfBirth).toLocaleDateString()}
-              </div>
-              <div class="info-item">
-                <span class="label">Age:</span> ${calculateAge(selectedGuest.dateOfBirth)}
-              </div>
-              <div class="info-item full-width">
-                <span class="label">Address:</span> ${selectedGuest.address}
-              </div>
-              <div class="info-item">
-                <span class="label">Contact:</span> ${selectedGuest.contact || 'N/A'}
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>Visit Details</h3>
-            <div class="info-grid">
-              <div class="info-item full-width">
-                <span class="label">Visit Purpose:</span> ${selectedGuest.visitPurpose}
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
-              <p><strong>Generated on:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-              <p><em>Official Document - ILIGAN CITY JAIL, Region 10</em></p>
-            </div>
-          </div>
-        ` : ''}
-      </body>
-    </html>
-  `);
-  printWindow.document.close();
-  
-  printWindow.onload = function() {
-    setTimeout(() => {
-      printWindow.print();
-    }, 1000);
+    if (!selectedGuest) return;
+    printVisitorQRCards({
+      visitors: [selectedGuest],
+      apiBaseUrl: API_BASE_URL,
+      cardTitle: 'ICJ GUEST ID SYSTEM',
+      documentTitle: `Guest QR ID - ${selectedGuest?.id || ''}`,
+      contextLabel: 'Visit Purpose',
+      showRelationship: false,
+      styleConfigOverrides: STANDARD_VISITOR_QR_CARD_OVERRIDES,
+      getPdlName: (guest) => guest.visitPurpose || 'N/A',
+      onNoData: () => toast.warning('QR code not generated for this guest.'),
+      onPopupBlocked: () => toast.error('Unable to open print window. Please allow pop-ups and try again.')
+    });
   };
-};
+
+  const printAllGuestQRCodes = () => {
+    printVisitorQRCards({
+      visitors: filteredGuests,
+      apiBaseUrl: API_BASE_URL,
+      cardTitle: 'ICJ GUEST ID SYSTEM',
+      documentTitle: 'Guest QR IDs',
+      contextLabel: 'Visit Purpose',
+      showRelationship: false,
+      styleConfigOverrides: STANDARD_VISITOR_QR_CARD_OVERRIDES,
+      getPdlName: (guest) => guest.visitPurpose || 'N/A',
+      onNoData: () => toast.warning('No guest QR codes available to print.'),
+      onPopupBlocked: () => toast.error('Unable to open print window. Please allow pop-ups and try again.')
+    });
+  };
 
   return (
     <Container>
@@ -768,6 +604,10 @@ const Guest = () => {
           <Button variant="outline-dark" size="sm" onClick={() => setShowImportModal(true)}>
             <Upload size={16} className="me-1" />
             Import CSV
+          </Button>
+          <Button variant="outline-dark" size="sm" onClick={printAllGuestQRCodes}>
+            <Printer size={16} className="me-1" />
+            Print All QR (4/page)
           </Button>
           {/* Add Guest Button - Third (dark) */}
           <Button variant="dark" onClick={handleAdd}>

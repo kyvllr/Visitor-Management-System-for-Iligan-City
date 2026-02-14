@@ -2135,7 +2135,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
         </Card.Body>
       </Card>
 
-   {/* View Details Modal - Scrollable like PDLs */}
+   {/* View Details Modal - Scrollable like PDL */}
 <Modal 
   show={showDetailsModal} 
   onHide={() => setShowDetailsModal(false)} 

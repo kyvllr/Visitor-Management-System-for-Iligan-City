@@ -12,6 +12,7 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
   const [scannedPerson, setScannedPerson] = useState(null);
   const [showPersonModal, setShowPersonModal] = useState(false);
   const [showTimeSlotModal, setShowTimeSlotModal] = useState(false);
+  const [showPdlBanModal, setShowPdlBanModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [scanError, setScanError] = useState(null);
   const [isApproving, setIsApproving] = useState(false);
@@ -419,6 +420,9 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
       
       setTimeout(() => {
         setShowPersonModal(true);
+        if (displayData?.linkedPdlBan?.isBanned) {
+          setShowPdlBanModal(true);
+        }
         setIsValidatingScan(false);
         setScanSuccess(false);
         setIsProcessingUpload(false);
@@ -464,7 +468,8 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
       customTimer: scanResult.customTimer || personData.customTimer,
       timerStart: scanResult.timerStart || personData.timerStart,
       timerEnd: scanResult.timerEnd || personData.timerEnd,
-      isTimerActive: scanResult.isTimerActive || personData.isTimerActive
+      isTimerActive: scanResult.isTimerActive || personData.isTimerActive,
+      linkedPdlBan: scanResult.linkedPdlBan || personData.linkedPdlBan || null
     };
 
     mergedData.fullName = generateFullName(mergedData);
@@ -505,62 +510,36 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
     if (!scannedPerson) return;
 
     try {
-      console.log('🔄 Setting custom timer for:', scannedPerson.id, timeSlotData);
-      
+      console.log('✅ Custom timer already saved by TimeSlotModal:', scannedPerson.id, timeSlotData);
+
       const personType = scannedPerson.personType;
-      
-      // USE THE SIMPLE TIMER ENDPOINT
-      const endpoint = `${API_BASE_URL}/${personType}s/${scannedPerson.id}/set-custom-timer`;
+      const updatedPersonData = await fetchCompletePersonData(scannedPerson.id, personType === 'guest', 2);
 
-      const response = await axios.put(endpoint, {
-        startTime: timeSlotData.startTime,
-        endTime: timeSlotData.endTime,
-        duration: timeSlotData.duration
+      const timerMessage = timeSlotData?.openEnded
+        ? '✅ Open-ended timer set successfully'
+        : `✅ Custom timer set: ${timeSlotData.startTime} - ${timeSlotData.endTime} (${timeSlotData.duration})`;
+
+      const updatedDisplayData = generateDisplayData(
+        updatedPersonData,
+        {
+          scanType: scannedPerson.scanType,
+          message: timerMessage
+        },
+        scannedPerson.scanConfidence,
+        personType === 'guest'
+      );
+
+      setScannedPerson({
+        ...updatedDisplayData,
+        scanMessage: timerMessage
       });
-
-      console.log('✅ Custom timer set successfully:', response.data);
-
-      // Verify the timer was actually set
-      const verifyEndpoint = personType === 'guest' 
-        ? `${API_BASE_URL}/verify-custom-timer-guest/${scannedPerson.id}`
-        : `${API_BASE_URL}/verify-custom-timer/${scannedPerson.id}`;
-      
-      const verifyResponse = await axios.get(verifyEndpoint);
-      
-      if (verifyResponse.data.hasCustomTimer) {
-        console.log('✅ Timer verification successful:', verifyResponse.data);
-        
-        // Refresh person data to show updated timer
-        const updatedPersonData = await fetchCompletePersonData(scannedPerson.id, personType === 'guest', 2);
-        const updatedDisplayData = generateDisplayData(
-          updatedPersonData, 
-          { 
-            scanType: scannedPerson.scanType,
-            message: 'Custom timer set successfully'
-          }, 
-          scannedPerson.scanConfidence, 
-          personType === 'guest'
-        );
-
-        setScannedPerson(updatedDisplayData);
-        
-        // Show success message
-        setScannedPerson(prev => ({
-          ...prev,
-          scanMessage: `✅ Custom timer set: ${timeSlotData.startTime} - ${timeSlotData.endTime} (${timeSlotData.duration})`
-        }));
-
-        // Close the time slot modal
-        setShowTimeSlotModal(false);
-      } else {
-        throw new Error('Timer was set but verification failed');
-      }
+      setShowTimeSlotModal(false);
 
     } catch (error) {
       console.error('❌ Error setting custom timer:', error);
       setScannedPerson(prev => ({
         ...prev,
-        scanMessage: `❌ Failed to set custom timer: ${error.response?.data?.message || error.message}`
+        scanMessage: `❌ Failed to refresh custom timer status: ${error.response?.data?.message || error.message}`
       }));
     }
   };
@@ -568,6 +547,16 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
   // UPDATED: Handle approve visit with custom timer consideration
   const handleApproveVisit = async () => {
     if (!scannedPerson) return;
+
+    if (scannedPerson?.linkedPdlBan?.isBanned) {
+      setShowPdlBanModal(true);
+      setScannedPerson(prev => ({
+        ...prev,
+        scanType: 'linked_pdl_banned',
+        scanMessage: `Duration: ${prev?.linkedPdlBan?.remainingDuration || prev?.linkedPdlBan?.banDuration || 'N/A'}. Reason: ${prev?.linkedPdlBan?.reason || 'No reason provided'}`
+      }));
+      return;
+    }
 
     try {
       setIsApproving(true);
@@ -618,6 +607,18 @@ const ScanQR = ({ show, onHide, onVisitUpdate }) => {
       console.error('❌ APPROVAL ERROR:', error);
       
       const errorMessage = error.response?.data?.message || error.message || 'Operation failed';
+
+      if (error.response?.status === 403 && error.response?.data?.linkedPdlBan?.isBanned) {
+        const backendLinkedBan = error.response.data.linkedPdlBan;
+        setScannedPerson({
+          ...scannedPerson,
+          linkedPdlBan: backendLinkedBan,
+          scanType: 'linked_pdl_banned',
+          scanMessage: errorMessage
+        });
+        setShowPdlBanModal(true);
+        return;
+      }
       
       setScannedPerson({
         ...scannedPerson,
@@ -711,6 +712,7 @@ const formatDate = (dateString) => {
       case 'time_in_approved': return 'success';
       case 'time_out_approved': return 'success';
       case 'completed': return 'info';
+      case 'linked_pdl_banned': return 'danger';
       case 'declined': return 'danger';
       case 'error': return 'danger';
       default: return 'secondary';
@@ -735,6 +737,7 @@ const formatDate = (dateString) => {
   // Handle closing person modal - return to scanner instead of closing entire modal
   const handleClosePersonModal = () => {
     setShowPersonModal(false);
+    setShowPdlBanModal(false);
     setScannedPerson(null);
     setLastScannedCode('');
     setRetryCount(0);
@@ -754,7 +757,8 @@ const formatDate = (dateString) => {
 
   // Show reject button only for banned persons
   const showRejectButtonOnly = () => {
-    return scannedPerson && scannedPerson.isBanned && 
+    const hasLinkedPdlBan = scannedPerson?.linkedPdlBan?.isBanned;
+    return scannedPerson && (scannedPerson.isBanned || hasLinkedPdlBan) && 
            (scannedPerson.scanType === 'time_in_pending' || scannedPerson.scanType === 'time_out_pending');
   };
 
@@ -815,6 +819,7 @@ const formatDate = (dateString) => {
   // UPDATED: Show set timer button condition - uses customTimer instead of timeSlot
   const showSetTimerButton = () => {
     if (!scannedPerson) return false;
+    if (scannedPerson?.linkedPdlBan?.isBanned) return false;
     
     // Only show for time-in pending and if not banned
     return scannedPerson.scanType === 'time_in_pending' && 
@@ -827,6 +832,7 @@ const formatDate = (dateString) => {
     if (!scannedPerson) return false;
     
     if (scannedPerson.isBanned) return false;
+    if (scannedPerson?.linkedPdlBan?.isBanned) return false;
     
     return scannedPerson.scanType === 'time_in_pending' || scannedPerson.scanType === 'time_out_pending';
   };
@@ -845,6 +851,42 @@ const renderPersonDetails = () => {
   const isGuest = scannedPerson.personType === 'guest';
   const displayName = scannedPerson.fullName || generateFullName(scannedPerson);
   const timeStatus = getTimeStatus(scannedPerson);
+  const linkedPdlBan = scannedPerson?.linkedPdlBan;
+  const hasLinkedPdlBan = !isGuest && linkedPdlBan?.isBanned;
+
+  if (hasLinkedPdlBan) {
+    return (
+      <div className="compact-content">
+        <Alert variant="danger" className="mb-3 py-3">
+          <div className="text-center">
+            <h5 className="mb-2">🚫 PDL Linked to this Visitor is Banned</h5>
+            <p className="mb-1">
+              <strong>Remaining Ban Duration:</strong>{' '}
+              <Badge bg="warning" text="dark">
+                {linkedPdlBan.remainingDuration || linkedPdlBan.banDuration || 'N/A'}
+              </Badge>
+            </p>
+            <p className="mb-2"><strong>Reason:</strong> {linkedPdlBan.reason || 'No reason provided'}</p>
+            <p className="mb-0 small text-muted">
+              Visits for this linked PDL are currently blocked. Approval actions are disabled.
+            </p>
+          </div>
+        </Alert>
+
+        <Card className="mb-2 border-danger">
+          <Card.Header className="py-2 bg-danger text-white">
+            <strong className="small">Scanned Visitor</strong>
+          </Card.Header>
+          <Card.Body className="py-2">
+            <p className="mb-1 small"><strong>Name:</strong> {displayName}</p>
+            <p className="mb-1 small"><strong>ID:</strong> {scannedPerson.id || 'Unknown'}</p>
+            <p className="mb-1 small"><strong>PDL:</strong> {scannedPerson.prisonerName || 'Not specified'}</p>
+            <p className="mb-0 small"><strong>Relationship:</strong> {scannedPerson.relationship || 'Not specified'}</p>
+          </Card.Body>
+        </Card>
+      </div>
+    );
+  }
 
   // Check if custom timer is set
   const hasCustomTimer = !!(scannedPerson.timerStart && scannedPerson.timerEnd);
@@ -945,8 +987,25 @@ const renderPersonDetails = () => {
       )}
 
       <Alert variant={getScanAlertVariant(scannedPerson.scanType)} className="mb-3 py-2">
+        {(() => {
+          const isLinkedPdlBannedState = scannedPerson?.scanType === 'linked_pdl_banned' || !!scannedPerson?.linkedPdlBan?.isBanned;
+          const messageText = scannedPerson?.scanMessage || '';
+          const durationMatch = messageText.match(/Duration:\s*([^\.]+)(?:\.|$)/i);
+          const reasonMatch = messageText.match(/Reason:\s*(.+)$/i);
+          const banDurationText =
+            scannedPerson?.linkedPdlBan?.remainingDuration ||
+            scannedPerson?.linkedPdlBan?.banDuration ||
+            (durationMatch ? durationMatch[1].trim() : 'N/A');
+          const banReasonText =
+            scannedPerson?.linkedPdlBan?.reason ||
+            (reasonMatch ? reasonMatch[1].trim() : 'No reason provided');
+
+          return (
+            <>
         <strong className="small">
-          {scannedPerson.scanType === 'time_in_pending' ? 
+          {isLinkedPdlBannedState ?
+            `🚫 PDL LINKED TO THIS VISITOR IS NOT ALLOWED FOR VISITATION` :
+           scannedPerson.scanType === 'time_in_pending' ? 
             `🕒 ${isGuest ? 'GUEST' : 'VISITOR'} TIME IN REQUEST - AWAITING APPROVAL` : 
            scannedPerson.scanType === 'time_out_pending' ? 
             `🕒 ${isGuest ? 'GUEST' : 'VISITOR'} TIME OUT REQUEST - AWAITING APPROVAL` : 
@@ -956,12 +1015,27 @@ const renderPersonDetails = () => {
             `✅ ${isGuest ? 'GUEST' : 'VISITOR'} TIME OUT APPROVED - VISIT COMPLETED` : 
            scannedPerson.scanType === 'completed' ? 
             `✅ ${isGuest ? 'GUEST' : 'VISITOR'} VISIT COMPLETED TODAY` : 
+           scannedPerson.scanType === 'linked_pdl_banned' ?
+            `🚫 PDL LINKED TO THIS VISITOR IS NOT ALLOWED FOR VISITATION` :
            scannedPerson.scanType === 'declined' ? 
             `❌ ${isGuest ? 'GUEST' : 'VISITOR'} VISIT DECLINED` : 
-           '❌ SCAN ERROR'}
+           '❌ PDL linked to this visitor is currently banned for visitation'}
         </strong>
         <br />
-        <span className="small">{scannedPerson.scanMessage || 'Processing scan...'}</span>
+        {isLinkedPdlBannedState ? (
+          <div className="small">
+            <div>PDL linked to this visitor is currently not allowed for visitation.</div>
+            <div>
+              <strong>Duration:</strong>{' '}
+              {banDurationText}
+            </div>
+            <div>
+              <strong>Reason:</strong> {banReasonText}
+            </div>
+          </div>
+        ) : (
+          <span className="small">{scannedPerson.scanMessage || 'Processing scan...'}</span>
+        )}
         {scannedPerson.scanConfidence && (
           <div className="mt-1">
             <small>Scan Quality: <Badge bg="info">{scannedPerson.scanConfidence}%</Badge></small>
@@ -977,6 +1051,9 @@ const renderPersonDetails = () => {
             </strong>
           </div>
         )}
+            </>
+          );
+        })()}
       </Alert>
       
       <Row className="mb-3">
@@ -1455,6 +1532,35 @@ const renderPersonDetails = () => {
               Close
             </Button>
           )}
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showPdlBanModal}
+        onHide={() => setShowPdlBanModal(false)}
+        centered
+      >
+        <Modal.Header closeButton className="bg-danger text-white">
+          <Modal.Title>PDL Linked to Visitor is Banned</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Alert variant="danger" className="mb-0">
+            <p className="mb-2">
+              PDL linked to this visitor is currently not allowed for visitation.
+            </p>
+            <p className="mb-1">
+              <strong>Remaining Ban Duration:</strong>{' '}
+              {scannedPerson?.linkedPdlBan?.remainingDuration || scannedPerson?.linkedPdlBan?.banDuration || 'N/A'}
+            </p>
+            <p className="mb-0">
+              <strong>Reason:</strong> {scannedPerson?.linkedPdlBan?.reason || 'No reason provided'}
+            </p>
+          </Alert>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowPdlBanModal(false)}>
+            Close
+          </Button>
         </Modal.Footer>
       </Modal>
 

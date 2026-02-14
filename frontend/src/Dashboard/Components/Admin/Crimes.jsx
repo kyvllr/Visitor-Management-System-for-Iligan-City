@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Modal, Form, Badge, Spinner, Alert } from 'react-bootstrap';
+import { Container, Table, Button, Modal, Form, Spinner, Alert } from 'react-bootstrap';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
-import { Edit2, Trash2, Play, Square } from 'react-feather'; // Import icons
+import { Edit2, Trash2 } from 'react-feather'; // Import icons
 import API_BASE_URL from '../../../config/api';
 
 const Crimes = () => {
   const [crimes, setCrimes] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingCrime, setEditingCrime] = useState(null);
-  const [formData, setFormData] = useState({ crime: '', status: 'active' });
+  const [formData, setFormData] = useState({ crime: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [crimeError, setCrimeError] = useState('');
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -59,8 +59,7 @@ const Crimes = () => {
     
     const method = editingCrime ? 'PUT' : 'POST';
     const payload = {
-      crime: formData.crime.trim(),
-      status: formData.status
+      crime: formData.crime.trim()
     };
 
     console.log('🌐 API Request Details:');
@@ -93,7 +92,7 @@ const Crimes = () => {
       console.log('🎉 SUCCESS: Crime operation completed');
       toast.success(`Crime ${editingCrime ? 'updated' : 'created'} successfully`);
       setShowModal(false);
-      setFormData({ crime: '', status: 'active' });
+      setFormData({ crime: '' });
       setCrimeError('');
       fetchCrimes();
     } else {
@@ -205,36 +204,16 @@ useEffect(() => {
     }
   };
 
-  const handleStatusToggle = async (crimeId, currentStatus) => {
-    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-    
-    setIsLoading(true);
-    try {
-      console.log('🔄 Toggling status:', crimeId, newStatus);
-      await axios.put(`${API_BASE}/crimes/${crimeId}`, {
-        status: newStatus
-      });
-      console.log('✅ Status updated');
-      toast.success(`Crime status updated to ${newStatus}`);
-      fetchCrimes();
-    } catch (error) {
-      console.error('❌ Error updating status:', error);
-      toast.error('Failed to update crime status');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const openAddModal = () => {
     setEditingCrime(null);
-    setFormData({ crime: '', status: 'active' });
+    setFormData({ crime: '' });
     setCrimeError('');
     setShowModal(true);
   };
 
   const openEditModal = (crime) => {
     setEditingCrime(crime);
-    setFormData({ crime: crime.crime, status: crime.status });
+    setFormData({ crime: crime.crime });
     setCrimeError('');
     setShowModal(true);
   };
@@ -275,33 +254,17 @@ useEffect(() => {
           <thead>
             <tr>
               <th>Crime Name</th>
-              <th>Status</th>
               <th>Created Date</th>
-              <th style={{ width: '120px' }}>Actions</th>
+              <th style={{ width: '90px' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {crimes.map(crime => (
               <tr key={crime._id}>
                 <td>{crime.crime}</td>
-                <td>
-                  <Badge bg={crime.status === 'active' ? 'success' : 'secondary'}>
-                    {crime.status === 'active' ? 'Active' : 'Inactive'}
-                  </Badge>
-                </td>
                 <td>{crime.createdAt ? new Date(crime.createdAt).toLocaleDateString() : 'N/A'}</td>
                 <td>
                   <div className="d-flex gap-1 justify-content-center">
-                    <Button 
-                      variant={crime.status === 'active' ? 'outline-warning' : 'outline-success'}
-                      size="sm" 
-                      onClick={() => handleStatusToggle(crime._id, crime.status)}
-                      disabled={isLoading}
-                      className="p-1"
-                      title={crime.status === 'active' ? 'Deactivate' : 'Activate'}
-                    >
-                      {crime.status === 'active' ? <Square size={14} /> : <Play size={14} />}
-                    </Button>
                     <Button 
                       variant="outline-primary" 
                       size="sm" 
@@ -359,20 +322,6 @@ useEffect(() => {
         <Form.Control.Feedback type="invalid">
           {crimeError}
         </Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label className="small">Status</Form.Label>
-        <Form.Select
-          value={formData.status}
-          onChange={(e) => setFormData({...formData, status: e.target.value})}
-          disabled={isLoading}
-        >
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </Form.Select>
-        <Form.Text className="text-muted small">
-          Active crimes can be assigned to PDLs
-        </Form.Text>
       </Form.Group>
     </Modal.Body>
     <Modal.Footer className="py-2">

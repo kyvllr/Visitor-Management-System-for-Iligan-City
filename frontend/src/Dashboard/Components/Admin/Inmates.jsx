@@ -15,6 +15,8 @@ import {
   Eye, 
   Edit2, 
   Trash2, 
+  Lock,
+  Unlock,
   Download,
   Upload,
   Printer,
@@ -53,6 +55,20 @@ const Inmates = ({ gender = 'all' }) => {
   const [showCrimeDropdown, setShowCrimeDropdown] = useState(false);
   const [inmateVisitors, setInmateVisitors] = useState([]);
   const [loadingVisitors, setLoadingVisitors] = useState(false);
+  const [showBanModal, setShowBanModal] = useState(false);
+  const [selectedBanInmate, setSelectedBanInmate] = useState(null);
+  const [isSubmittingBan, setIsSubmittingBan] = useState(false);
+
+  const [banFormData, setBanFormData] = useState({
+    banReason: '',
+    banType: 'temporary',
+    banStartDate: new Date().toISOString().split('T')[0],
+    banEndDate: '',
+    banDuration: '',
+    banNotes: ''
+  });
+  const [quickDurationValue, setQuickDurationValue] = useState('');
+  const [quickDurationUnit, setQuickDurationUnit] = useState('days');
 
   const searchOptions = [
     { value: 'lastName', label: 'Last Name' },
@@ -458,7 +474,7 @@ const Inmates = ({ gender = 'all' }) => {
     if (response.data.imported > 0) {
       toast.success(`Successfully imported ${response.data.imported} PDL`);
     } else {
-      toast.warning(`No PDLs imported. ${response.data.errors?.length || 0} errors found.`);
+      toast.warning(`No PDL imported. ${response.data.errors?.length || 0} errors found.`);
     }
     
     // Show detailed errors if any
@@ -567,9 +583,9 @@ const Inmates = ({ gender = 'all' }) => {
 
   const getGenderTitle = () => {
     switch (selectedGender) {
-      case 'male': return 'Male PDLs Management';
-      case 'female': return 'Female PDLs Management';
-      default: return 'All PDLs Management';
+      case 'male': return 'Male PDL Management';
+      case 'female': return 'Female PDL Management';
+      default: return 'All PDL Management';
     }
   };
 
@@ -580,6 +596,213 @@ const Inmates = ({ gender = 'all' }) => {
       case 'transferred': return 'warning';
       case 'inactive': return 'secondary';
       default: return 'secondary';
+    }
+  };
+
+  const formatDateForInput = (dateValue) => {
+    if (!dateValue) return '';
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toISOString().split('T')[0];
+  };
+
+  const calculateBanDurationText = (banType, startDateValue, endDateValue) => {
+    if (banType === 'permanent') return 'Permanent';
+    if (!startDateValue || !endDateValue) return '';
+
+    const startDate = new Date(startDateValue);
+    const endDate = new Date(endDateValue);
+
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime()) || endDate <= startDate) {
+      return '';
+    }
+
+    const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    const years = Math.floor(diffDays / 365);
+    const months = Math.floor((diffDays % 365) / 30);
+    const days = diffDays - (years * 365) - (months * 30);
+
+    const durationParts = [];
+    if (years > 0) durationParts.push(`${years} year${years > 1 ? 's' : ''}`);
+    if (months > 0) durationParts.push(`${months} month${months > 1 ? 's' : ''}`);
+    if (days > 0) durationParts.push(`${days} day${days > 1 ? 's' : ''}`);
+
+    if (durationParts.length === 0) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''}`;
+    }
+
+    return durationParts.join(' ');
+  };
+
+  const getQuickDurationEndDate = (startDateValue, durationValue, durationUnit) => {
+    const parsedValue = Number.parseInt(durationValue, 10);
+    if (!startDateValue || Number.isNaN(parsedValue) || parsedValue <= 0) return '';
+
+    const startDate = new Date(startDateValue);
+    if (Number.isNaN(startDate.getTime())) return '';
+
+    const endDate = new Date(startDate);
+    switch (durationUnit) {
+      case 'days':
+        endDate.setDate(endDate.getDate() + parsedValue);
+        break;
+      case 'weeks':
+        endDate.setDate(endDate.getDate() + (parsedValue * 7));
+        break;
+      case 'months':
+        endDate.setMonth(endDate.getMonth() + parsedValue);
+        break;
+      case 'years':
+        endDate.setFullYear(endDate.getFullYear() + parsedValue);
+        break;
+      default:
+        return '';
+    }
+
+    return endDate.toISOString().split('T')[0];
+  };
+
+  const isInmateBanActive = (inmate) => {
+    if (!inmate?.isVisitBanned) return false;
+    if (!inmate?.banEndDate) return true;
+
+    const endDate = new Date(inmate.banEndDate);
+    if (Number.isNaN(endDate.getTime())) return true;
+    return endDate > new Date();
+  };
+
+  const hasInmateBanRecord = (inmate) => {
+    return Boolean(
+      inmate?.isVisitBanned ||
+      inmate?.banReason ||
+      inmate?.banType ||
+      inmate?.banStartDate ||
+      inmate?.banEndDate ||
+      inmate?.banDuration
+    );
+  };
+
+  const openBanModal = (inmate) => {
+    const initialBanType = inmate.banType || 'temporary';
+    const initialStartDate = formatDateForInput(inmate.banStartDate) || new Date().toISOString().split('T')[0];
+    const initialEndDate = formatDateForInput(inmate.banEndDate);
+
+    setSelectedBanInmate(inmate);
+    setBanFormData({
+      banReason: inmate.banReason || '',
+      banType: initialBanType,
+      banStartDate: initialStartDate,
+      banEndDate: initialEndDate,
+      banDuration: calculateBanDurationText(initialBanType, initialStartDate, initialEndDate) || inmate.banDuration || '',
+      banNotes: inmate.banNotes || ''
+    });
+    setQuickDurationValue('');
+    setQuickDurationUnit('days');
+    setShowBanModal(true);
+  };
+
+  const handleBanInputChange = (e) => {
+    const { name, value } = e.target;
+    setBanFormData((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === 'banType' && value === 'permanent') {
+        next.banEndDate = '';
+        setQuickDurationValue('');
+      }
+
+      if (next.banType !== 'permanent' && quickDurationValue) {
+        const quickEndDate = getQuickDurationEndDate(next.banStartDate, quickDurationValue, quickDurationUnit);
+        if (quickEndDate) {
+          next.banEndDate = quickEndDate;
+        }
+      }
+
+      next.banDuration = calculateBanDurationText(next.banType, next.banStartDate, next.banEndDate);
+      return next;
+    });
+  };
+
+  const applyQuickDuration = (durationValue, durationUnit) => {
+    if (banFormData.banType === 'permanent') return;
+
+    const quickEndDate = getQuickDurationEndDate(banFormData.banStartDate, durationValue, durationUnit);
+    if (!quickEndDate) return;
+
+    setBanFormData((prev) => {
+      const next = { ...prev, banEndDate: quickEndDate };
+      next.banDuration = calculateBanDurationText(next.banType, next.banStartDate, next.banEndDate);
+      return next;
+    });
+  };
+
+  const handleQuickDurationValueChange = (e) => {
+    const value = e.target.value;
+    setQuickDurationValue(value);
+    applyQuickDuration(value, quickDurationUnit);
+  };
+
+  const handleQuickDurationUnitChange = (e) => {
+    const unit = e.target.value;
+    setQuickDurationUnit(unit);
+    applyQuickDuration(quickDurationValue, unit);
+  };
+
+  const handleClearQuickDuration = () => {
+    setQuickDurationValue('');
+    setQuickDurationUnit('days');
+  };
+
+  const handleApplyBan = async (e) => {
+    e.preventDefault();
+    if (!selectedBanInmate) return;
+
+    if (!banFormData.banReason || !banFormData.banType || !banFormData.banStartDate || !banFormData.banDuration) {
+      toast.error('Please fill in all required ban fields');
+      return;
+    }
+
+    if (banFormData.banType !== 'permanent' && !banFormData.banEndDate) {
+      toast.error('Ban end date is required for non-permanent bans');
+      return;
+    }
+
+    if (banFormData.banType !== 'permanent') {
+      const startDate = new Date(banFormData.banStartDate);
+      const endDate = new Date(banFormData.banEndDate);
+      if (endDate <= startDate) {
+        toast.error('Ban end date must be after start date');
+        return;
+      }
+    }
+
+    setIsSubmittingBan(true);
+    try {
+      await axios.put(`${API_BASE_URL}/inmates/${selectedBanInmate.inmateCode}/visit-ban`, banFormData);
+      toast.success('PDL visit ban applied successfully');
+      setShowBanModal(false);
+      setSelectedBanInmate(null);
+      fetchInmates();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to apply PDL ban');
+    } finally {
+      setIsSubmittingBan(false);
+    }
+  };
+
+  const handleRemoveBan = async (inmate) => {
+    if (!window.confirm(`Remove visit ban for ${inmate.fullName}?`)) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await axios.put(`${API_BASE_URL}/inmates/${inmate.inmateCode}/remove-visit-ban`);
+      toast.success('PDL visit ban removed');
+      fetchInmates();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to remove PDL ban');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -889,7 +1112,7 @@ const Inmates = ({ gender = 'all' }) => {
                 </InputGroup.Text>
                 <Form.Control
                   type="text"
-                  placeholder="Search PDLs..."
+                  placeholder="Search PDL..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="border-start-0"
@@ -912,7 +1135,7 @@ const Inmates = ({ gender = 'all' }) => {
           <Row className="mt-2">
             <Col>
               <div style={{ color: '#ffffffff', fontWeight: '500', textAlign: 'right' }}>
-                Showing {filteredInmates.length} PDLs 
+                Showing {filteredInmates.length} PDL 
                 {selectedGender !== 'all' && ` (${selectedGender} only)`}
               </div>
             </Col>
@@ -923,14 +1146,14 @@ const Inmates = ({ gender = 'all' }) => {
       {isLoading && inmates.length === 0 ? (
         <div className="text-center">
           <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading PDLs...</span>
+            <span className="visually-hidden">Loading PDL...</span>
           </Spinner>
         </div>
       ) : filteredInmates.length === 0 ? (
         <Alert variant="info">
           {searchQuery || selectedGender !== 'all' 
-            ? 'No PDLs found matching your criteria.' 
-            : 'No PDLs found. Add your first PDL to get started.'}
+            ? 'No PDL found matching your criteria.' 
+            : 'No PDL found. Add your first PDL to get started.'}
         </Alert>
       ) : (
         <Table striped bordered hover responsive className="bg-white">
@@ -942,7 +1165,7 @@ const Inmates = ({ gender = 'all' }) => {
               <th>Cell ID</th>
               <th>Crime</th>
               <th>Status</th>
-              <th style={{ width: '100px' }}>Actions</th>
+              <th style={{ width: '150px' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -958,9 +1181,14 @@ const Inmates = ({ gender = 'all' }) => {
                 <td>{inmate.cellId}</td>
                 <td>{inmate.crime}</td>
                 <td>
-                  <Badge bg={getStatusVariant(inmate.status)}>
-                    {inmate.status}
-                  </Badge>
+                  <div className="d-flex gap-1 flex-wrap">
+                    <Badge bg={getStatusVariant(inmate.status)}>
+                      {inmate.status}
+                    </Badge>
+                    {isInmateBanActive(inmate) && (
+                      <Badge bg="dark">visit banned</Badge>
+                    )}
+                  </div>
                 </td>
                 <td>
                   <div className="d-flex gap-1">
@@ -988,6 +1216,27 @@ const Inmates = ({ gender = 'all' }) => {
                     >
                       <Trash2 size={14} />
                     </Button>
+                    {hasInmateBanRecord(inmate) ? (
+                      <Button
+                        variant="outline-success"
+                        size="sm"
+                        onClick={() => handleRemoveBan(inmate)}
+                        className="p-1"
+                        title="Remove visit ban"
+                      >
+                        <Unlock size={14} />
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline-dark"
+                        size="sm"
+                        onClick={() => openBanModal(inmate)}
+                        className="p-1"
+                        title="Block PDL visits"
+                      >
+                        <Lock size={14} />
+                      </Button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -995,6 +1244,141 @@ const Inmates = ({ gender = 'all' }) => {
           </tbody>
         </Table>
       )}
+
+      <Modal show={showBanModal} onHide={() => setShowBanModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Block PDL Visit</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleApplyBan}>
+          <Modal.Body>
+            <p className="small text-muted mb-3">
+              PDL: <strong>{selectedBanInmate?.fullName || 'N/A'}</strong>
+            </p>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Ban Reason *</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={2}
+                name="banReason"
+                value={banFormData.banReason}
+                onChange={handleBanInputChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Ban Type *</Form.Label>
+              <Form.Select
+                name="banType"
+                value={banFormData.banType}
+                onChange={handleBanInputChange}
+                required
+              >
+                <option value="temporary">Temporary</option>
+                <option value="permanent">Permanent</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Quick Duration</Form.Label>
+              <InputGroup>
+                <Form.Control
+                  type="number"
+                  min="1"
+                  value={quickDurationValue}
+                  onChange={handleQuickDurationValueChange}
+                  placeholder="Enter value"
+                  disabled={banFormData.banType === 'permanent'}
+                />
+                <Form.Select
+                  value={quickDurationUnit}
+                  onChange={handleQuickDurationUnitChange}
+                  style={{ maxWidth: '140px' }}
+                  disabled={banFormData.banType === 'permanent'}
+                >
+                  <option value="days">Days</option>
+                  <option value="weeks">Weeks</option>
+                  <option value="months">Months</option>
+                  <option value="years">Years</option>
+                </Form.Select>
+                <Button
+                  variant="outline-secondary"
+                  onClick={handleClearQuickDuration}
+                  disabled={banFormData.banType === 'permanent' || !quickDurationValue}
+                >
+                  Clear
+                </Button>
+              </InputGroup>
+              <Form.Text className="text-muted">
+                Enter a number and select a unit to auto-fill ban end date.
+              </Form.Text>
+            </Form.Group>
+
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Ban Start Date *</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="banStartDate"
+                    value={banFormData.banStartDate}
+                    onChange={handleBanInputChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Ban End Date {banFormData.banType !== 'permanent' ? '*' : ''}</Form.Label>
+                  <Form.Control
+                    type="date"
+                    name="banEndDate"
+                    value={banFormData.banEndDate}
+                    onChange={handleBanInputChange}
+                    disabled={banFormData.banType === 'permanent'}
+                    required={banFormData.banType !== 'permanent'}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Ban Duration *</Form.Label>
+              <Form.Control
+                type="text"
+                name="banDuration"
+                value={banFormData.banDuration}
+                readOnly
+                placeholder="Auto-calculated from dates"
+                required
+              />
+              <Form.Text className="text-muted">
+                Duration is auto-calculated from ban start and end dates.
+              </Form.Text>
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Additional Notes</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                name="banNotes"
+                value={banFormData.banNotes}
+                onChange={handleBanInputChange}
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowBanModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="dark" type="submit" disabled={isSubmittingBan}>
+              {isSubmittingBan ? <Spinner size="sm" /> : 'Apply Ban'}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
 
       {/* Add/Edit Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="xl"
@@ -1607,7 +1991,7 @@ const Inmates = ({ gender = 'all' }) => {
   contentClassName="modal-content-scrollable"
 >
   <Modal.Header closeButton className="py-2">
-    <Modal.Title className="fs-5">Import PDLs from CSV</Modal.Title>
+    <Modal.Title className="fs-5">Import PDL from CSV</Modal.Title>
   </Modal.Header>
   <Modal.Body style={{ maxHeight: "60vh", overflowY: "auto" }}>
     <Alert variant="info" className="mb-4">

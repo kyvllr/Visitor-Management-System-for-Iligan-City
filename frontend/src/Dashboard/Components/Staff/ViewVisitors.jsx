@@ -7,6 +7,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { printVisitorQRCards, STANDARD_VISITOR_QR_CARD_OVERRIDES } from '../../../utils/printVisitorQRCards';
 import { 
   Search, 
   Plus, 
@@ -33,6 +34,7 @@ const ViewVisitors = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchBy, setSearchBy] = useState('lastName');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [csvFile, setCsvFile] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [prisonerIdSuggestions, setPrisonerIdSuggestions] = useState([]);
@@ -50,6 +52,57 @@ const ViewVisitors = () => {
     { value: 'status', label: 'Status' }
   ];
 
+  const getVisitorAge = (visitor) => {
+    const rawAge = Number(visitor?.age);
+    if (Number.isFinite(rawAge) && rawAge >= 0) {
+      return rawAge;
+    }
+
+    if (!visitor?.dateOfBirth) {
+      return null;
+    }
+
+    const birthDate = new Date(visitor.dateOfBirth);
+    if (Number.isNaN(birthDate.getTime())) {
+      return null;
+    }
+
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age >= 0 ? age : null;
+  };
+
+  const isConjugalVisitor = (relationship) => {
+    const normalizedRelationship = (relationship || '')
+      .toString()
+      .toLowerCase()
+      .replace(/[\s/-]+/g, '');
+
+    return ['wife', 'partner', 'livein', 'husband', 'girlfriend', 'boyfriend', 'spouse', 'lover', 'fiance'].includes(normalizedRelationship);
+  };
+
+  const matchesVisitorCategory = (visitor) => {
+    const age = getVisitorAge(visitor);
+
+    switch (categoryFilter) {
+      case 'child_1_12':
+        return age !== null && age >= 1 && age <= 12;
+      case 'age_13_above':
+        return age !== null && age >= 13;
+      case 'senior_citizen':
+        return age !== null && age >= 60;
+      case 'conjugal_visitor':
+        return isConjugalVisitor(visitor.relationship);
+      default:
+        return true;
+    }
+  };
+
   useEffect(() => {
     fetchVisitors();
     fetchInmates();
@@ -57,7 +110,7 @@ const ViewVisitors = () => {
 
   useEffect(() => {
     filterVisitors();
-  }, [searchQuery, searchBy, visitors]);
+  }, [searchQuery, searchBy, categoryFilter, visitors]);
 
   const fetchVisitors = async () => {
     setIsLoading(true);
@@ -93,23 +146,24 @@ const ViewVisitors = () => {
   };
 
   const filterVisitors = () => {
-    if (!searchQuery.trim()) {
-      setFilteredVisitors(visitors);
-      return;
+    let filtered = visitors;
+
+    if (categoryFilter !== 'all') {
+      filtered = filtered.filter(matchesVisitorCategory);
     }
 
-    const filtered = visitors.filter(visitor => {
+    if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      
-      if (searchBy === 'prisonerName') {
-        // Search in prisonerName field
-        const prisonerName = visitor.prisonerName?.toString().toLowerCase() || '';
-        return prisonerName.includes(query);
-      }
-      
-      const value = visitor[searchBy]?.toString().toLowerCase() || '';
-      return value.includes(query);
-    });
+      filtered = filtered.filter(visitor => {
+        if (searchBy === 'prisonerName') {
+          const prisonerName = visitor.prisonerName?.toString().toLowerCase() || '';
+          return prisonerName.includes(query);
+        }
+
+        const value = visitor[searchBy]?.toString().toLowerCase() || '';
+        return value.includes(query);
+      });
+    }
     
     setFilteredVisitors(filtered);
   };
@@ -256,7 +310,7 @@ const ViewVisitors = () => {
 
     // Validate required fields
     if (!formData.lastName || !formData.firstName || !formData.sex || !formData.dateOfBirth || 
-        !formData.address || !formData.contact || !formData.prisonerId || !formData.relationship) {
+      !formData.address || !formData.prisonerId || !formData.relationship) {
       toast.error('Please fill in all required fields');
       setIsLoading(false);
       return;
@@ -530,221 +584,32 @@ const ViewVisitors = () => {
   };
 
   const printVisitorDetails = () => {
-    const printWindow = window.open('', '_blank');
-    
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Visitor Details - ${selectedVisitor?.id}</title>
-          <style>
-            body { 
-              font-family: Arial, sans-serif; 
-              margin: 20px; 
-              line-height: 1.4;
-              color: #333;
-            }
-            .header { 
-              text-align: center; 
-              margin-bottom: 30px; 
-              border-bottom: 3px solid #333; 
-              padding-bottom: 15px; 
-            }
-            .header h1 {
-              margin: 0;
-              font-size: 24px;
-              font-weight: bold;
-              color: #2c3e50;
-            }
-            .header h2 {
-              margin: 5px 0 0 0;
-              font-size: 18px;
-              font-weight: normal;
-              color: #2c3e50;
-            }
-            .header h3 {
-              margin: 10px 0 0 0;
-              font-size: 16px;
-              font-weight: bold;
-              color: #2c3e50;
-            }
-            .section { 
-              margin-bottom: 25px; 
-              padding: 15px;
-              border: 1px solid #ddd;
-              border-radius: 5px;
-            }
-            .section h3 {
-              margin-top: 0;
-              color: #2c3e50;
-              border-bottom: 1px solid #eee;
-              padding-bottom: 8px;
-            }
-            .info-grid {
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              gap: 15px;
-            }
-            .info-item {
-              margin-bottom: 10px;
-            }
-            .label { 
-              font-weight: bold; 
-              color: #2c3e50;
-              display: inline-block;
-              width: 140px;
-            }
-            .full-width {
-              grid-column: 1 / -1;
-            }
-            .qr-code {
-              text-align: center;
-              margin: 20px 0;
-            }
-            .qr-code img {
-              max-width: 300px;
-              height: auto;
-              border: 1px solid #ddd;
-              border-radius: 5px;
-            }
-            .visitor-photo {
-              text-align: center;
-              margin: 20px 0;
-            }
-            .visitor-photo img {
-              max-width: 200px;
-              max-height: 200px;
-              object-fit: cover;
-              border: 1px solid #ddd;
-              border-radius: 5px;
-            }
-            .photo-container {
-              display: flex;
-              justify-content: space-around;
-              align-items: flex-start;
-              flex-wrap: wrap;
-              gap: 20px;
-              margin: 20px 0;
-            }
-            .photo-item {
-              text-align: center;
-            }
-            .photo-item h4 {
-              margin-bottom: 10px;
-              color: #2c3e50;
-            }
-            .status-badge {
-              display: inline-block;
-              padding: 4px 8px;
-              border-radius: 4px;
-              color: white;
-              font-weight: bold;
-              background-color: #28a745;
-            }
-            .status-pending { background-color: #ffc107; color: #000; }
-            .status-rejected { background-color: #dc3545; }
-            @media print {
-              body { margin: 10px; }
-              .section { border: none; }
-              .photo-container { 
-                display: flex; 
-                justify-content: space-around;
-              }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>ILIGAN CITY JAIL</h1>
-            <h2>Region 10</h2>
-            <h3>VISITOR DETAILS RECORD - ID: ${selectedVisitor?.id}</h3>
-          </div>
-          
-          ${selectedVisitor ? `
-            <div class="section">
-              <h3>Identification</h3>
-              <div class="photo-container">
-                ${selectedVisitor.photo ? `
-                  <div class="photo-item">
-                    <h4>Visitor Photo</h4>
-                    <div class="visitor-photo">
-                      <img src="${API_BASE_URL}/uploads/${selectedVisitor.photo}" alt="Visitor Photo" />
-                    </div>
-                  </div>
-                ` : ''}
-                ${selectedVisitor.qrCode ? `
-                  <div class="photo-item">
-                    <h4>QR Code</h4>
-                    <div class="qr-code">
-                      <img src="${selectedVisitor.qrCode}" alt="Visitor QR Code" />
-                    </div>
-                  </div>
-                ` : ''}
-              </div>
-            </div>
+    if (!selectedVisitor) return;
+    printVisitorQRCards({
+      visitors: [selectedVisitor],
+      apiBaseUrl: API_BASE_URL,
+      cardTitle: "ICJ VISITOR'S ID SYSTEM",
+      documentTitle: `Visitor QR ID - ${selectedVisitor?.id || ''}`,
+      contextLabel: 'PDL',
+      styleConfigOverrides: STANDARD_VISITOR_QR_CARD_OVERRIDES,
+      getPdlName: (visitor) => visitor.prisonerName || visitor.prisonerId || 'N/A',
+      onNoData: () => toast.warning('QR code not generated for this visitor.'),
+      onPopupBlocked: () => toast.error('Unable to open print window. Please allow pop-ups and try again.')
+    });
+  };
 
-            <div class="section">
-              <h3>Visitor Information</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="label">Visitor ID:</span> ${selectedVisitor.id}
-                </div>
-                <div class="info-item">
-                  <span class="label">Full Name:</span> ${selectedVisitor.fullName}
-                </div>
-                <div class="info-item">
-                  <span class="label">Gender:</span> ${selectedVisitor.sex}
-                </div>
-                <div class="info-item">
-                  <span class="label">Date of Birth:</span> ${new Date(selectedVisitor.dateOfBirth).toLocaleDateString()}
-                </div>
-                <div class="info-item">
-                  <span class="label">Age:</span> ${calculateAge(selectedVisitor.dateOfBirth)}
-                </div>
-                <div class="info-item full-width">
-                  <span class="label">Address:</span> ${selectedVisitor.address}
-                </div>
-                <div class="info-item">
-                  <span class="label">Contact:</span> ${selectedVisitor.contact || 'N/A'}
-                </div>
-                <div class="info-item">
-                  <span class="label">Status:</span> 
-                  <span class="status-badge status-${selectedVisitor.status}">${selectedVisitor.status.toUpperCase()}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="section">
-              <h3>Visit Details</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="label">PDL ID:</span> ${selectedVisitor.prisonerId}
-                </div>
-                <div class="info-item">
-                  <span class="label">PDL Name:</span> ${selectedVisitor.prisonerName || 'N/A'}
-                </div>
-                <div class="info-item">
-                  <span class="label">Relationship:</span> ${selectedVisitor.relationship}
-                </div>
-              </div>
-            </div>
-
-            <div class="section">
-              <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
-                <p>Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
-              </div>
-            </div>
-          ` : ''}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    
-    // Wait for images to load before printing
-    printWindow.onload = function() {
-      setTimeout(() => {
-        printWindow.print();
-      }, 1000);
-    };
+  const printAllVisitorQRCodes = () => {
+    printVisitorQRCards({
+      visitors: filteredVisitors,
+      apiBaseUrl: API_BASE_URL,
+      cardTitle: "ICJ VISITOR'S ID SYSTEM",
+      documentTitle: 'Visitor QR IDs',
+      contextLabel: 'PDL',
+      styleConfigOverrides: STANDARD_VISITOR_QR_CARD_OVERRIDES,
+      getPdlName: (visitor) => visitor.prisonerName || visitor.prisonerId || 'N/A',
+      onNoData: () => toast.warning('No visitor QR codes available to print.'),
+      onPopupBlocked: () => toast.error('Unable to open print window. Please allow pop-ups and try again.')
+    });
   };
 
   return (
@@ -764,6 +629,10 @@ const ViewVisitors = () => {
           <Button variant="outline-dark" size="sm" onClick={exportToCSV}>
             <Download size={16} className="me-1" />
             Export CSV
+          </Button>
+          <Button variant="outline-dark" size="sm" onClick={printAllVisitorQRCodes}>
+            <Printer size={16} className="me-1" />
+            Print All QR (4/page)
           </Button>
           <Button variant="dark" onClick={handleAdd}>
             <Plus size={16} className="me-1" />
@@ -805,6 +674,18 @@ const ViewVisitors = () => {
                   ))}
                 </Form.Select>
               </InputGroup>
+              <Form.Select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="bg-white mt-2"
+                style={{ maxWidth: '280px' }}
+              >
+                <option value="all">All Categories</option>
+                <option value="child_1_12">1-12 years old</option>
+                <option value="age_13_above">13 yrs old - Above</option>
+                <option value="senior_citizen">Senior citizen</option>
+                <option value="conjugal_visitor">Conjugal visitor</option>
+              </Form.Select>
             </Col>
             <Col md={4}>
               <div style={{ textAlign: 'right', fontWeight: '500', color: '#fff' }}>
@@ -1016,13 +897,12 @@ const ViewVisitors = () => {
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Contact Number *</Form.Label>
+                  <Form.Label>Contact Number</Form.Label>
                   <Form.Control
                     type="text"
                     name="contact"
                     value={formData.contact}
                     onChange={handleInputChange}
-                    required
                     placeholder="Phone number"
                   />
                 </Form.Group>
@@ -1307,7 +1187,7 @@ const ViewVisitors = () => {
               onChange={handleFileUpload}
             />
             <Form.Text className="text-muted">
-              CSV should include columns: lastName, firstName, middleName, extension, dateOfBirth, sex, address, contact, prisonerId, relationship
+              CSV should include columns: lastName, firstName, middleName, extension, dateOfBirth, sex, address, contact (optional), prisonerId, relationship
             </Form.Text>
           </Form.Group>
         </Modal.Body>

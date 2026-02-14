@@ -14,6 +14,7 @@ import Logs from "./Components/Admin/Logs";
 import Guest from "./Components/Admin/Guest";
 import ScanQR from "./Components/Admin/ScanQr";
 import PendingRequests from "./Components/Admin/PendingRequests";
+import BannedPDLs from "./Components/Admin/BannedPDLs";
 import ProfileModal from "./Components/Admin/ProfileModal";
 import { Badge, Dropdown, Button, Modal } from "react-bootstrap";
 import axios from "axios";
@@ -103,7 +104,8 @@ const FemaleAdmin = () => {
             { name: "Recorded Visits", icon: "bx bxs-calendar-check", path: "/femaleadmin/record-visits" },
             { name: "Visitors", icon: "bx bxs-user-voice", path: "/femaleadmin/visitors" },
             { name: "Guests", icon: "bx bxs-user-badge", path: "/femaleadmin/guest" },
-            { name: "Female PDLs", icon: "bx bxs-user-account", path: "/femaleadmin/inmates" },
+            { name: "Female PDL", icon: "bx bxs-user-account", path: "/femaleadmin/inmates" },
+            { name: "Banned PDL", icon: "bx bxs-lock-alt", path: "/femaleadmin/banned-pdls" },
             { name: "Crime List", icon: "bx bxs-error", path: "/femaleadmin/crimes" },
             { name: "Reports", icon: "bx bxs-report", path: "/femaleadmin/reports-analytics" },
             { name: "Pending Visitors", icon: "bx bxs-time-five", path: "/femaleadmin/pending-requests" },
@@ -197,6 +199,7 @@ const FemaleAdmin = () => {
             <Route path="/record-visits" element={<RecordVisits />} />
             <Route path="/visitors" element={<VisitorFemaleDivision />} /> {/* Different component for female visitors */}
             <Route path="/guest" element={<Guest />} />
+            <Route path="/banned-pdls" element={<BannedPDLs gender="female" />} />
             <Route path="/inmates" element={<FemaleInmates />} /> {/* Different component for female inmates */}
             <Route path="/crimes" element={<Crimes />} />
             <Route path="/reports-analytics" element={<ReportsAnalytics />} />

@@ -346,7 +346,7 @@ const ReportsAnalytics = () => {
                 <strong>System Status:</strong><br />
                 • Visitors: {rawData.visitors || 0}<br />
                 • Guests: {rawData.guests || 0}<br />
-                • PDLs: {rawData.inmates || 0}<br />
+                • PDL: {rawData.inmates || 0}<br />
                 • Visit Logs: {rawData.visitLogs || 0}
               </small>
             </Card.Body>
