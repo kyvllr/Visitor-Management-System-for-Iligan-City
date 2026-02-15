@@ -94,6 +94,8 @@ const VisitorFemaleDivision = () => {
     const age = getVisitorAge(visitor);
 
     switch (categoryFilter) {
+      case 'below_1_year_old':
+        return age !== null && age >= 0 && age < 1;
       case 'child_1_12':
         return age !== null && age >= 1 && age <= 12;
       case 'age_13_above':
@@ -716,6 +718,7 @@ const VisitorFemaleDivision = () => {
                 style={{ maxWidth: '280px', color: 'black' }}
               >
                 <option value="all" style={{ color: 'black' }}>All Categories</option>
+                <option value="below_1_year_old" style={{ color: 'black' }}>Below 1 year old</option>
                 <option value="child_1_12" style={{ color: 'black' }}>1-12 years old</option>
                 <option value="age_13_above" style={{ color: 'black' }}>13 yrs old - Above</option>
                 <option value="senior_citizen" style={{ color: 'black' }}>Senior citizen</option>

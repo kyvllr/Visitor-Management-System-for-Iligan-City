@@ -90,6 +90,8 @@ const ViewVisitors = () => {
     const age = getVisitorAge(visitor);
 
     switch (categoryFilter) {
+      case 'below_1_year_old':
+        return age !== null && age >= 0 && age < 1;
       case 'child_1_12':
         return age !== null && age >= 1 && age <= 12;
       case 'age_13_above':
@@ -681,6 +683,7 @@ const ViewVisitors = () => {
                 style={{ maxWidth: '280px' }}
               >
                 <option value="all">All Categories</option>
+                <option value="below_1_year_old">Below 1 year old</option>
                 <option value="child_1_12">1-12 years old</option>
                 <option value="age_13_above">13 yrs old - Above</option>
                 <option value="senior_citizen">Senior citizen</option>
