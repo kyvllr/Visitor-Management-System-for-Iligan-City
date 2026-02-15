@@ -232,7 +232,7 @@ useEffect(() => {
         <Button 
           onClick={openAddModal} 
           disabled={isLoading}
-          style={{ backgroundColor: "#FFD700", color: "#000000", border: "none", fontWeight: "600" }}
+          style={{ backgroundColor: "#0d6efd", color: "#ffffff", border: "none", fontWeight: "600" }}
         >
           Add New Crime
         </Button>

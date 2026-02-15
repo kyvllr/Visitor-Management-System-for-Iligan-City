@@ -479,13 +479,13 @@ if (timer.personType === 'visitor') {
         name: 'Visitors', 
         value: visitsFromLogs.visitors > 0 ? visitsFromLogs.visitors : visitorVisits,
         count: visitsFromLogs.visitors > 0 ? visitsFromLogs.visitors : visitorVisits,
-        color: '#FFEB3B' // Lighter shade of yellow
+        color: '#3baaff' // Lighter shade of yellow
       },
       { 
         name: 'Guests', 
         value: visitsFromLogs.guests > 0 ? visitsFromLogs.guests : guestVisits,
         count: visitsFromLogs.guests > 0 ? visitsFromLogs.guests : guestVisits,
-        color: '#f7ab2aff' // Darker shade of yellow
+        color: 'rgb(0, 85, 255)' // Darker shade of yellow
       }
     ];
 
@@ -621,13 +621,13 @@ if (timer.personType === 'visitor') {
         name: 'Male', 
         value: Math.max(maleVisitors, maleVisitLogs),
         count: Math.max(maleVisitors, maleVisitLogs),
-        color: '#f7ab2aff' // Darker shade of yellow for male
+        color: 'rgba(0, 72, 255, 0.88)' // Darker shade of yellow for male
       },
       { 
         name: 'Female', 
         value: Math.max(femaleVisitors, femaleVisitLogs),
         count: Math.max(femaleVisitors, femaleVisitLogs),
-        color: '#FFEB3B' // Lighter shade of yellow for female
+        color: '#67b7f5e5' // Lighter shade of yellow for female
       }
     ];
 
@@ -1132,14 +1132,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                         )}
                       </div>
                       <div className="flex-grow-1">
-                        <div className="fw-bold small text-white">
+                        <div className="fw-bold small" style={{ color: 'black' }}>
                           {timer.personName || 'Unknown Visitor'}
                           {renderTimerTypeBadge(timer)}
                         </div>
-                        <div className="text-white extra-small" style={{ opacity: 0.9 }}>
+                        <div className="extra-small" style={{ color: 'black', opacity: 0.9 }}>
                           In: {formatTimeIn(timer.timerStart || timer.timeIn)}
                         </div>
-                        <div className="extra-small text-white" style={{ opacity: 0.9 }}>
+                        <div className="extra-small" style={{ color: 'black', opacity: 0.9 }}>
                           ID: {timer.personId || 'N/A'} • {type}
                         </div>
                         {renderCustomTimeSlotInfo(timer)}
@@ -1148,10 +1148,10 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                   </Col>
                   <Col md={3}>
                     <div className="extra-small">
-                      <div className="fw-bold text-white">
+                      <div className="fw-bold" style={{ color: 'black' }}>
                         {isGuest ? 'Visit Purpose:' : 'PDL:'}
                       </div>
-                      <div className="text-white" style={{ opacity: 0.9 }}>
+                      <div style={{ color: 'black', opacity: 0.9 }}>
                         {isGuest ? (timer.visitPurpose || 'General Visit') : (timer.inmateName || 'N/A')}
                       </div>
                       {timer.isCustomTimer && (
@@ -1227,9 +1227,9 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           </>
         ) : (
           <div className="text-center py-3">
-            <FaUserClock size={32} style={{ color: '#ffffff92' }} className="mb-2" />
-            <h6 style={{ color: '#ffffff92' }}>No Active {title}</h6>
-            <p style={{ color: '#ffffff92' }} className="small mb-0">
+            <FaUserClock size={32} style={{ color: '#0d47a192' }} className="mb-2" />
+            <h6 style={{ color: '#0d47a1' }}>No Active {title}</h6>
+            <p style={{ color: '#0d47a192' }} className="small mb-0">
               When {type.toLowerCase()}s check in and are approved, their timers (standard 3-hour or custom) will appear here.
             </p>
           </div>
@@ -1245,7 +1245,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
         <h2 style={{ 
           color: 'white', 
           fontWeight: "600",
-          borderBottom: '2px solid #FFD700',
+          borderBottom: '2px solid #0d47a1',
           paddingBottom: "10px",
           margin: 0
         }}>
@@ -1258,17 +1258,17 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           disabled={loading}
           className="refresh-data-btn"
           style={{ 
-            borderColor: '#FFD700', 
-            color: '#FFD700',
+            borderColor: '#0d47a1', 
+            color: '#0d47a1',
             backgroundColor: 'transparent'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#FFD700';
+            e.currentTarget.style.backgroundColor = '#0d47a1';
             e.currentTarget.style.color = '#000000';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = '#FFD700';
+            e.currentTarget.style.color = '#0d47a1';
           }}
         >
           {loading ? 'Refreshing...' : 'Refresh Data'}
@@ -1284,7 +1284,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
 
       {lastUpdate && (
         <div className="text-end mb-3">
-          <small style={{ color: '#FFD700' }}>
+          <small style={{ color: '#0d47a1' }}>
             Last updated: {lastUpdate.toLocaleTimeString()}
           </small>
         </div>
@@ -1345,14 +1345,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
       {/* Timer Summary Cards - SEPARATED BY TYPE */}
       <Row className="mb-4 g-3">
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1', backgroundColor: '#353434a7', borderRight: '2px solid #0d47a1', borderTop: '6px solid #0d47a1', borderBottom: '2px solid #0d47a1', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaUserFriends size={25} className="mb-2" style={{ color: COLORS.success }} />
-              <Card.Title style={{ fontSize: "0.9rem", color: '#FFD700' }}>Active Visitors</Card.Title>
-              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "0.9rem", color: '#0d47a1' }}>Active Visitors</Card.Title>
+              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'black' }}>
                 {getVisitorTimers().length}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 Visitors with active timers
               </div>
             </Card.Body>
@@ -1360,14 +1360,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
         </Col>
 
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1', backgroundColor: '#353434a7', borderRight: '2px solid #0d47a1', borderTop: '6px solid #0d47a1', borderBottom: '2px solid #0d47a1', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaUserTie size={25} className="mb-2" style={{ color: COLORS.warning }} />
-              <Card.Title style={{ fontSize: "0.9rem", color: '#FFD700' }}>Active Guests</Card.Title>
-              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "0.9rem", color: '#0d47a1' }}>Active Guests</Card.Title>
+              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'black' }}>
                 {getGuestTimers().length}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 Guests with active timers
               </div>
             </Card.Body>
@@ -1375,14 +1375,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
         </Col>
 
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1', backgroundColor: '#353434a7', borderRight: '2px solid #0d47a1', borderTop: '6px solid #0d47a1', borderBottom: '2px solid #0d47a1', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaClock size={25} className="mb-2" style={{ color: COLORS.info }} />
-              <Card.Title style={{ fontSize: "0.9rem", color: '#FFD700' }}>Custom Timers</Card.Title>
-              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "0.9rem", color: '#0d47a1' }}>Custom Timers</Card.Title>
+              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'black' }}>
                 {getCustomVisitorTimers() + getCustomGuestTimers()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 Custom duration timers
               </div>
             </Card.Body>
@@ -1390,14 +1390,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
         </Col>
 
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1', backgroundColor: '#343535a7', borderRight: '2px solid #0d47a1', borderTop: '6px solid #0d47a1', borderBottom: '2px solid #0d47a1', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaExclamationTriangle size={25} className="mb-2" style={{ color: COLORS.danger }} />
-              <Card.Title style={{ fontSize: "0.9rem", color: '#FFD700' }}>Urgent Timers</Card.Title>
-              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "0.9rem", color: '#0d47a1' }}>Urgent Timers</Card.Title>
+              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'black' }}>
                 {getUrgentVisitorTimers().length + getUrgentGuestTimers().length}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 Less than 30 minutes
               </div>
             </Card.Body>
@@ -1408,7 +1408,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
       {/* Core Statistics */}
       <Row className="mb-4">
         <Col>
-          <h5 className="mb-3" style={{ color: '#ffd900ff', borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>
+          <h5 className="mb-3" style={{ color: '#0d47a1', borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>
             <FaUsers className="me-2" />
             Core Statistics
           </h5>
@@ -1423,11 +1423,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             style={{ 
               cursor: getBasePath() !== '/malestaff' && getBasePath() !== '/femalestaff' && getBasePath() !== '/staff' ? 'pointer' : 'default',
               transition: 'all 0.3s ease',
-              borderLeft: '2px solid #ffc107bf',
-              borderRight: '2px solid #ffc107bf',
-              borderTop: '6px solid #ffc107bf',
-              borderBottom: '2px solid #ffc107bf',
-              backgroundColor: '#353434a7',
+              borderLeft: '2px solid #0d47a1',
+              borderRight: '2px solid #0d47a1',
+              borderTop: '6px solid #0d47a1',
+              borderBottom: '2px solid #0d47a1',
+              backgroundColor: '#343535a7',
               borderRadius: '12px'
             }}
             onMouseEnter={getBasePath() !== '/malestaff' && getBasePath() !== '/femalestaff' && getBasePath() !== '/staff' ? (e) => {
@@ -1441,11 +1441,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaUsers size={30} className="mb-2" style={{ color: COLORS.primary }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Total PDL</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1'}}>Total PDL</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black' }}>
                 {getTotalInmates()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 <FaMars className="text-info me-1" /> {getMaleInmates()} Male • 
                 <FaVenus className="text-danger ms-2 me-1" /> {getFemaleInmates()} Female
               </div>
@@ -1461,11 +1461,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             style={{ 
               cursor: 'pointer',
               transition: 'all 0.3s ease',
-              borderLeft: '2px solid #ffc107bf',
-              borderRight: '2px solid #ffc107bf',
-              borderTop: '6px solid #ffc107bf',
-              borderBottom: '2px solid #ffc107bf',
-              backgroundColor: '#353434a7',
+              borderLeft: '2px solid #0d47a1',
+              borderRight: '2px solid #0d47a1',
+              borderTop: '6px solid #0d47a1',
+              borderBottom: '2px solid #0d47a1',
+              backgroundColor: '#343535a7',
               borderRadius: '12px'
             }}
             onMouseEnter={(e) => {
@@ -1479,11 +1479,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaUserFriends size={30} className="mb-2" style={{ color: COLORS.success }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Total Visitors</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white'  }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1'}}>Total Visitors</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black'  }}>
                 {getTotalVisitors()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 <FaMars className="text-info me-1" /> {getMaleVisitors()} Male • 
                 <FaVenus className="text-danger ms-2 me-1" /> {getFemaleVisitors()} Female
               </div>
@@ -1499,10 +1499,10 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             style={{ 
               cursor: getBasePath() !== '/femaleadmin' && getBasePath() !== '/malestaff' && getBasePath() !== '/femalestaff' && getBasePath() !== '/staff' ? 'pointer' : 'default',
               transition: 'all 0.3s ease',
-              borderLeft: '2px solid #ffc107bf',
-              borderRight: '2px solid #ffc107bf',
-              borderTop: '6px solid #ffc107bf',
-              borderBottom: '2px solid #ffc107bf',
+              borderLeft: '2px solid #0d47a1bf',
+              borderRight: '2px solid #0d47a1bf',
+              borderTop: '6px solid #0d47a1bf',
+              borderBottom: '2px solid #0d47a1bf',
               backgroundColor: '#353434a7',
               borderRadius: '12px'
             }}
@@ -1517,11 +1517,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaMars size={30} className="mb-2" style={{ color: COLORS.info }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Male PDL</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1'}}>Male PDL</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black' }}>
                 {getMaleInmates()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 Total male PDL population
               </div>
             </Card.Body>
@@ -1536,11 +1536,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             style={{ 
               cursor: getBasePath() !== '/maleadmin' && getBasePath() !== '/malestaff' && getBasePath() !== '/femalestaff' && getBasePath() !== '/staff' ? 'pointer' : 'default',
               transition: 'all 0.3s ease',
-              borderLeft: '2px solid #ffc107bf',
-              borderRight: '2px solid #ffc107bf',
-              borderTop: '6px solid #ffc107bf',
-              borderBottom: '2px solid #ffc107bf',
-              backgroundColor: '#353434a7',
+              borderLeft: '2px solid #0d47a1',
+              borderRight: '2px solid #0d47a1',
+              borderTop: '6px solid #0d47a1',
+              borderBottom: '2px solid #0d47a1',
+              backgroundColor: '#343535a7',
               borderRadius: '12px'
             }}
             onMouseEnter={getBasePath() !== '/maleadmin' && getBasePath() !== '/malestaff' && getBasePath() !== '/femalestaff' && getBasePath() !== '/staff' ? (e) => {
@@ -1554,11 +1554,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaVenus size={30} className="mb-2" style={{ color: COLORS.danger }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Female PDL</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1'}}>Female PDL</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black' }}>
                 {getFemaleInmates()}
               </Card.Text>
-             <div className="small" style={{ color: '#ffd9009a' }}>
+             <div className="small" style={{ color: '#0d47a1' }}>
                 Total female PDL population
               </div>
             </Card.Body>
@@ -1570,14 +1570,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
       <Row className="mb-4 g-3">
         {/* Total Male Visitors Card */}
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1', backgroundColor: '#343535a7', borderRight: '2px solid #0d47a1', borderTop: '6px solid #0d47a1', borderBottom: '2px solid #0d47a1', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaMars size={30} className="mb-2" style={{ color: COLORS.info }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Male Visitors</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white'  }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1'}}>Male Visitors</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black'  }}>
                 {getMaleVisitors()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 Total registered male visitors
               </div>
             </Card.Body>
@@ -1586,14 +1586,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
 
         {/* Total Female Visitors Card */}
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1', backgroundColor: '#343535a7', borderRight: '2px solid #0d47a1', borderTop: '6px solid #0d47a1', borderBottom: '2px solid #0d47a1', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaVenus size={30} className="mb-2" style={{ color: COLORS.danger }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff' }}>Female Visitors</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1' }}>Female Visitors</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black' }}>
                 {getFemaleVisitors()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 Total registered female visitors
               </div>
             </Card.Body>
@@ -1608,11 +1608,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             style={{ 
               cursor: 'pointer',
               transition: 'all 0.3s ease',
-              borderLeft: '2px solid #ffc107bf',
-              borderRight: '2px solid #ffc107bf',
-              borderTop: '6px solid #ffc107bf',
-              backgroundColor: '#353434a7',
-              borderBottom: '2px solid #ffc107bf',
+              borderLeft: '2px solid #0d47a1',
+              borderRight: '2px solid #0d47a1',
+              borderTop: '6px solid #0d47a1',
+              backgroundColor: '#343535a7',
+              borderBottom: '2px solid #0d47a1',
               borderRadius: '12px'
             }}
             onMouseEnter={(e) => {
@@ -1626,11 +1626,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaUserFriends size={30} className="mb-2" style={{ color: COLORS.warning }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff' }}>Total Guests</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1' }}>Total Guests</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black' }}>
                 {getTotalGuests()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 <FaUserCheck className="text-success me-1" /> {getApprovedGuests()} Approved
               </div>
             </Card.Body>
@@ -1645,11 +1645,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             style={{ 
               cursor: getBasePath() !== '/malestaff' && getBasePath() !== '/femalestaff' && getBasePath() !== '/staff' ? 'pointer' : 'default',
               transition: 'all 0.3s ease',
-              borderLeft: '2px solid #ffc107bf',
-              borderRight: '2px solid #ffc107bf',
-              borderTop: '6px solid #ffc107bf',
-              borderBottom: '2px solid #ffc107bf',
-              backgroundColor: '#353434a7',
+              borderLeft: '2px solid #0d47a1',
+              borderRight: '2px solid #0d47a1',
+              borderTop: '6px solid #0d47a1',
+              borderBottom: '2px solid #0d47a1',
+              backgroundColor: '#343535a7',
               borderRadius: '12px'
             }}
             onMouseEnter={getBasePath() !== '/malestaff' && getBasePath() !== '/femalestaff' && getBasePath() !== '/staff' ? (e) => {
@@ -1663,11 +1663,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           >
             <Card.Body className="p-3">
               <FaUser size={30} className="mb-2" style={{ color: COLORS.purple }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Total System Users</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1' }}>Total System Users</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black' }}>
                 {getTotalUsers()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a1' }}>
                 <FaUserShield className="me-1" /> {getTotalAdmins()} Admin • 
                 <FaUserTie className="ms-2 me-1" /> {getTotalStaff()} Staff
               </div>
@@ -1679,7 +1679,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
       {/* Visit Statistics Charts */}
       <Row className="mb-4">
         <Col>
-          <h5 className="mb-3" style={{ color: '#ffd900ff', borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>
+          <h5 className="mb-3" style={{ color: '#0d47a1', borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>
             <FaChartBar className="me-2" />
             Visit Statistics Charts
             {hasVisitData && (
@@ -1725,20 +1725,20 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             {/* Weekly Visits Line Chart */}
             <Col md={6}>
               <Card className="shadow-sm border-0 h-100">
-                <Card.Header style={{ backgroundColor: '#ffd900c5', color: '#ffd900ff'}}>
+                <Card.Header style={{ backgroundColor: '#0d47a1c5', color: '#0d47a1ff'}}>
                   <h6 className="mb-0" style={{color: '#ffffffff'}}>Weekly Visit Trend</h6>
                 </Card.Header>
                 <Card.Body>
                   <ResponsiveContainer width="100%" height={250}>
                     <LineChart data={getWeeklyVisitData()}>
                       <CartesianGrid strokeDasharray="3 3" stroke={'#898989b7'} />
-                      <XAxis dataKey="name" stroke={'white'} />
+                      <XAxis dataKey="name" stroke={'black'} />
                       <YAxis stroke={'#898989b7'} />
                       <Tooltip content={<CustomTooltip />} />
                       <Line 
                         type="monotone" 
                         dataKey="visits" 
-                        stroke={'#ffd900ff'} 
+                        stroke={'#0d47a1ff'} 
                         strokeWidth={2}
                         dot={{ fill: 'white', strokeWidth: 1, r: 4 }}
                         activeDot={{ r: 6, fill: 'red'}}
@@ -1752,7 +1752,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             {/* Visit Type Distribution Pie Chart */}
             <Col md={6}>
               <Card className="shadow-sm border-0 h-100">
-                <Card.Header style={{ backgroundColor: '#ffd900c5', color: '#ffd900ff'}}>
+                <Card.Header style={{ backgroundColor: '#0d47a1c5', color: '#0d47a1ff'}}>
                   <h6 className="mb-0" style={{color: 'white'}}>Visit Type Distribution</h6>
                 </Card.Header>
                 <Card.Body>
@@ -1785,17 +1785,17 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             {/* Monthly Visits Bar Chart */}
             <Col md={6}>
               <Card className="shadow-sm border-0 h-100">
-                <Card.Header style={{ backgroundColor: '#ffd900c5', color: '#ffd900ff'}}>
+                <Card.Header style={{ backgroundColor: '#0d47a1c5', color: '#0d47a1ff'}}>
                   <h6 className="mb-0" style={{color: 'white'}}>Monthly Visit Distribution</h6>
                 </Card.Header>
                 <Card.Body>
                   <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={getMonthlyVisitData()}>
                       <CartesianGrid strokeDasharray="3 3" stroke={'#898989b7'} />
-                      <XAxis dataKey="name" stroke={'white'} />
+                      <XAxis dataKey="name" stroke={'black'} />
                       <YAxis stroke={'#898989b7'} />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="visits" fill={'#ffd500ff'} radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="visits" fill={'#0d47a1ff'} radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Card.Body>
@@ -1805,7 +1805,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
             {/* Visitors by Gender Pie Chart */}
             <Col md={6}>
               <Card className="shadow-sm border-0 h-100">
-                <Card.Header style={{ backgroundColor: '#ffd900c5', color: '#ffd900ff' }}>
+                <Card.Header style={{ backgroundColor: '#0d47a1c5', color: '#0d47a1ff' }}>
                   <h6 className="mb-0" style={{color: 'white'}}>Visitors by Gender</h6>
                 </Card.Header>
                 <Card.Body>
@@ -1837,7 +1837,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           <Row className="mb-4">
             <Col md={12}>
               <Card className="shadow-sm border-0 h-100">
-                <Card.Header style={{ backgroundColor: '#ffd900c5', color: '#ffd900ff' }}>
+                <Card.Header style={{ backgroundColor: '#0d47a1c5', color: '#0d47a1ff' }}>
                   <h6 className="mb-0" style={{ color: 'white' }}>Visitor Category Records</h6>
                 </Card.Header>
                 <Card.Body>
@@ -1852,7 +1852,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                       <YAxis
                         dataKey="name"
                         type="category"
-                        stroke={'white'}
+                        stroke={'black'}
                         width={150}
                         tick={{ fontSize: 12 }}
                       />
@@ -1873,7 +1873,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           <Row className="mb-4">
             <Col md={12}>
               <Card className="shadow-sm border-0 h-100">
-                <Card.Header style={{ backgroundColor: '#ffd900c5', color: '#ffd900ff' }}>
+                <Card.Header style={{ backgroundColor: '#0d47a1c5', color: '#0d47a1ff' }}>
                   <h6 className="mb-0" style={{color: 'white'}}>Visits by Time of Day</h6>
                 </Card.Header>
                 <Card.Body>
@@ -1886,7 +1886,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                         <CartesianGrid strokeDasharray="3 3" stroke={'#898989b7'} />
                         <XAxis 
                           dataKey="name" 
-                          stroke={'white'}
+                          stroke={'black'}
                           interval={0}
                           angle={-45}
                           textAnchor="end"
@@ -1900,7 +1900,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                         <Tooltip content={<CustomTooltip />} />
                         <Bar 
                           dataKey="visits" 
-                          fill={'#ffc800ff'} 
+                          fill={'#0d47a1ff'} 
                           radius={[4, 4, 0, 0]}
                           barSize={40}
                         />
@@ -1925,7 +1925,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
       {/* Quick Stats Cards */}
       <Row className="mb-4">
         <Col>
-          <h5 className="mb-3" style={{ color: '#ffd900ff', borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>
+          <h5 className="mb-3" style={{ color: '#0d47a1ff', borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>
             <FaChartBar className="me-2" />
             Visit Statistics Summary
           </h5>
@@ -1939,11 +1939,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           }}>
             <Card.Body className="p-3">
               <FaCalendarWeek size={30} className="mb-2" style={{ color: COLORS.primary }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Visits This Week</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1ff'}}>Visits This Week</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black' }}>
                 {getVisitorsThisWeek()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a19a' }}>
                 All check-ins this week
               </div>
             </Card.Body>
@@ -1957,11 +1957,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           }}>
             <Card.Body className="p-3">
               <FaCalendarAlt size={30} className="mb-2" style={{ color: COLORS.info }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff' }}>Visits This Month</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white'  }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1ff' }}>Visits This Month</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black'  }}>
                 {getVisitorsThisMonth()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a19a' }}>
                 All check-ins this month
               </div>
             </Card.Body>
@@ -1975,11 +1975,11 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
           }}>
             <Card.Body className="p-3">
               <FaCalendarDay size={30} className="mb-2" style={{ color: COLORS.success }} />
-              <Card.Title style={{ fontSize: "1rem", color: '#ffd900ff'}}>Visits This Year</Card.Title>
-              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'white'  }}>
+              <Card.Title style={{ fontSize: "1rem", color: '#0d47a1ff'}}>Visits This Year</Card.Title>
+              <Card.Text style={{ fontSize: "1.8rem", fontWeight: "bold", color: 'black'  }}>
                 {getVisitorsThisYear()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a19a' }}>
                 All check-ins this year
               </div>
             </Card.Body>
@@ -1990,7 +1990,7 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
       {/* Visitor Analytics */}
       <Row className="mb-4">
         <Col>
-          <h5 className="mb-3" style={{ color: '#ffd900ff', borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>
+          <h5 className="mb-3" style={{ color: '#0d47a1ff', borderBottom: "1px solid #dee2e6", paddingBottom: "8px" }}>
             <FaUserCheck className="me-2" />
             Visitor Analytics
           </h5>
@@ -1998,14 +1998,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
       </Row>
       <Row className="mb-4 g-3">
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1bf', backgroundColor: '#353434a7', borderRight: '2px solid #0d47a1bf', borderTop: '6px solid #0d47a1bf', borderBottom: '2px solid #0d47a1bf', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaUserFriends size={25} className="mb-2" style={{ color: COLORS.primary }} />
-              <Card.Title style={{ fontSize: "0.9rem", color: '#ffd900ff'}}>Unique Visitors</Card.Title>
-              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'white'  }}>
+              <Card.Title style={{ fontSize: "0.9rem", color: '#0d47a1ff'}}>Unique Visitors</Card.Title>
+              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'black'  }}>
                 {getUniqueVisitors()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a19a' }}>
                 Different people who visited
               </div>
             </Card.Body>
@@ -2013,14 +2013,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
         </Col>
 
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1bf', backgroundColor: '#353434a7', borderRight: '2px solid #0d47a1bf', borderTop: '6px solid #0d47a1bf', borderBottom: '2px solid #0d47a1bf', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaUserCheck size={25} className="mb-2" style={{ color: COLORS.success }} />
-              <Card.Title style={{ fontSize: "0.9rem", color: '#ffd900ff'}}>Repeat Visitors</Card.Title>
-              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'white'  }}>
+              <Card.Title style={{ fontSize: "0.9rem", color: '#0d47a1ff'}}>Repeat Visitors</Card.Title>
+              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'black'  }}>
                 {getRepeatVisitors()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a19a' }}>
                 Visitors who came multiple times
               </div>
             </Card.Body>
@@ -2028,14 +2028,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
         </Col>
 
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1bf', backgroundColor: '#353434a7', borderRight: '2px solid #0d47a1bf', borderTop: '6px solid #0d47a1bf', borderBottom: '2px solid #0d47a1bf', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaUserClock size={25} className="mb-2" style={{ color: COLORS.warning }} />
-              <Card.Title style={{ fontSize: "0.9rem", color: '#ffd900ff'}}>Active Visitors</Card.Title>
-              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "0.9rem", color: '#0d47a1ff'}}>Active Visitors</Card.Title>
+              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'black' }}>
                 {getActiveVisitorsNow()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a19a' }}>
                 Visitors with active timers
               </div>
             </Card.Body>
@@ -2043,14 +2043,14 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
         </Col>
 
         <Col md={3}>
-          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #ffc107bf', backgroundColor: '#353434a7', borderRight: '2px solid #ffc107bf', borderTop: '6px solid #ffc107bf', borderBottom: '2px solid #ffc107bf', borderRadius: '12px' }}>
+          <Card className="text-center h-100 shadow-sm" style={{ borderLeft: '2px solid #0d47a1bf', backgroundColor: '#353434a7', borderRight: '2px solid #0d47a1bf', borderTop: '6px solid #0d47a1bf', borderBottom: '2px solid #0d47a1bf', borderRadius: '12px' }}>
             <Card.Body className="p-3">
               <FaHistory size={25} className="mb-2" style={{ color: COLORS.info }} />
-              <Card.Title style={{ fontSize: "0.9rem", color: '#ffd900ff'}}>Total Recorded Visits</Card.Title>
-              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'white' }}>
+              <Card.Title style={{ fontSize: "0.9rem", color: '#0d47a1ff'}}>Total Recorded Visits</Card.Title>
+              <Card.Text style={{ fontSize: "1.5rem", fontWeight: "bold", color: 'black' }}>
                 {getTotalRecordedVisits()}
               </Card.Text>
-              <div className="small" style={{ color: '#ffd9009a' }}>
+              <div className="small" style={{ color: '#0d47a19a' }}>
                 All time visit records
               </div>
             </Card.Body>

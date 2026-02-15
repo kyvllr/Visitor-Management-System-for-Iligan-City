@@ -1122,7 +1122,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
 
     return (
       <Table striped bordered hover responsive className="bg-white">
-        <thead className="table-dark">
+        <thead className="table-primary">
           <tr>
             <th>Visit Date</th>
             <th>Type</th>
@@ -1141,8 +1141,8 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
           {data.map(log => (
             <tr key={log._id}>
               <td>
-                <div className="fw-bold text-white">{formatDate(log.visitDate)}</div>
-                <div className="small text-white" style={{ opacity: 0.7 }}>
+                <div className="fw-bold text-dark">{formatDate(log.visitDate)}</div>
+                <div className="small text-dark" style={{ opacity: 0.7 }}>
                   {new Date(log.visitDate).toLocaleDateString('en-US', { weekday: 'short' })}
                 </div>
               </td>
@@ -1152,36 +1152,36 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
                 </Badge>
               </td>
               <td>
-                <div className="fw-bold text-white">{log.personName}</div>
-                <div className="small text-white" style={{ opacity: 0.7 }}>
+                <div className="fw-bold text-dark">{log.personName}</div>
+                <div className="small text-dark" style={{ opacity: 0.7 }}>
                   <User size={12} className="me-1" />
                   ID: {log.personId}
                 </div>
               </td>
               {activeTab === 'guests' ? (
                 <td>
-                  <div className="fw-bold text-white">{log.visitPurpose || 'General Visit'}</div>
+                  <div className="fw-bold text-dark">{log.visitPurpose || 'General Visit'}</div>
                 </td>
               ) : (
                 <td>
                   {log.prisonerId ? (
                     <>
-                      <div className="fw-bold text-white">{log.inmateName}</div>
-                      <div className="small text-white" style={{ opacity: 0.7 }}>
+                      <div className="fw-bold text-dark">{log.inmateName}</div>
+                      <div className="small text-dark" style={{ opacity: 0.7 }}>
                         PDL ID: {log.prisonerId}
                       </div>
                     </>
                   ) : (
-                    <div className="text-white" style={{ opacity: 0.7 }}>N/A</div>
+                    <div className="text-dark" style={{ opacity: 0.7 }}>N/A</div>
                   )}
                 </td>
               )}
               <td>
-                <div className="small text-white">
-                  <div><strong className="text-white">Time In:</strong> {formatTime(log.timeIn)}</div>
-                  <div><strong className="text-white">Time Out:</strong> {formatTime(log.timeOut) || 'Not checked out'}</div>
+                <div className="small text-dark">
+                  <div><strong className="text-dark">Time In:</strong> {formatTime(log.timeIn)}</div>
+                  <div><strong className="text-dark">Time Out:</strong> {formatTime(log.timeOut) || 'Not checked out'}</div>
                   {log.visitDuration && (
-                    <div><strong className="text-white">Duration:</strong> {log.visitDuration}</div>
+                    <div><strong className="text-dark">Duration:</strong> {log.visitDuration}</div>
                   )}
                 </div>
               </td>
@@ -1253,7 +1253,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
 
     return (
       <Table striped bordered hover responsive className="bg-white">
-        <thead className="table-dark">
+        <thead className="table-primary">
           <tr>
             <th>Person ID</th>
             <th>Name</th>
@@ -1330,7 +1330,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
 
     return (
       <Table striped bordered hover responsive className="bg-white">
-        <thead className="table-dark">
+        <thead className="table-primary">
           <tr>
             <th>Person ID</th>
             <th>Name</th>
@@ -1344,8 +1344,8 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
         <tbody>
           {dataToDisplay.map(person => (
             <tr key={person.id}>
-              <td className="text-white">{person.id}</td>
-              <td className="fw-bold text-white">{person.personName}</td>
+              <td className="text-dark">{person.id}</td>
+              <td className="fw-bold text-dark">{person.personName}</td>
               <td>
                 <Badge bg={getTypeVariant(person.personType)} className="text-dark">
                   {person.personType.toUpperCase()}
@@ -1354,7 +1354,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
               <td>
                 <Badge bg="danger" className="text-dark">Banned</Badge>
               </td>
-              <td className="text-white">{person.banReason || 'No reason provided'}</td>
+              <td className="text-dark">{person.banReason || 'No reason provided'}</td>
               <td>
                 <Badge bg="warning" className="text-dark">
                   {getBanDurationDisplay(person)} {/* FIXED: Now shows calculated time */}
@@ -1409,7 +1409,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
 
   return (
     <Table striped bordered hover responsive className="bg-white">
-      <thead className="table-dark">
+      <thead className="table-primary">
         <tr>
           <th>Person Details</th>
           <th>Ban Information</th>
@@ -1422,8 +1422,8 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
         {banHistory.map(record => (
           <tr key={record._id}>
             <td>
-              <div className="fw-bold text-white">{record.personName}</div>
-              <div className="small text-white" style={{ opacity: 0.7 }}>
+              <div className="fw-bold text-dark">{record.personName}</div>
+              <div className="small text-dark" style={{ opacity: 0.7 }}>
                 ID: {record.personId}
                 <Badge bg={getTypeVariant(record.personType)} className="ms-1 text-dark">
                   {record.personType.toUpperCase()}
@@ -1431,20 +1431,20 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
               </div>
             </td>
             <td>
-              <div className="text-white"><strong className="text-white">Reason:</strong> {record.banReason}</div>
-              <div className="small text-white" style={{ opacity: 0.7 }}>
-                <strong className="text-white">Duration:</strong> {record.calculatedDuration || (record.banDuration === 'permanent' ? 'Permanent' : 'Custom')}
+              <div className="text-dark"><strong className="text-dark">Reason:</strong> {record.banReason}</div>
+              <div className="small text-dark" style={{ opacity: 0.7 }}>
+                <strong className="text-dark">Duration:</strong> {record.calculatedDuration || (record.banDuration === 'permanent' ? 'Permanent' : 'Custom')}
               </div>
             </td>
             <td>
-              <div className="fw-bold text-white">{formatDate(record.createdAt)}</div>
-              <div className="small text-white" style={{ opacity: 0.7 }}>{formatTime(record.createdAt)}</div>
+              <div className="fw-bold text-dark">{formatDate(record.createdAt)}</div>
+              <div className="small text-dark" style={{ opacity: 0.7 }}>{formatTime(record.createdAt)}</div>
             </td>
             <td>
               {record.removedAt ? (
                 <>
-                  <div className="fw-bold text-white">{formatDate(record.removedAt)}</div>
-                  <div className="small text-white" style={{ opacity: 0.7 }}>{formatTime(record.removedAt)}</div>
+                  <div className="fw-bold text-dark">{formatDate(record.removedAt)}</div>
+                  <div className="small text-dark" style={{ opacity: 0.7 }}>{formatTime(record.removedAt)}</div>
                 </>
               ) : (
                 <Badge bg="success" className="text-dark">Still Active</Badge>
@@ -1490,7 +1490,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
 
   return (
     <Table striped bordered hover responsive className="bg-white">
-      <thead className="table-dark">
+      <thead className="table-primary">
         <tr>
           <th>Person Details</th>
           <th>Violation Information</th>
@@ -1503,8 +1503,8 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
         {violationHistory.map(record => (
           <tr key={record._id}>
             <td>
-              <div className="fw-bold text-white">{record.personName}</div>
-              <div className="small text-white" style={{ opacity: 0.7 }}>
+              <div className="fw-bold text-dark">{record.personName}</div>
+              <div className="small text-dark" style={{ opacity: 0.7 }}>
                 ID: {record.personId}
                 <Badge bg={getTypeVariant(record.personType)} className="ms-1 text-dark">
                   {record.personType.toUpperCase()}
@@ -1517,17 +1517,17 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
                   {record.violationType}
                 </Badge>
               </div>
-              <div className="small text-white">{record.violationDetails || 'No details provided'}</div>
+              <div className="small text-dark">{record.violationDetails || 'No details provided'}</div>
             </td>
             <td>
-              <div className="fw-bold text-white">{formatDate(record.createdAt)}</div>
-              <div className="small text-white" style={{ opacity: 0.7 }}>{formatTime(record.createdAt)}</div>
+              <div className="fw-bold text-dark">{formatDate(record.createdAt)}</div>
+              <div className="small text-dark" style={{ opacity: 0.7 }}>{formatTime(record.createdAt)}</div>
             </td>
             <td>
               {record.removedAt ? (
                 <>
-                  <div className="fw-bold text-white">{formatDate(record.removedAt)}</div>
-                  <div className="small text-white" style={{ opacity: 0.7 }}>{formatTime(record.removedAt)}</div>
+                  <div className="fw-bold text-dark">{formatDate(record.removedAt)}</div>
+                  <div className="small text-dark" style={{ opacity: 0.7 }}>{formatTime(record.removedAt)}</div>
                 </>
               ) : (
                 <Badge bg="warning" className="text-dark">Still Active</Badge>
@@ -1566,25 +1566,25 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
   <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
     <Card.Header style={{backgroundColor: '#67676741'}}>
       <div className="d-flex align-items-center justify-content-between">
         <div className="d-flex align-items-center">
           <Filter size={18} className="me-2" />
-          <h6 className="mb-0" style={{color: '#FFD700'}}>Filter History Records</h6>
+          <h6 className="mb-0" style={{color: '#0d47a1'}}>Filter History Records</h6>
         </div>
         <Button 
           variant="outline-secondary" 
           size="sm"
           onClick={clearHistoryFilters}
           style={{
-            color: 'black',
-            backgroundColor: '#FFD700',
-            borderColor: '#FFD700'
+            color: '#ffffff',
+            backgroundColor: '#0d6efd',
+            borderColor: '#0d6efd'
           }}
           onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-          onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
         >
           Clear Filters
         </Button>
@@ -1655,12 +1655,12 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
             onClick={activeTab === 'ban-history' ? fetchBanHistory : fetchViolationHistory}
             className="w-100"
             style={{
-              color: 'black',
-              backgroundColor: '#FFD700',
-              borderColor: '#FFD700'
+              color: '#ffffff',
+              backgroundColor: '#0d6efd',
+              borderColor: '#0d6efd'
             }}
             onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
           >
             <RefreshCw size={16} className="me-1" />
             Apply
@@ -1680,10 +1680,10 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
           <h2 style={{ fontFamily: "Poppins, sans-serif", fontWeight: "600", color: "#ffffffff" }}>
             📋 Visit History & Records
           </h2>
-          <p className="small" style={{ color: '#ffd9009a' }}>View and manage all visit records, violations, and bans</p>
+          <p className="small" style={{ color: '#0d6efd' }}>View and manage all visit records, violations, and bans</p>
         </div>
         <Button 
-          variant="outline-dark" 
+          variant="outline-primary" 
           onClick={exportToCSV} 
           disabled={
             (activeTab === 'all' && filteredLogs.length === 0) ||
@@ -1718,19 +1718,19 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
               <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
                 <Card.Header style={{backgroundColor: '#67676741'}}>
                   <div className="d-flex align-items-center">
                     <Filter size={18} className="me-2"  />
-                    <h6 className="mb-0" style={{color: '#FFD700'}}>Filter Visit Records</h6>
+                    <h6 className="mb-0" style={{color: '#0d47a1'}}>Filter Visit Records</h6>
                   </div>
                 </Card.Header>
                 <Card.Body>
                   <Row className="g-3">
                     <Col md={3}>
                       <Form.Group>
-                        <Form.Label style={{color: 'white'}}>
+                        <Form.Label style={{color: '#0d47a1'}}>
                           <Calendar size={14} className="me-1" />
                           Start Date
                         </Form.Label>
@@ -1744,7 +1744,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
                     </Col>
                     <Col md={3}>
                       <Form.Group>
-                        <Form.Label style={{color: 'white'}}>
+                        <Form.Label style={{color: '#0d47a1'}}>
                           <Calendar size={14} className="me-1" />
                           End Date
                         </Form.Label>
@@ -1758,7 +1758,7 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
                     </Col>
                     <Col md={4}>
                       <Form.Group>
-                        <Form.Label style={{color: 'white'}}>
+                        <Form.Label style={{color: '#0d47a1'}}>
                           <Search size={14} className="me-1" />
                           Search
                         </Form.Label>
@@ -1789,12 +1789,12 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
                         onClick={clearFilters}
                         className="w-100"
                         style={{
-                          color: 'black',
-                          backgroundColor: '#FFD700',
-                          borderColor: '#FFD700'
+                          color: '#ffffff',
+                          backgroundColor: '#0d6efd',
+                          borderColor: '#0d6efd'
                         }}
                         onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                       >
                         Clear Filters
                       </Button>
@@ -1824,12 +1824,12 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
               <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
                 <Card.Header style={{backgroundColor: '#67676741'}}>
                   <div className="d-flex align-items-center">
                     <Filter size={18} className="me-2"  />
-                    <h6 className="mb-0" style={{color: '#FFD700'}}>Filter Visit Records</h6>
+                    <h6 className="mb-0" style={{color: '#0d47a1'}}>Filter Visit Records</h6>
                   </div>
                 </Card.Header>
                 <Card.Body>
@@ -1896,12 +1896,12 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
                         onClick={clearFilters}
                         className="w-100"
                         style={{
-                          color: 'black',
-                          backgroundColor: '#FFD700',
-                          borderColor: '#FFD700'
+                          color: '#ffffff',
+                          backgroundColor: '#0d6efd',
+                          borderColor: '#0d6efd'
                         }}
                         onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                       >
                         Clear Filters
                       </Button>
@@ -1923,12 +1923,12 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
               <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
                 <Card.Header style={{backgroundColor: '#67676741'}}>
                   <div className="d-flex align-items-center">
                     <Filter size={18} className="me-2"  />
-                    <h6 className="mb-0" style={{color: '#FFD700'}}>Filter Visit Records</h6>
+                    <h6 className="mb-0" style={{color: '#0d47a1'}}>Filter Visit Records</h6>
                   </div>
                 </Card.Header>
                 <Card.Body>
@@ -1995,12 +1995,12 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
                         onClick={clearFilters}
                         className="w-100"
                         style={{
-                          color: 'black',
-                          backgroundColor: '#FFD700',
-                          borderColor: '#FFD700'
+                          color: '#ffffff',
+                          backgroundColor: '#0d6efd',
+                          borderColor: '#0d6efd'
                         }}
                         onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                       >
                         Clear Filters
                       </Button>
@@ -2032,25 +2032,25 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
               <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
                 <Card.Header style={{backgroundColor: '#67676741'}}>
                   <div className="d-flex align-items-center justify-content-between">
                     <div className="d-flex align-items-center">
                       <Filter size={18} className="me-2" />
-                      <h6 className="mb-0" style={{color: '#FFD700'}}>Filter Banned Records</h6>
+                      <h6 className="mb-0" style={{color: '#0d47a1'}}>Filter Banned Records</h6>
                     </div>
                     <Button 
                       variant="outline-secondary" 
                       size="sm"
                       onClick={clearBannedFilters}
                       style={{
-                        color: 'black',
-                        backgroundColor: '#FFD700',
-                        borderColor: '#FFD700'
+                        color: '#ffffff',
+                        backgroundColor: '#0d6efd',
+                        borderColor: '#0d6efd'
                       }}
                       onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                     >
                       Clear Filters
                     </Button>
@@ -2104,12 +2104,12 @@ const handleDeleteHistoryRecord = async (recordId, recordType) => {
                         onClick={() => {}} 
                         className="w-100"
                         style={{
-                          color: 'black',
-                          backgroundColor: '#FFD700',
-                          borderColor: '#FFD700'
+                          color: '#ffffff',
+                          backgroundColor: '#0d6efd',
+                          borderColor: '#0d6efd'
                         }}
                         onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                       >
                         <RefreshCw size={16} className="me-1" />
                         Apply

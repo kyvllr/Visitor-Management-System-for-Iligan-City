@@ -11,10 +11,10 @@
 }
 
 .profile-details {
-  background-color: #1a1a1ab6;
+  background-color: #ffffff;
   border-radius: 8px;
   padding: 20px;
-  border: 1px solid #FFD700;
+  border: 1px solid #d6e4ff;
 }
 
 .detail-row {
@@ -22,7 +22,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid #d6e4ff;
 }
 
 .detail-row:last-child {
@@ -30,12 +30,12 @@
 }
 
 .detail-row strong {
-  color: #FFD700;
+  color: #0d6efd;
   font-weight: 600;
 }
 
 .detail-row span {
-  color: #FFFFFF;
+  color: #0d47a1;
 }
 
 .password-input-wrapper {
@@ -77,11 +77,11 @@
 
 /* Tab styling */
 .nav-tabs {
-  border-bottom: 2px solid #333333;
+  border-bottom: 2px solid #d6e4ff;
 }
 
 .nav-tabs .nav-link {
-  color: #FFD700;
+  color: #0d6efd;
   border: none;
   border-bottom: 2px solid transparent;
   padding: 12px 20px;
@@ -89,38 +89,38 @@
 }
 
 .nav-tabs .nav-link:hover {
-  color: #FFFFFF;
-  border-bottom-color: #FFD700;
+  color: #0d47a1;
+  border-bottom-color: #0d6efd;
 }
 
 .nav-tabs .nav-link.active {
-  color: #000000;
-  background-color: #FFD700;
-  border-bottom-color: #FFD700;
+  color: #ffffff;
+  background-color: #0d6efd;
+  border-bottom-color: #0d6efd;
 }
 
 /* Form styling */
 .form-label {
   font-weight: 600;
-  color: #000000;
+  color: #0d47a1;
   margin-bottom: 8px;
 }
 
 .form-control:focus {
-  border-color: #FFD700;
-  box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
 }
 
 /* Alert styling */
 .alert {
   border-radius: 6px;
-  border: 1px solid #FFD700;
+  border: 1px solid #d6e4ff;
 }
 
 .alert-info {
-  background-color: #333300;
-  color: #FFD700;
-  border-color: #FFD700;
+  background-color: #e7f1ff;
+  color: #0d47a1;
+  border-color: #d6e4ff;
 }
 
 /* Button styling */
@@ -132,12 +132,12 @@
 
 /* Modal header styling */
 .modal-header {
-  background-color: #1a1a1a;
-  border-bottom: 2px solid #FFD700;
+  background-color: #ffffff;
+  border-bottom: 1px solid #d6e4ff;
 }
 
 .modal-header .btn-close {
-  filter: brightness(0) saturate(100%) invert(81%) sepia(66%) saturate(468%) hue-rotate(358deg) brightness(103%) contrast(104%);
+  filter: brightness(0) saturate(100%) invert(39%) sepia(96%) saturate(2292%) hue-rotate(213deg) brightness(102%) contrast(98%);
   opacity: 1;
 }
 
@@ -146,7 +146,7 @@
 }
 
 .modal-title {
-  color: #FFD700;
+  color: #0d47a1;
   font-weight: 600;
   display: flex;
   align-items: center;

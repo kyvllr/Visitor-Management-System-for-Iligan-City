@@ -738,8 +738,8 @@ const Visitors = () => {
       <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Row className="align-items-center">
             <Col md={8}>
@@ -758,7 +758,7 @@ const Visitors = () => {
                   value={searchBy} 
                   onChange={(e) => setSearchBy(e.target.value)}
                   className="bg-white"
-                  style={{ maxWidth: '150px', color: '#000000' }}
+                  style={{ maxWidth: '150px', color: '#0d47a1' }}
                 >
                   {searchOptions.map(option => (
                     <option key={option.value} value={option.value}>
@@ -771,7 +771,7 @@ const Visitors = () => {
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 className="bg-white mt-2"
-                style={{ maxWidth: '280px', color: '#000000' }}
+                style={{ maxWidth: '280px', color: '#0d47a1' }}
               >
                 <option value="all">All Categories</option>
                 <option value="below_1_year_old">Below 1 year old</option>
@@ -820,12 +820,12 @@ const Visitors = () => {
     <tbody>
       {filteredVisitors.map(visitor => (
         <tr key={visitor._id}>
-          <td className="text-white"><strong>{visitor.id}</strong></td>
-          <td className="text-white">{visitor.fullName}</td>
-          <td className="text-white">{visitor.sex}</td>
-          <td className="text-white">{visitor.prisonerId}</td>
-          <td className="prisoner-name text-white">{visitor.prisonerName || 'N/A'}</td>
-          <td className="text-white">{visitor.relationship}</td>
+          <td className="text-dark"><strong>{visitor.id}</strong></td>
+          <td className="text-dark">{visitor.fullName}</td>
+          <td className="text-dark">{visitor.sex}</td>
+          <td className="text-dark">{visitor.prisonerId}</td>
+          <td className="prisoner-name text-dark">{visitor.prisonerName || 'N/A'}</td>
+          <td className="text-dark">{visitor.relationship}</td>
           <td>
             {visitor.lastVisitDate ? (
               <Badge bg="info" className="text-wrap">

@@ -297,7 +297,7 @@ const BannedPDLs = ({ gender = 'all' }) => {
           </Badge>
         </div>
         <div className="d-flex gap-2">
-          <Button variant="outline-dark" size="sm" onClick={exportToCSV} disabled={!filteredInmates.length}>
+          <Button variant="outline-primary" size="sm" onClick={exportToCSV} disabled={!filteredInmates.length}>
             <Download size={16} className="me-1" />
             Export CSV
           </Button>
@@ -309,21 +309,21 @@ const BannedPDLs = ({ gender = 'all' }) => {
           backgroundColor: '#676767a7',
           borderRadius: '12px',
           marginBottom: '20px',
-          borderLeft: '4px solid #FFD700',
-          borderRight: '4px solid #FFD700'
+          borderLeft: '4px solid #0d6efd',
+          borderRight: '4px solid #0d6efd'
         }}
       >
         <Card.Body>
           <Row className="align-items-center">
             <Col md={6}>
               <div className="d-flex gap-2 align-items-center">
-                <span className="fw-bold me-2" style={{ color: '#FFD700' }}>Filter by Gender:</span>
+                <span className="fw-bold me-2" style={{ color: '#0d47a1' }}>Filter by Gender:</span>
                 <ButtonGroup>
                   <Button
-                    variant={selectedGender === 'all' ? 'dark' : 'outline-dark'}
+                    variant={selectedGender === 'all' ? 'primary' : 'outline-primary'}
                     size="sm"
                     onClick={() => !isGenderRestricted && setSelectedGender('all')}
-                    style={{ color: '#ffffff' }}
+                    style={{color: selectedGender === 'all' ? '#ffffff' : '#0d47a1'}}
                     disabled={isGenderRestricted}
                   >
                     <User size={14} className="me-1" />
@@ -333,7 +333,7 @@ const BannedPDLs = ({ gender = 'all' }) => {
                     variant={selectedGender === 'male' ? 'primary' : 'outline-primary'}
                     size="sm"
                     onClick={() => setSelectedGender('male')}
-                    style={{ color: '#ffffff' }}
+                    style={{color: selectedGender === 'male' ? '#ffffff' : '#0d47a1'}}
                     disabled={isGenderRestricted && gender !== 'male'}
                   >
                     Male
@@ -342,7 +342,7 @@ const BannedPDLs = ({ gender = 'all' }) => {
                     variant={selectedGender === 'female' ? 'danger' : 'outline-danger'}
                     size="sm"
                     onClick={() => setSelectedGender('female')}
-                    style={{ color: '#ffffff' }}
+                    sstyle={{color: selectedGender === 'female' ? '#ffffff' : '#0d47a1'}}
                     disabled={isGenderRestricted && gender !== 'female'}
                   >
                     Female
@@ -367,10 +367,10 @@ const BannedPDLs = ({ gender = 'all' }) => {
                   value={searchBy}
                   onChange={(event) => setSearchBy(event.target.value)}
                   className="bg-white"
-                  style={{ maxWidth: '150px', color: '#000000' }}
+                  style={{ maxWidth: '150px', color: '#0d47a1' }}
                 >
                   {searchOptions.map((option) => (
-                    <option key={option.value} value={option.value} style={{ color: '#000000' }}>
+                    <option key={option.value} value={option.value} style={{ color: '#0d47a1' }}>
                       {option.label}
                     </option>
                   ))}
@@ -402,7 +402,7 @@ const BannedPDLs = ({ gender = 'all' }) => {
           ) : (
             <div className="table-responsive">
               <Table striped bordered hover responsive className="bg-white align-middle mb-0">
-                <thead className="table-dark">
+                <thead className="table-primary">
                   <tr>
                     <th>Inmate Code</th>
                     <th>Full Name</th>

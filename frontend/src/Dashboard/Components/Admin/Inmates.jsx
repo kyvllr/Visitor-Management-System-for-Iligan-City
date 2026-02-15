@@ -1069,19 +1069,19 @@ const Inmates = ({ gender = 'all' }) => {
       <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Row className="align-items-center">
             <Col md={6}>
               <div className="d-flex gap-2 align-items-center">
-                <span className="fw-bold me-2" style={{color: '#FFD700'}}>Filter by Gender:</span>
+                <span className="fw-bold me-2" style={{color: '#0d47a1'}}>Filter by Gender:</span>
                 <ButtonGroup>
                   <Button
                     variant={selectedGender === 'all' ? 'dark' : 'outline-dark'}
                     size="sm"
                     onClick={() => setSelectedGender('all')}
-                    style={{color: selectedGender === 'all' ? '#ffffff' : '#ffffff'}}
+                    style={{color: selectedGender === 'all' ? '#ffffff' : '#0d47a1'}}
                   >
                     <User size={14} className="me-1" />
                     All
@@ -1090,7 +1090,7 @@ const Inmates = ({ gender = 'all' }) => {
                     variant={selectedGender === 'male' ? 'primary' : 'outline-primary'}
                     size="sm"
                     onClick={() => setSelectedGender('male')}
-                    style={{color: selectedGender === 'male' ? '#ffffff' : '#ffffff'}}
+                    style={{color: selectedGender === 'male' ? '#ffffff' : '#0d47a1'}}
                   >
                     Male
                   </Button>
@@ -1098,7 +1098,7 @@ const Inmates = ({ gender = 'all' }) => {
                     variant={selectedGender === 'female' ? 'danger' : 'outline-danger'}
                     size="sm"
                     onClick={() => setSelectedGender('female')}
-                    style={{color: selectedGender === 'female' ? '#ffffff' : '#ffffff'}}
+                    style={{color: selectedGender === 'female' ? '#ffffff' : '#0d47a1'}}
                   >
                     Female
                   </Button>
@@ -1121,10 +1121,10 @@ const Inmates = ({ gender = 'all' }) => {
                   value={searchBy} 
                   onChange={(e) => setSearchBy(e.target.value)}
                   className="bg-white"
-                  style={{ maxWidth: '150px', color: '#000000' }}
+                  style={{ maxWidth: '150px', color: '#0d47a1' }}
                 >
                   {searchOptions.map(option => (
-                    <option key={option.value} value={option.value} style={{ color: '#000000' }}>
+                    <option key={option.value} value={option.value} style={{ color: '#0d47a1' }}>
                       {option.label}
                     </option>
                   ))}

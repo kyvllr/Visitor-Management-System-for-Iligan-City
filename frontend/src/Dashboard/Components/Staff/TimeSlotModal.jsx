@@ -483,7 +483,7 @@ const TimeSlotModal = ({
       size="lg"
     >
       <Modal.Header closeButton className="bg-primary text-white">
-        <Modal.Title>
+        <Modal.Title style={{ color: '#ffffff' }}>
           <Clock size={20} className="me-2" />
           Set Custom Visit Timer
         </Modal.Title>
@@ -512,7 +512,7 @@ const TimeSlotModal = ({
               <small>ID: {scannedPerson.id} • {scannedPerson.personType === 'guest' ? 'Guest' : 'Visitor'}</small>
               <br />
               <Button 
-                variant="outline-light" 
+                variant="outline-primary" 
                 size="sm" 
                 className="mt-1"
                 onClick={checkCurrentTimerStatus}
@@ -557,7 +557,7 @@ const TimeSlotModal = ({
               </div>
               {(!debugInfo.exists || !connectionTest?.success) && (
                 <Button 
-                  variant="outline-light" 
+                  variant="outline-primary" 
                   size="sm" 
                   onClick={handleRetryVerification}
                 >
@@ -687,8 +687,8 @@ const TimeSlotModal = ({
                   <strong>Open-ended Timer Preview</strong>
                 </Card.Header>
                 <Card.Body className="py-3 text-center">
-                  <div className="h5 mb-1 text-white">No end time</div>
-                  <small className="text-white" style={{ opacity: 0.9 }}>
+                  <div className="h5 mb-1 text-dark">No end time</div>
+                  <small className="text-dark" style={{ opacity: 0.9 }}>
                     Timer starts at Time-in and remains active until manual Time-out.
                   </small>
                 </Card.Body>
@@ -773,31 +773,31 @@ const TimeSlotModal = ({
                     <Row className="text-center">
                       <Col md={4}>
                         <div className="mb-2">
-                          <div className="text-white small">Start Time</div>
-                          <div className="h5 mb-0" style={{ color: '#FFD700' }}>
+                          <div className="text-dark small">Start Time</div>
+                          <div className="h5 mb-0" style={{ color: '#0d6efd' }}>
                             {startTime ? convertTo12HourFormat(startTime) : '--:-- --'}
                           </div>
                         </div>
                       </Col>
                       <Col md={4}>
                         <div className="mb-2">
-                          <div className="text-white small">End Time</div>
-                          <div className="h5 mb-0" style={{ color: '#FFD700' }}>
+                          <div className="text-dark small">End Time</div>
+                          <div className="h5 mb-0" style={{ color: '#0d6efd' }}>
                             {endTime ? convertTo12HourFormat(endTime) : '--:-- --'}
                           </div>
                         </div>
                       </Col>
                       <Col md={4}>
                         <div className="mb-2">
-                          <div className="text-white small">Total Duration</div>
-                          <div className="h5 mb-0" style={{ color: '#FFD700' }}>
+                          <div className="text-dark small">Total Duration</div>
+                          <div className="h5 mb-0" style={{ color: '#0d6efd' }}>
                             {duration}
                           </div>
                         </div>
                       </Col>
                     </Row>
                     <div className="text-center mt-2">
-                      <small className="text-white">
+                      <small className="text-dark">
                         Timer will use this custom time period instead of default 3 hours
                       </small>
                     </div>

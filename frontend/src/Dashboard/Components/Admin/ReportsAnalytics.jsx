@@ -386,8 +386,8 @@ const ReportsAnalytics = () => {
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
-              <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
-              <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+              <YAxis yAxisId="left" orientation="left" stroke="#0d6efd" />
+              <YAxis yAxisId="right" orientation="right" stroke="#0d6efd" />
               <Tooltip 
                 formatter={(value, name) => {
                   if (name === 'Avg Duration') return [`${value} minutes`, name];
@@ -395,8 +395,8 @@ const ReportsAnalytics = () => {
                 }}
               />
               <Legend />
-              <Bar yAxisId="left" dataKey="avgDuration" fill="#8884d8" name="Avg Duration (mins)" />
-              <Bar yAxisId="right" dataKey="visits" fill="#82ca9d" name="Number of Visits" />
+              <Bar yAxisId="left" dataKey="avgDuration" fill="#2edae6fd" name="Avg Duration (mins)" />
+              <Bar yAxisId="right" dataKey="visits" fill="#1c8af7" name="Number of Visits" />
             </BarChart>
           </ResponsiveContainer>
         );
@@ -413,28 +413,28 @@ const ReportsAnalytics = () => {
               <Line 
                 type="monotone" 
                 dataKey="visitors" 
-                stroke="#aaff00ff" 
+                stroke="rgb(0, 13, 255)" 
                 strokeWidth={2}
-                dot={{ fill: '#aaff00ff', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: '#aaff00ff', strokeWidth: 2 }}
+                dot={{ fill: 'rgb(0, 13, 255)', strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, stroke: 'rgb(0, 13, 255)', strokeWidth: 2 }}
                 name="Visitors"
               />
               <Line 
                 type="monotone" 
                 dataKey="guests" 
-                stroke="#ff3c00ff" 
+                stroke="rgb(0, 166, 255)" 
                 strokeWidth={2}
-                dot={{ fill: '#ff3c00ff', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: '#ff3c00ff', strokeWidth: 2 }}
+                dot={{ fill: 'rgb(0, 166, 255)', strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, stroke: 'rgb(0, 166, 255)', strokeWidth: 2 }}
                 name="Guests"
               />
               <Line 
                 type="monotone" 
                 dataKey="total" 
-                stroke="#fffc42ff" 
+                stroke="rgb(0, 238, 255)" 
                 strokeWidth={3}
-                dot={{ fill: '#fffc42ff', strokeWidth: 2, r: 5 }}
-                activeDot={{ r: 8, stroke: '#fffc42ff', strokeWidth: 2 }}
+                dot={{ fill: 'rgb(0, 238, 255)', strokeWidth: 2, r: 5 }}
+                activeDot={{ r: 8, stroke: 'rgb(0, 238, 255)', strokeWidth: 2 }}
                 name="Total Visits"
               />
             </LineChart>
@@ -474,19 +474,19 @@ const ReportsAnalytics = () => {
       .map((metric, index) => (
         <Col xs={12} sm={6} md={4} lg={2} key={metric.key} className="mb-3">
           <Card style={{ 
-            borderLeft: '2px solid #ffc107', 
-            borderRight: '2px solid #ffc107', 
-            borderTop: '6px solid #ffc107', 
-            borderBottom: '2px solid #ffc107', 
-            backgroundColor: '#353434a7', 
+            borderLeft: '2px solid #0d6efd', 
+            borderRight: '2px solid #0d6efd', 
+            borderTop: '6px solid #0d6efd', 
+            borderBottom: '2px solid #0d6efd', 
+            backgroundColor: '#ffffff', 
             borderRadius: '12px',
             height: '100%'
           }}>
             <Card.Body>
-              <small className="text-uppercase fw-bold" style={{ color: '#ffffff' }}>
+              <small className="text-uppercase fw-bold" style={{ color: '#0d6efd' }}>
                 {metric.label}
               </small>
-              <h4 className="mt-2 fw-bold" style={{ color: '#ffc107' }}>
+              <h4 className="mt-2 fw-bold" style={{ color: '#000000' }}>
                 {summaryData[metric.key]}
               </h4>
             </Card.Body>
@@ -502,19 +502,16 @@ const ReportsAnalytics = () => {
   return (
     <Container>
       <ToastContainer />
-      
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 
             style={{ 
               fontFamily: "Poppins, sans-serif", 
               fontWeight: "600", 
-              color: "#ffffffff",
+              color: "#0d6efd",
               transition: "color 0.3s ease",
               cursor: "pointer"
             }}
-            onMouseEnter={(e) => e.target.style.color = '#000000'}
-            onMouseLeave={(e) => e.target.style.color = '#ffffffff'}
           >
             📊 Reports & Analytics
           </h2>
@@ -523,9 +520,10 @@ const ReportsAnalytics = () => {
           </Badge>
         </div>
         <Button
-          variant="dark"
+          variant="primary"
           onClick={exportToPDFSimple}
           disabled={loading || chartData.length === 0}
+          style={{color: 'white'}}
         >
           <FileText size={16} className="me-1" />
           Export PDF Report
@@ -551,17 +549,16 @@ const ReportsAnalytics = () => {
         </Alert>
       )}
 
-      {/* Filters */}
       <Card style={{ 
-        backgroundColor: '#676767a7', 
+        backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Row className="g-3 align-items-center">
             <Col md={3}>
               <Form.Group>
-                <Form.Label className="fw-bold" style={{ color: '#ffffffff' }}>Start Date</Form.Label>
+                <Form.Label className="fw-bold" style={{ color: '#0d6efd' }}>Start Date</Form.Label>
                 <Form.Control
                   type="date"
                   value={formatDateForInput(dateRange.startDate)}
@@ -569,13 +566,13 @@ const ReportsAnalytics = () => {
                     ...prev, 
                     startDate: new Date(e.target.value) 
                   }))}
-                  style={{ color: '#000000' }}
+                  style={{ color: '#0d47a1' }}
                 />
               </Form.Group>
             </Col>
             <Col md={3}>
               <Form.Group>
-                <Form.Label className="fw-bold" style={{ color: '#ffffffff' }}>End Date</Form.Label>
+                <Form.Label className="fw-bold" style={{ color: '#0d6efd' }}>End Date</Form.Label>
                 <Form.Control
                   type="date"
                   value={formatDateForInput(dateRange.endDate)}
@@ -583,17 +580,17 @@ const ReportsAnalytics = () => {
                     ...prev, 
                     endDate: new Date(e.target.value) 
                   }))}
-                  style={{ color: '#000000' }}
+                  style={{ color: '#0d47a1' }}
                 />
               </Form.Group>
             </Col>
             <Col md={3}>
               <Form.Group>
-                <Form.Label className="fw-bold" style={{ color: '#ffffffff' }}>Report Type</Form.Label>
+                <Form.Label className="fw-bold" style={{ color: '#0d6efd' }}>Report Type</Form.Label>
                 <Form.Select
                   value={reportType}
                   onChange={(e) => setReportType(e.target.value)}
-                  style={{ color: '#000000' }}
+                  style={{ color: '#0d47a1' }}
                 >
                   <option value="daily">Daily Visitors</option>
                   <option value="weekly">Weekly Trends</option>
@@ -604,20 +601,20 @@ const ReportsAnalytics = () => {
               </Form.Group>
             </Col>
             <Col md={3}>
-              <Form.Label className="fw-bold d-block" style={{ color: '#000000' }}>&nbsp;</Form.Label>
+              <Form.Label className="fw-bold d-block" style={{ color: '#0d47a1' }}>&nbsp;</Form.Label>
               <Button
                 onClick={fetchAnalyticsData}
                 disabled={loading}
                 className="w-100"
                 style={{ 
-                  backgroundColor: '#FFD700', 
-                  color: '#000000', 
+                  backgroundColor: '#0d6efd', 
+                  color: '#ffffff', 
                   border: 'none',
                   fontWeight: '600',
                   transition: 'background-color 0.3s ease'
                 }}
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#b1e6adff'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
               >
                 {loading ? (
                   <>
@@ -626,7 +623,7 @@ const ReportsAnalytics = () => {
                   </>
                 ) : (
                   <>
-                    <TrendingUp size={16} className="me-1" color="#000000" />
+                    <TrendingUp size={16} className="me-1" color="#ffffff" />
                     Refresh Data
                   </>
                 )}
@@ -682,7 +679,7 @@ const ReportsAnalytics = () => {
           ) : (
             <>
               <Table striped bordered hover responsive className="bg-white">
-                <thead className="table-dark">
+                <thead className="table-primary">
                   <tr>
                     {chartData.length > 0 && Object.keys(chartData[0]).map((key) => (
                       <th key={key}>

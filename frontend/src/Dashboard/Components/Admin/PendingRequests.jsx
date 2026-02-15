@@ -290,42 +290,42 @@ const PendingRequests = () => {
       {/* Stats Cards - Using actual array lengths */}
       <Row className="mb-4">
         <Col md={3}>
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }}>
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }}>
             <Card.Body className="text-center">
               <Users size={24} className="text-warning mb-2" />
-              <h4 className="text-white">{stats.pendingVisitors}</h4>
-              <p className="mb-0" style={{ color: '#FFD700' }}>Pending Visitors</p>
-              <small style={{ color: '#ffffffc6' }}>Actual: {pendingVisitors.length}</small>
+              <h4 className="text-dark">{stats.pendingVisitors}</h4>
+              <p className="mb-0" style={{ color: '#0d47a1' }}>Pending Visitors</p>
+              <small style={{ color: '#6c757d' }}>Actual: {pendingVisitors.length}</small>
             </Card.Body>
           </Card>
         </Col>
         <Col md={3}>
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }}>
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }}>
             <Card.Body className="text-center">
               <UserCheck size={24} className="text-warning mb-2" />
-              <h4 className="text-white">{stats.pendingGuests}</h4>
-              <p className="mb-0" style={{ color: '#FFD700' }}>Pending Guests</p>
-              <small style={{ color: '#ffffffc6' }}>Actual: {pendingGuests.length}</small>
+              <h4 className="text-dark">{stats.pendingGuests}</h4>
+              <p className="mb-0" style={{ color: '#0d47a1' }}>Pending Guests</p>
+              <small style={{ color: '#6c757d' }}>Actual: {pendingGuests.length}</small>
             </Card.Body>
           </Card>
         </Col>
         <Col md={3}>
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }}>
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }}>
             <Card.Body className="text-center">
               <Archive size={24} className="text-danger mb-2" />
-              <h4 className="text-white">{stats.rejectedVisitors}</h4>
-              <p className="mb-0" style={{ color: '#FFD700' }}>Rejected Visitors</p>
-              <small style={{ color: '#ffffffc6' }}>Actual: {rejectedVisitors.length}</small>
+              <h4 className="text-dark">{stats.rejectedVisitors}</h4>
+              <p className="mb-0" style={{ color: '#0d47a1' }}>Rejected Visitors</p>
+              <small style={{ color: '#6c757d' }}>Actual: {rejectedVisitors.length}</small>
             </Card.Body>
           </Card>
         </Col>
         <Col md={3}>
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }}>
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }}>
             <Card.Body className="text-center">
               <Archive size={24} className="text-danger mb-2" />
-              <h4 className="text-white">{stats.rejectedGuests}</h4>
-              <p className="mb-0" style={{ color: '#FFD700' }}>Rejected Guests</p>
-              <small style={{ color: '#ffffffc6' }}>Actual: {rejectedGuests.length}</small>
+              <h4 className="text-dark">{stats.rejectedGuests}</h4>
+              <p className="mb-0" style={{ color: '#0d47a1' }}>Rejected Guests</p>
+              <small style={{ color: '#6c757d' }}>Actual: {rejectedGuests.length}</small>
             </Card.Body>
           </Card>
         </Col>
@@ -333,10 +333,10 @@ const PendingRequests = () => {
 
       {/* Tabs and Search Section */}
       <Card style={{ 
-        backgroundColor: '#676767a7', 
+        backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Tabs
             activeKey={activeTab}
@@ -344,16 +344,16 @@ const PendingRequests = () => {
             className="mb-3"
           >
             <Tab eventKey="pending" title={
-              <span style={{ color: '#ffffffff' }}>
-                <Clock size={16} className="me-1" color="#000000" />
+              <span style={{ color: activeTab === 'pending' ? '#fff' : '#0d6efd' }}>
+                <Clock size={16} className="me-1" color="#0d47a1" />
                 Pending Requests ({stats.totalPending})
               </span>
             }>
               {/* Pending requests content */}
             </Tab>
             <Tab eventKey="rejected" title={
-              <span style={{ color: '#ffffffff' }}>
-                <Archive size={16} className="me-1" color="#000000" />
+              <span style={{ color: activeTab === 'rejected' ? '#fff' : '#0d6efd' }}>
+                <Archive size={16} className="me-1" color="#0d47a1" />
                 Rejected Requests ({stats.totalRejected})
               </span>
             }>
@@ -365,14 +365,14 @@ const PendingRequests = () => {
             <Col md={6}>
               <Nav variant="pills" activeKey={requestType} onSelect={setRequestType}>
                 <Nav.Item>
-                  <Nav.Link eventKey="visitors" style={{ color: '#ffffffff' }}>
-                    <Users size={14} className="me-1" />
+                  <Nav.Link eventKey="visitors" style={{ color: requestType === 'visitors' ? '#fff' : '#0d6efd' }}>
+                    <Users size={14} className="me-1" color="#0d47a1"  />
                     Visitors ({activeTab === 'pending' ? stats.pendingVisitors : stats.rejectedVisitors})
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="guests" style={{ color: '#ffffffff' }}>
-                    <UserCheck size={14} className="me-1" />
+                  <Nav.Link eventKey="guests" style={{ color: requestType === 'guests' ? '#fff' : '#0d6efd' }}>
+                    <UserCheck size={14} className="me-1" color="#0d47a1" />
                     Guests ({activeTab === 'pending' ? stats.pendingGuests : stats.rejectedGuests})
                   </Nav.Link>
                 </Nav.Item>
@@ -381,7 +381,7 @@ const PendingRequests = () => {
             <Col md={6}>
               <InputGroup>
                 <InputGroup.Text className="bg-white">
-                  <Search size={16} color="#000000" />
+                  <Search size={16} color="#0d47a1" />
                 </InputGroup.Text>
                 <Form.Control
                   type="text"
@@ -396,7 +396,7 @@ const PendingRequests = () => {
 
           <Row>
             <Col>
-              <div style={{ color: '#ffffffc6', fontSize: '14px', textAlign: 'right' }}>
+              <div style={{ color: '#6c757d', fontSize: '14px', textAlign: 'right' }}>
                 Showing {getCurrentCount()} {activeTab} {requestType} 
                 {searchQuery && ` matching "${searchQuery}"`}
                 {getCurrentCount() === 0 && searchQuery && (

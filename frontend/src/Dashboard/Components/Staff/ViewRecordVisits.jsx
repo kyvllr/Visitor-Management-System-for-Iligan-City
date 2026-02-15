@@ -997,7 +997,7 @@ const ViewRecordVisits = () => {
 
     return (
       <Table striped bordered hover responsive className="bg-white">
-        <thead className="table-dark">
+        <thead className="table-primary">
           <tr>
             <th>Visit Date</th>
             <th>Type</th>
@@ -1127,8 +1127,8 @@ const ViewRecordVisits = () => {
         <Card className="mb-3" style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
           <Card.Body>
             <Form.Group>
               <Form.Label>
@@ -1170,7 +1170,7 @@ const ViewRecordVisits = () => {
           </Alert>
         ) : (
           <Table striped bordered hover responsive className="bg-white">
-            <thead className="table-dark">
+            <thead className="table-primary">
               <tr>
                 <th>Person ID</th>
                 <th>Name</th>
@@ -1261,7 +1261,7 @@ const ViewRecordVisits = () => {
 
     return (
       <Table striped bordered hover responsive className="bg-white">
-        <thead className="table-dark">
+        <thead className="table-primary">
           <tr>
             <th>Person Details</th>
             <th>Ban Information</th>
@@ -1344,7 +1344,7 @@ const ViewRecordVisits = () => {
 
     return (
       <Table striped bordered hover responsive className="bg-white">
-        <thead className="table-dark">
+        <thead className="table-primary">
           <tr>
             <th>Person Details</th>
             <th>Violation Information</th>
@@ -1412,24 +1412,24 @@ const ViewRecordVisits = () => {
     <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
       <Card.Header style={{backgroundColor: '#67676741'}}>
         <div className="d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
             <Filter size={18} className="me-2" />
-            <h6 className="mb-0" style={{ color: '#FFD700' }}>Filter History Records</h6>
+            <h6 className="mb-0" style={{ color: '#0d47a1' }}>Filter History Records</h6>
           </div>
           <Button 
                                   variant="outline-secondary" 
                                   onClick={clearFilters}
                                   style={{
-                                    color: 'black',
-                                    backgroundColor: '#FFD700',
-                                    borderColor: '#FFD700'
+                                    color: '#ffffff',
+                                    backgroundColor: '#0d6efd',
+                                    borderColor: '#0d6efd'
                                   }}
                                   onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                                  onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                                  onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                                 >
                                   Clear Filters
                                 </Button>
@@ -1554,7 +1554,7 @@ const ViewRecordVisits = () => {
               variant="primary" 
               onClick={activeTab === 'ban-history' ? fetchBanHistory : fetchViolationHistory}
               className="w-100"
-              style={{ backgroundColor: '#FFD700', borderColor: '#FFD700', color: 'black' }}
+              style={{ backgroundColor: '#0d6efd', borderColor: '#0d6efd', color: 'white' }}
             >
               <RefreshCw size={16} className="me-1" />
               Apply
@@ -1570,27 +1570,27 @@ const ViewRecordVisits = () => {
       <style dangerouslySetInnerHTML={{__html: `
           .form-label,
           label {
-            color: #ffffff !important;
+            color: #0d47a1 !important;
           }
           .form-control,
           .form-select {
-            color: #000000 !important;
+            color: #0d47a1 !important;
           }
           ::placeholder {
             color: #666666 !important;
           }
           .table tbody td,
           .table tbody td * {
-            color: #ffffff !important;
+            color: #0d47a1 !important;
           }
           .table tbody td .badge,
           .table tbody td .badge * {
-            color: #000000 !important;
+            color: #ffffff !important;
           }
           .table tbody td button,
           .table tbody td button *,
           .table tbody td svg {
-            color: #FFD700 !important;
+            color: #0d6efd !important;
           }
         `}} />
       <ToastContainer />
@@ -1600,10 +1600,10 @@ const ViewRecordVisits = () => {
           <h2 style={{ fontFamily: "Poppins, sans-serif", fontWeight: "600", color: "#2c3e50" }}>
             📋 Visit History & Records
           </h2>
-          <p className="small" style={{ color: '#ffd9009a' }}>View and manage all visit records, violations, and bans</p>
+          <p className="small" style={{ color: '#6c8fbe' }}>View and manage all visit records, violations, and bans</p>
         </div>
         <Button 
-          variant="outline-dark" 
+          variant="outline-primary" 
           onClick={exportToCSV} 
           disabled={
             (activeTab === 'all' && filteredLogs.length === 0) ||
@@ -1633,14 +1633,14 @@ const ViewRecordVisits = () => {
               </span>
             }>
               <Card style={{ 
-        backgroundColor: '#676767a7', 
+                backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+                borderLeft: '4px solid #0d6efd', 
+                borderRight: '4px solid #0d6efd',}}>
                 <Card.Header style={{backgroundColor: '#67676741'}}>
                   <div className="d-flex align-items-center">
                     <Filter size={18} className="me-2" />
-                    <h6 className="mb-0" style={{color: '#FFD700'}}>Filter Visit Records</h6>
+                    <h6 className="mb-0" style={{color: '#0d47a1'}}>Filter Visit Records</h6>
                   </div>
                 </Card.Header>
                 <Card.Body>
@@ -1708,11 +1708,11 @@ const ViewRecordVisits = () => {
                                               className="w-100"
                                               style={{
                                                 color: 'black',
-                                                backgroundColor: '#FFD700',
-                                                borderColor: '#FFD700'
+                                                backgroundColor: '#0d6efd',
+                                                borderColor: '#0d6efd'
                                               }}
                                               onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                                              onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                                              onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                                             >
                                               Clear Filters
                                             </Button>
@@ -1737,15 +1737,15 @@ const ViewRecordVisits = () => {
                 Visitors <Badge bg="info" className="ms-1">{counts.visitors}</Badge>
               </span>
             }>
-              <Card style={{ 
-        backgroundColor: '#676767a7', 
+                <Card style={{ 
+              backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+              borderLeft: '4px solid #0d6efd', 
+              borderRight: '4px solid #0d6efd',}}>
                 <Card.Header style={{backgroundColor: '#67676741'}}>
                   <div className="d-flex align-items-center">
                     <Filter size={18} className="me-2" />
-                    <h6 className="mb-0" style={{color: '#FFD700'}}>Filter Visitor Records</h6>
+                    <h6 className="mb-0" style={{color: '#0d47a1'}}>Filter Visitor Records</h6>
                   </div>
                 </Card.Header>
                 <Card.Body>
@@ -1813,11 +1813,11 @@ const ViewRecordVisits = () => {
                                               className="w-100"
                                               style={{
                                                 color: 'black',
-                                                backgroundColor: '#FFD700',
-                                                borderColor: '#FFD700'
+                                                backgroundColor: '#0d6efd',
+                                                borderColor: '#0d6efd'
                                               }}
                                               onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                                              onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                                              onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                                             >
                                               Clear Filters
                                             </Button>
@@ -1842,15 +1842,15 @@ const ViewRecordVisits = () => {
                 Guests <Badge bg="secondary" className="ms-1">{counts.guests}</Badge>
               </span>
             }>
-              <Card style={{ 
-        backgroundColor: '#676767a7', 
+                <Card style={{ 
+              backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+              borderLeft: '4px solid #0d6efd', 
+              borderRight: '4px solid #0d6efd',}}>
                 <Card.Header style={{backgroundColor: '#67676741'}}>
                   <div className="d-flex align-items-center">
                     <Filter size={18} className="me-2" />
-                    <h6 className="mb-0" style={{color: '#FFD700'}}>Filter Guest Records</h6>
+                    <h6 className="mb-0" style={{color: '#0d47a1'}}>Filter Guest Records</h6>
                   </div>
                 </Card.Header>
                 <Card.Body>
@@ -1918,11 +1918,11 @@ const ViewRecordVisits = () => {
                                               className="w-100"
                                               style={{
                                                 color: 'black',
-                                                backgroundColor: '#FFD700',
-                                                borderColor: '#FFD700'
+                                                backgroundColor: '#0d6efd',
+                                                borderColor: '#0d6efd'
                                               }}
                                               onMouseEnter={(e) => e.target.style.backgroundColor = '#e15c5cd0'}
-                                              onMouseLeave={(e) => e.target.style.backgroundColor = '#FFD700'}
+                                              onMouseLeave={(e) => e.target.style.backgroundColor = '#0d6efd'}
                                             >
                                               Clear Filters
                                             </Button>

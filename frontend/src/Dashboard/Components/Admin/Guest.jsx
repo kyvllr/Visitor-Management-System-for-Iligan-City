@@ -605,12 +605,12 @@ const Guest = () => {
             <Upload size={16} className="me-1" />
             Import CSV
           </Button>
-          <Button variant="outline-dark" size="sm" onClick={printAllGuestQRCodes}>
+          <Button variant="outline-dark" size="sm" onClick={printAllGuestQRCodes} > 
             <Printer size={16} className="me-1" />
             Print All QR (4/page)
           </Button>
           {/* Add Guest Button - Third (dark) */}
-          <Button variant="dark" onClick={handleAdd}>
+          <Button variant="dark" onClick={handleAdd} style={{backgroundColor: '#246bd5c4'}}>
             <Plus size={16} className="me-1" />
             Add Guest
           </Button>
@@ -620,13 +620,13 @@ const Guest = () => {
       <Card style={{ 
         backgroundColor: '#676767a7', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Row className="align-items-center">
             <Col md={8}>
               <InputGroup>
-                <InputGroup.Text className="bg-white" style={{ color: '#000000' }}>
+                <InputGroup.Text className="bg-white" style={{ color: '#0d47a1' }}>
                   <Search size={16} color="black" />
                 </InputGroup.Text>
                 <Form.Control
@@ -635,13 +635,13 @@ const Guest = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="border-start-0"
-                  style={{ color: '#000000' }}
+                  style={{ color: '#0d47a1' }}
                 />
                 <Form.Select 
                   value={searchBy} 
                   onChange={(e) => setSearchBy(e.target.value)}
                   className="bg-white"
-                  style={{ maxWidth: '150px', color: '#000000' }}
+                  style={{ maxWidth: '150px', color: '#0d47a1' }}
                 >
                   {searchOptions.map(option => (
                     <option key={option.value} value={option.value}>

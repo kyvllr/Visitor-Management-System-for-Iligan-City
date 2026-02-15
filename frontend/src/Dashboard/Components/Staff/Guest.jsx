@@ -475,15 +475,15 @@ const Guest = () => {
           </Badge>
         </div>
         <div className="d-flex gap-2">
-          <Button variant="outline-dark" size="sm" onClick={exportToCSV}>
+          <Button variant="outline-primary" size="sm" onClick={exportToCSV}>
             <Download size={16} className="me-1" />
             Export CSV
           </Button>
-          <Button variant="outline-dark" size="sm" onClick={printAllGuestQRCodes}>
+          <Button variant="outline-primary" size="sm" onClick={printAllGuestQRCodes}>
             <Printer size={16} className="me-1" />
             Print All QR (4/page)
           </Button>
-          <Button variant="dark" onClick={handleAdd}>
+          <Button variant="primary" onClick={handleAdd} style={{color:'white'}}>
             <Plus size={16} className="me-1" />
             Request New Guest
           </Button>
@@ -491,10 +491,10 @@ const Guest = () => {
       </div>
 
       <Card style={{ 
-        backgroundColor: '#676767a7', 
+        backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Row className="align-items-center">
             <Col md={8}>
@@ -524,7 +524,7 @@ const Guest = () => {
               </InputGroup>
             </Col>
             <Col md={4}>
-              <div style={{ textAlign: 'right', color: '#ffffff' }}>
+              <div style={{ textAlign: 'right', color: '#0d47a1' }}>
                 {filteredGuests.length} guests found 
               </div>
             </Col>
@@ -544,7 +544,7 @@ const Guest = () => {
         </Alert>
       ) : (
         <Table striped bordered hover responsive className="bg-white">
-          <thead className="table-dark">
+          <thead className="table-primary">
             <tr>
               <th>Guest ID</th>
               <th>Full Name</th>
@@ -784,7 +784,7 @@ const Guest = () => {
             <Button variant="secondary" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
-            <Button variant="dark" type="submit" disabled={isLoading}>
+            <Button variant="primary" type="submit" disabled={isLoading} style={{backgroundColor: '#246bd5c4'}}>
               {isLoading ? <Spinner size="sm" /> : 'Add Guest'}
             </Button>
           </Modal.Footer>
@@ -891,7 +891,7 @@ const Guest = () => {
     <Button variant="secondary" onClick={() => setShowViewModal(false)}>
       Close
     </Button>
-    <Button variant="dark" onClick={printGuestDetails}>
+    <Button variant="primary" onClick={printGuestDetails}>
       <Printer size={16} className="me-1" />
       Print
     </Button>
@@ -940,7 +940,7 @@ const Guest = () => {
             Close
           </Button>
           {selectedQRGuest?.qrCode && (
-            <Button variant="dark" onClick={downloadQRCode}>
+            <Button variant="primary" onClick={downloadQRCode}>
               <Download size={16} className="me-1" />
               Download QR
             </Button>
@@ -970,7 +970,7 @@ const Guest = () => {
           <Button variant="secondary" onClick={() => setShowUploadModal(false)}>
             Cancel
           </Button>
-          <Button variant="dark" onClick={handleCsvUpload} disabled={!csvFile || isLoading}>
+          <Button variant="primary" onClick={handleCsvUpload} disabled={!csvFile || isLoading}>
             {isLoading ? <Spinner size="sm" /> : 'Upload CSV'}
           </Button>
         </Modal.Footer>

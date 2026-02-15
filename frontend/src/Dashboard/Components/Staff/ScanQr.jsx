@@ -1271,7 +1271,7 @@ const renderPersonDetails = () => {
                   transform: 'translate(-50%, -50%)',
                   width: '250px',
                   height: '250px',
-                  border: scanConfidence >= 60 ? '3px solid #28a745' : '3px solid #ffc107',
+                  border: scanConfidence >= 60 ? '3px solid #28a745' : '3px solid #0d6efd',
                   borderRadius: '12px',
                   pointerEvents: 'none',
                   boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.4)',

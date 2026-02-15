@@ -448,9 +448,9 @@ const Logs = () => {
             transition: 'all 0.3s ease'
           }}
           onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#FFD700';
-            e.target.style.color = '#000000';
-            e.target.style.borderColor = '#FFD700';
+            e.target.style.backgroundColor = '#0d6efd';
+            e.target.style.color = '#ffffff';
+            e.target.style.borderColor = '#0d6efd';
           }}
           onMouseLeave={(e) => {
             e.target.style.backgroundColor = '';
@@ -473,47 +473,47 @@ const Logs = () => {
       {/* Statistics Cards - Updated with smaller, uniform cards */}
       <Row className="mb-4 g-2">
         <Col xs={6} sm={4} md={2} lg={2.4} className="mb-2">
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }} className="h-100">
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }} className="h-100">
             <Card.Body className="text-center p-2">
-              <FileText size={20} className="text-warning mb-1" />
-              <h5 className="text-warning mb-1">{stats.total}</h5>
-              <small style={{ color: '#ffffffcc' }}>Total Logs</small>
+              <FileText size={20} className="text-warning mb-1"  />
+              <h5 style={{ color: 'black' }}>{stats.total}</h5>
+              <small style={{ color: '#0d6efd' }}>Total Logs</small>
             </Card.Body>
           </Card>
         </Col>
         <Col xs={6} sm={4} md={2} lg={2.4} className="mb-2">
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }} className="h-100">
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }} className="h-100">
             <Card.Body className="text-center p-2">
               <Calendar size={20} className="text-warning mb-1" />
-              <h5 className="text-warning mb-1">{stats.today}</h5>
-              <small style={{ color: '#ffffffcc' }}>Today</small>
+              <h5 style={{ color: 'black' }}>{stats.today}</h5>
+              <small style={{ color: '#0d6efd' }}>Today</small>
             </Card.Body>
           </Card>
         </Col>
         <Col xs={6} sm={4} md={2} lg={2.4} className="mb-2">
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }} className="h-100">
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }} className="h-100">
             <Card.Body className="text-center p-2">
               <Users size={20} className="text-warning mb-1" />
-              <h5 className="text-warning mb-1">{stats.users}</h5>
-              <small style={{ color: '#ffffffcc' }}>User Activities</small>
+              <h5 style={{ color: 'black' }}>{stats.users}</h5>
+              <small style={{ color: '#0d6efd' }}>User Activities</small>
             </Card.Body>
           </Card>
         </Col>
         <Col xs={6} sm={4} md={2} lg={2.4} className="mb-2">
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }} className="h-100">
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }} className="h-100">
             <Card.Body className="text-center p-2">
               <Shield size={20} className="text-warning mb-1" />
-              <h5 className="text-warning mb-1">{stats.inmates}</h5>
-              <small style={{ color: '#ffffffcc' }}>PDL Activities</small>
+              <h5 style={{ color: 'black' }}>{stats.inmates}</h5>
+              <small style={{ color: '#0d6efd' }}>PDL Activities</small>
             </Card.Body>
           </Card>
         </Col>
         <Col xs={6} sm={4} md={2} lg={2.4} className="mb-2">
-          <Card style={{ borderLeft: '2px solid #ffc107', borderRight: '2px solid #ffc107', borderTop: '6px solid #ffc107', borderBottom: '2px solid #ffc107', backgroundColor: '#353434a7', borderRadius: '12px' }} className="h-100">
+          <Card style={{ borderLeft: '2px solid #0d6efd', borderRight: '2px solid #0d6efd', borderTop: '6px solid #0d6efd', borderBottom: '2px solid #0d6efd', backgroundColor: '#ffffff', borderRadius: '12px' }} className="h-100">
             <Card.Body className="text-center p-2">
               <UserCheck size={20} className="text-warning mb-1" />
-              <h5 className="text-warning mb-1">{stats.visitors}</h5>
-              <small style={{ color: '#ffffffcc' }}>Visitor Activities</small>
+              <h5 style={{ color: 'black' }}>{stats.visitors}</h5>
+              <small style={{ color: '#0d6efd' }}>Visitor Activities</small>
             </Card.Body>
           </Card>
         </Col>
@@ -521,36 +521,36 @@ const Logs = () => {
 
       {/* Filters */}
       <Card style={{ 
-        backgroundColor: '#676767a7', 
+        backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Row className="g-3 align-items-center">
             <Col md={3}>
               <Form.Group>
-                <Form.Label className="fw-bold" style={{ color: '#ffffffff' }}>Search Logs</Form.Label>
+                <Form.Label className="fw-bold" style={{ color: '#0d6efd' }}>Search Logs</Form.Label>
                 <InputGroup>
                   <InputGroup.Text className="bg-white">
-                    <Search size={16} color="#000000" />
+                    <Search size={16} color="#0d47a1" />
                   </InputGroup.Text>
                   <Form.Control
                     type="text"
                     placeholder="Search logs, users, IP..."
                     value={filters.search}
                     onChange={(e) => handleFilterChange('search', e.target.value)}
-                    style={{ color: '#000000' }}
+                    style={{ color: '#0d47a1' }}
                   />
                 </InputGroup>
               </Form.Group>
             </Col>
             <Col md={2}>
               <Form.Group>
-                <Form.Label className="fw-bold" style={{ color: '#ffffffff' }}>Module</Form.Label>
+                <Form.Label className="fw-bold" style={{ color: '#0d6efd' }}>Module</Form.Label>
                 <Form.Select
                   value={filters.module}
                   onChange={(e) => handleFilterChange('module', e.target.value)}
-                  style={{ color: '#000000' }}
+                  style={{ color: '#0d47a1' }}
                 >
                   <option value="">All Modules</option>
                   {moduleOptions.map(option => (
@@ -563,11 +563,11 @@ const Logs = () => {
             </Col>
             <Col md={2}>
               <Form.Group>
-                <Form.Label className="fw-bold" style={{ color: '#ffffffff' }}>Action</Form.Label>
+                <Form.Label className="fw-bold" style={{ color: '#0d6efd' }}>Action</Form.Label>
                 <Form.Select
                   value={filters.action}
                   onChange={(e) => handleFilterChange('action', e.target.value)}
-                  style={{ color: '#000000' }}
+                  style={{ color: '#0d47a1' }}
                 >
                   <option value="">All Actions</option>
                   {actionOptions.map(option => (
@@ -580,11 +580,11 @@ const Logs = () => {
             </Col>
             <Col md={2}>
               <Form.Group>
-                <Form.Label className="fw-bold" style={{ color: '#ffffffff' }}>Date Range</Form.Label>
+                <Form.Label className="fw-bold" style={{ color: '#0d6efd' }}>Date Range</Form.Label>
                 <Form.Select
                   value={filters.dateRange}
                   onChange={(e) => handleFilterChange('dateRange', e.target.value)}
-                  style={{ color: '#000000' }}
+                  style={{ color: '#0d47a1' }}
                 >
                   {dateRangeOptions.map(option => (
                     <option key={option.value} value={option.value}>
@@ -598,23 +598,23 @@ const Logs = () => {
               <>
                 <Col md={2}>
                   <Form.Group>
-                    <Form.Label className="fw-bold" style={{ color: '#000000' }}>Start Date</Form.Label>
+                    <Form.Label className="fw-bold" style={{ color: '#0d47a1' }}>Start Date</Form.Label>
                     <Form.Control
                       type="date"
                       value={filters.startDate}
                       onChange={(e) => handleFilterChange('startDate', e.target.value)}
-                      style={{ color: '#000000' }}
+                      style={{ color: '#0d47a1' }}
                     />
                   </Form.Group>
                 </Col>
                 <Col md={2}>
                   <Form.Group>
-                    <Form.Label className="fw-bold" style={{ color: '#000000' }}>End Date</Form.Label>
+                    <Form.Label className="fw-bold" style={{ color: '#0d47a1' }}>End Date</Form.Label>
                     <Form.Control
                       type="date"
                       value={filters.endDate}
                       onChange={(e) => handleFilterChange('endDate', e.target.value)}
-                      style={{ color: '#000000' }}
+                      style={{ color: '#0d47a1' }}
                     />
                   </Form.Group>
                 </Col>
@@ -626,8 +626,8 @@ const Logs = () => {
                 onClick={clearFilters}
                 className="w-100"
                 style={{
-                  backgroundColor: '#FFD700',
-                  color: '#000000ff',
+                  backgroundColor: '#0d6efd',
+                  color: '#ffffff',
                   border: 'none',
                   transition: 'all 0.3s ease'
                 }}
@@ -636,11 +636,11 @@ const Logs = () => {
                   e.target.style.color = '#ffffffff';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = '#FFD700';
-                  e.target.style.color = '#000000ff';
+                  e.target.style.backgroundColor = '#0d6efd';
+                  e.target.style.color = '#ffffff';
                 }}
               >
-                <Filter size={16} className="me-1" color="#000000" />
+                <Filter size={16} className="me-1" color="#ffffff" />
                 Clear
               </Button>
             </Col>
@@ -653,7 +653,7 @@ const Logs = () => {
         <Card.Body className="p-0">
           <div className="table-responsive">
             <Table striped bordered hover responsive className="bg-white mb-0">
-              <thead className="table-dark">
+              <thead className="table-primary">
                 <tr>
                   <th className="text-center">Timestamp</th>
                   <th className="text-center">Module</th>

@@ -318,11 +318,11 @@ const UserManagement = () => {
           </Badge>
         </div>
         <div className="d-flex gap-2">
-          <Button variant="outline-dark" size="sm" onClick={exportToCSV}>
+          <Button variant="outline-primary" size="sm" onClick={exportToCSV}>
             <Download size={16} className="me-1" />
             Export CSV
           </Button>
-          <Button variant="dark" onClick={() => setShowModal(true)}>
+          <Button variant="primary" onClick={() => setShowModal(true)} style={{color:'white'}}>
             <Plus size={16} className="me-1" />
             Add User
           </Button>
@@ -333,18 +333,18 @@ const UserManagement = () => {
       <Row className="mb-4">
         <Col md={12}>
           <Card style={{ 
-            borderLeft: '2px solid #ffc107', 
-            borderRight: '2px solid #ffc107', 
-            borderTop: '6px solid #ffc107', 
-            borderBottom: '2px solid #ffc107', 
-            backgroundColor: '#353434a7', 
+            borderLeft: '2px solid #0d6efd', 
+            borderRight: '2px solid #0d6efd', 
+            borderTop: '6px solid #0d6efd', 
+            borderBottom: '2px solid #0d6efd', 
+            backgroundColor: '#ffffff', 
             borderRadius: '12px'
           }}>
             <Card.Body>
-              <h6 className="mb-3" style={{ color: '#ffc107' }}>Role Permissions Overview</h6>
+              <h6 className="mb-3" style={{ color: '#0d47a1' }}>Role Permissions Overview</h6>
               <Row>
                 <Col md={4}>
-                  <strong style={{ color: '#ffc107' }}>Admin Roles:</strong>
+                  <strong style={{ color: '#0d6efd' }}>Admin Roles:</strong>
                   <ul className="mb-0 mt-2">
                     <li><Badge bg="danger">Full Admin</Badge> - Full system access</li>
                     <li><Badge bg="primary">Male Admin</Badge> - Male section management</li>
@@ -352,7 +352,7 @@ const UserManagement = () => {
                   </ul>
                 </Col>
                 <Col md={4}>
-                  <strong style={{ color: '#ffc107' }}>Staff Roles:</strong>
+                  <strong style={{ color: '#0d6efd' }}>Staff Roles:</strong>
                   <ul className="mb-0 mt-2">
                     <li><Badge bg="warning">Full Staff</Badge> - Full staff access</li>
                     <li><Badge bg="success">Male Staff</Badge> - Male section access</li>
@@ -360,7 +360,7 @@ const UserManagement = () => {
                   </ul>
                 </Col>
                 <Col md={4}>
-                  <strong style={{ color: '#ffc107' }}>Notes:</strong>
+                  <strong style={{ color: '#0d6efd' }}>Notes:</strong>
                   <ul className="mb-0 mt-2">
                     <li>System accounts cannot be deleted</li>
                     <li>Admins have higher privileges than staff</li>
@@ -374,16 +374,16 @@ const UserManagement = () => {
       </Row>
 
       <Card style={{ 
-        backgroundColor: '#676767a7', 
+        backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Row className="align-items-center">
             <Col md={8}>
               <InputGroup>
                 <InputGroup.Text className="bg-white">
-                  <Search size={16} color="#000000" />
+                  <Search size={16} color="#0d47a1" />
                 </InputGroup.Text>
                 <Form.Control
                   type="text"
@@ -396,7 +396,7 @@ const UserManagement = () => {
                   value={searchBy} 
                   onChange={(e) => setSearchBy(e.target.value)}
                   className="bg-white"
-                  style={{ maxWidth: '150px', color: '#000000' }}
+                  style={{ maxWidth: '150px', color: '#0d47a1' }}
                 >
                   {searchOptions.map(option => (
                     <option key={option.value} value={option.value}>
@@ -407,10 +407,10 @@ const UserManagement = () => {
               </InputGroup>
             </Col>
             <Col md={4}>
-              <div className="small" style={{ color: '#ffffffff', textAlign: 'right' }}>
+              <div className="small" style={{ color: '#0d47a1', textAlign: 'right' }}>
                 {filteredUsers.length} users found 
                 {users.length > 0 && (
-                  <span className="ms-2" style={{ color: '#ffffffff' }}>
+                  <span className="ms-2" style={{ color: '#0d47a1' }}>
                     ({users.filter(u => u.isActive).length} active, {users.filter(u => !u.isActive).length} inactive)
                   </span>
                 )}
@@ -438,7 +438,7 @@ const UserManagement = () => {
             </Alert>
           ) : (
             <Table striped bordered hover responsive className="mb-0 bg-white">
-              <thead className="table-dark">
+              <thead className="table-primary">
                 <tr>
                   <th className="text-center align-middle">Name</th>
                   <th className="text-center align-middle">Email</th>
@@ -631,7 +631,7 @@ const UserManagement = () => {
             </Form.Group>
             
             <div className="d-flex gap-2">
-              <Button variant="dark" type="submit" disabled={isLoading} className="flex-fill">
+              <Button variant="primary" type="submit" disabled={isLoading} className="flex-fill">
                 {isLoading ? <Spinner size="sm" /> : "Create User"}
               </Button>
               <Button 
@@ -748,7 +748,7 @@ const UserManagement = () => {
             </Form.Group>
             
             <div className="d-flex gap-2">
-              <Button variant="dark" type="submit" disabled={isLoading} className="flex-fill">
+              <Button variant="primary" type="submit" disabled={isLoading} className="flex-fill">
                 {isLoading ? <Spinner size="sm" /> : "Update User"}
               </Button>
               <Button 

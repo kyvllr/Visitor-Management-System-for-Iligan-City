@@ -153,7 +153,7 @@ const MaleAdmin = () => {
             onClick={() => setShowScanModal(true)}
             className="me-3"
             size="sm"
-            style={{ backgroundColor: '#FFD700', color: '#000000', fontWeight: '600', boxShadow: '0 0 15px rgba(229, 255, 0, 0.74)'  }}>
+            style={{ backgroundColor: '#00b7ff', color: '#000000', fontWeight: '600', boxShadow: '0 0 15px rgba(0, 183, 255, 0.74)'  }}>
             <svg className="me-1" width="16" height="16" viewBox="0 0 24 24" fill="#000000">
               <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-12v8h8V3h-8zm6 6h-4V5h4v4z"/>
               <path d="M19 19h2v2h-2zM15 15h2v2h-2zM15 19h2v2h-2zM11 11h2v2h-2zM7 15h2v2H7zM11 15h2v2h-2zM11 19h2v2h-2z"/>

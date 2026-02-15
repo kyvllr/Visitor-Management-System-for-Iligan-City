@@ -654,7 +654,7 @@ const ViewVisitorFemaleDivision = () => {
       
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 style={{ fontFamily: "Poppins, sans-serif", fontWeight: "600", color: "#2c3e50" }}>
+          <h2 style={{ fontFamily: "Poppins, sans-serif", fontWeight: "600", color: "#0d47a1" }}>
             👥 Female Division Visitors Management
           </h2>
           <Badge bg="info" className="mb-2">
@@ -665,15 +665,15 @@ const ViewVisitorFemaleDivision = () => {
           </div>
         </div>
         <div className="d-flex gap-2">
-          <Button variant="outline-dark" size="sm" onClick={exportToCSV}>
+          <Button variant="outline-primary" size="sm" onClick={exportToCSV}>
             <Download size={16} className="me-1" />
             Export CSV
           </Button>
-          <Button variant="outline-dark" size="sm" onClick={printAllVisitorQRCodes}>
+          <Button variant="outline-primary" size="sm" onClick={printAllVisitorQRCodes}>
             <Printer size={16} className="me-1" />
             Print All QR (4/page)
           </Button>
-          <Button variant="dark" onClick={handleAdd}>
+          <Button variant="primary" onClick={handleAdd}>
             <Plus size={16} className="me-1" />
             Request New Visitor
           </Button>
@@ -682,10 +682,10 @@ const ViewVisitorFemaleDivision = () => {
 
       {/* Search Section */}
       <Card style={{ 
-        backgroundColor: '#676767a7', 
+        backgroundColor: '#ffffff', 
         borderRadius: '12px', marginBottom: '20px', 
-        borderLeft: '4px solid #FFD700', 
-        borderRight: '4px solid #FFD700',}}>
+        borderLeft: '4px solid #0d6efd', 
+        borderRight: '4px solid #0d6efd',}}>
         <Card.Body>
           <Row className="align-items-center">
             <Col md={8}>
@@ -728,7 +728,7 @@ const ViewVisitorFemaleDivision = () => {
               </Form.Select>
             </Col>
             <Col md={4}>
-              <div className="text-muted small">
+              <div className="text-primary small">
                 {filteredVisitors.length} visitors found
               </div>
             </Col>
@@ -749,7 +749,7 @@ const ViewVisitorFemaleDivision = () => {
       ) : (
         <div className="table-responsive" style={{ fontSize: '14px' }}>
   <Table striped bordered hover responsive className="visitors-table bg-white">
-    <thead className="table-dark">
+    <thead className="table-primary">
       <tr>
         <th>Visitor ID</th>
         <th>Full Name</th>
@@ -975,7 +975,7 @@ const ViewVisitorFemaleDivision = () => {
                         <div
                           key={inmate._id}
                           className="p-2 border-bottom hover-bg"
-                          style={{ cursor: 'pointer', backgroundColor: '#f8f9fa' }}
+                          style={{ cursor: 'pointer', backgroundColor: '#eef4ff' }}
                           onClick={() => selectPrisonerSuggestion(inmate)}
                         >
                           <strong>{inmate.inmateCode}</strong> - {inmate.fullName}
@@ -1000,7 +1000,7 @@ const ViewVisitorFemaleDivision = () => {
                         <div
                           key={inmate._id}
                           className="p-2 border-bottom hover-bg"
-                          style={{ cursor: 'pointer', backgroundColor: '#f8f9fa' }}
+                          style={{ cursor: 'pointer', backgroundColor: '#eef4ff' }}
                           onClick={() => selectPrisonerNameSuggestion(inmate)}
                         >
                           <strong>{inmate.fullName}</strong> - {inmate.inmateCode}
@@ -1049,7 +1049,7 @@ const ViewVisitorFemaleDivision = () => {
             <Button variant="secondary" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
-            <Button variant="dark" type="submit" disabled={isLoading}>
+            <Button variant="primary" type="submit" disabled={isLoading}>
               {isLoading ? <Spinner size="sm" /> : 'Submit Request'}
             </Button>
           </Modal.Footer>
@@ -1152,7 +1152,7 @@ const ViewVisitorFemaleDivision = () => {
           <Button variant="secondary" onClick={() => setShowViewModal(false)}>
             Close
           </Button>
-          <Button variant="dark" onClick={printVisitorDetails}>
+          <Button variant="primary" onClick={printVisitorDetails}>
             <Printer size={16} className="me-1" />
             Print
           </Button>
@@ -1202,7 +1202,7 @@ const ViewVisitorFemaleDivision = () => {
             Close
           </Button>
           {selectedQRVisitor?.qrCode && (
-            <Button variant="dark" onClick={downloadQRCode}>
+            <Button variant="primary" onClick={downloadQRCode}>
               <Download size={16} className="me-1" />
               Download QR
             </Button>
@@ -1232,7 +1232,7 @@ const ViewVisitorFemaleDivision = () => {
           <Button variant="secondary" onClick={() => setShowUploadModal(false)}>
             Cancel
           </Button>
-          <Button variant="dark" onClick={handleCsvUpload} disabled={!csvFile || isLoading}>
+          <Button variant="primary" onClick={handleCsvUpload} disabled={!csvFile || isLoading}>
             {isLoading ? <Spinner size="sm" /> : 'Upload CSV'}
           </Button>
         </Modal.Footer>
