@@ -635,6 +635,68 @@ if (timer.personType === 'visitor') {
     return data;
   };
 
+  const getVisitorAge = (visitor) => {
+    const rawAge = Number(visitor?.age);
+    if (Number.isFinite(rawAge) && rawAge >= 0) {
+      return rawAge;
+    }
+
+    if (!visitor?.dateOfBirth) {
+      return null;
+    }
+
+    const birthDate = new Date(visitor.dateOfBirth);
+    if (Number.isNaN(birthDate.getTime())) {
+      return null;
+    }
+
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age >= 0 ? age : null;
+  };
+
+  const isConjugalVisitor = (relationship) => {
+    const normalizedRelationship = (relationship || '')
+      .toString()
+      .toLowerCase()
+      .replace(/[\s/-]+/g, '');
+
+    return ['wife', 'partner', 'livein', 'husband', 'girlfriend', 'boyfriend', 'spouse', 'lover', 'fiance'].includes(normalizedRelationship);
+  };
+
+  const getVisitorCategoryRecordsData = () => {
+    const counts = {
+      below1: 0,
+      child1to12: 0,
+      age13Above: 0,
+      senior: 0,
+      conjugal: 0
+    };
+
+    visitors.forEach((visitor) => {
+      const age = getVisitorAge(visitor);
+
+      if (age !== null && age < 1) counts.below1 += 1;
+      if (age !== null && age >= 1 && age <= 12) counts.child1to12 += 1;
+      if (age !== null && age >= 13) counts.age13Above += 1;
+      if (age !== null && age >= 60) counts.senior += 1;
+      if (isConjugalVisitor(visitor.relationship)) counts.conjugal += 1;
+    });
+
+    return [
+      { name: 'Below 1 year old', records: counts.below1, color: CHART_COLORS[0] },
+      { name: '1-12 years old', records: counts.child1to12, color: CHART_COLORS[1] },
+      { name: '13 years old - Above', records: counts.age13Above, color: CHART_COLORS[2] },
+      { name: 'Senior citizen', records: counts.senior, color: CHART_COLORS[3] },
+      { name: 'Conjugal visitor', records: counts.conjugal, color: CHART_COLORS[4] }
+    ];
+  };
+
   // Custom Tooltip for charts - FIXED VERSION
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -1766,6 +1828,41 @@ const renderTimerCard = (title, timers, urgentTimers, criticalTimers, topUrgentT
                       <Tooltip content={<PieChartTooltip />} />
                       <Legend />
                     </PieChart>
+                  </ResponsiveContainer>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          <Row className="mb-4">
+            <Col md={12}>
+              <Card className="shadow-sm border-0 h-100">
+                <Card.Header style={{ backgroundColor: '#ffd900c5', color: '#ffd900ff' }}>
+                  <h6 className="mb-0" style={{ color: 'white' }}>Visitor Category Records</h6>
+                </Card.Header>
+                <Card.Body>
+                  <ResponsiveContainer width="100%" height={320}>
+                    <BarChart
+                      data={getVisitorCategoryRecordsData()}
+                      layout="vertical"
+                      margin={{ top: 10, right: 20, left: 30, bottom: 10 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke={'#898989b7'} />
+                      <XAxis type="number" stroke={'#898989b7'} allowDecimals={false} />
+                      <YAxis
+                        dataKey="name"
+                        type="category"
+                        stroke={'white'}
+                        width={150}
+                        tick={{ fontSize: 12 }}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Bar dataKey="records" radius={[0, 6, 6, 0]}>
+                        {getVisitorCategoryRecordsData().map((entry, index) => (
+                          <Cell key={`category-cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
                   </ResponsiveContainer>
                 </Card.Body>
               </Card>
